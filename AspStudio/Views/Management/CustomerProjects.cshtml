@@ -27,7 +27,7 @@
 			<!-- BEGIN card-header -->
 			<div class="card-header d-flex align-items-center">
 				<span class="flex-grow-1 font-weight-600">List projects</span>
-				<a href="#" class="text-muted text-decoration-none fs-12px"><i class="fa fa-fw fa-plus"></i> New project</a>
+				<a href="#" class="text-muted text-decoration-none fs-12px" role="button" data-bs-toggle="modal" data-bs-target="#newProject"><i class="fa fa-fw fa-plus"></i> New project</a>
 			</div>
 			<!-- END card-header -->
 			<!-- BEGIN list-group -->
@@ -42,19 +42,7 @@
 						<div class="font-weight-600 text-dark">Code: @Model.cod_cliente</div>
                         <div class="font-weight-600 text-dark">Customer: @Model.nombre_cliente</div>
                         <div class="fs-13px text-muted mb-2">Country: @Model.pais</div>
-                        @*<div class="mb-1">
-	                            
-                        @if (ViewBag.projects.Count() >0)
-                        {
-                            <span class="badge bg-danger text-white rounded-sm fs-12px font-weight-500">@ViewBag.projects.Count().ToString() projects</span>
-                        }else
-                        {
-                                <span class="badge bg-danger text-white rounded-sm fs-12px font-weight-500">No found projects</span>
-                        }
-
-                        </div>*@
-						@*<hr class="mt-15px mb-15px" />*@
-							
+                       						
                             <table class="table table-sm">
                                 <thead class="table-light">
                                     <tr>
@@ -98,7 +86,7 @@
                                                                     <td>@cont.contacto.cod_contacto</td>
                                                                     <td>@cont.contacto.nombre_contacto @cont.contacto.apellidos_contacto</td>
                                                                     <td>@cont.tipocontacto.cod_tipo_contacto</td>
-                                                                    <td><a href="#" class="text-decoration-none fs-12px text-danger"><i class="fa fa-fw fa-times-circle"></i></a></td>
+                                                                    <td><a href="#" class="text-decoration-none fs-12px text-danger" role="button" onclick="DeleteContactProyecto(@cont.contacto_id, @cont.proyecto_id, @cont.tipo_contacto_id)"><i class="fa fa-fw fa-times-circle"></i></a></td>
                                                                 </tr>
                                                             }
                                                           
@@ -109,7 +97,7 @@
                                             <td>
                                                 <a class="btn btn-outline-warning btn-sm" href="#" role="button" data-bs-toggle="modal" data-bs-target="#newVersion" onclick="AsignaProyectoID(@item.id)">Add version</a>
                                                 <a class="btn btn-outline-warning btn-sm" href="#" role="button" onclick="AddContactProyecto(@item.id)">Add contact</a>
-                                                <a class="btn btn-outline-warning btn-sm" href="@Url.Action("CustomerContacts","Management", new{id=@item.id})" role="button">Contacts</a>
+                                                <a class="btn btn-outline-warning btn-sm" href="@Url.Action("ProjectContacts","Management", new{id=@item.id})" role="button">Contacts</a>
                                             </td>
                                         </tr>
                                     }
@@ -254,6 +242,38 @@
 </div>
 
 
+<!-- modal Delete project -->
+<div class="modal fade" id="deleteContact">
+  <div class="modal-dialog">
+    <form method="post" id="formDeleteContact"> 
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title text-primary">Delete Contact</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body">
+            
+              <div class="form-group">
+                <input type="hidden" id="cid" />
+                <input type="hidden" id="pid" />
+                <input type="hidden" id="tid" />
+            </div>
+
+            <div class="form-group">
+                <h2 class="text-danger">Are you sure you want to delete?</h2>
+            </div>
+                        
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
+            <button type="button" class="btn bg-red text-white" id="btnDeleteContact">Delete</button>
+          </div>
+        </div>
+    </form>
+  </div>
+</div>
+
+
 @section Scripts{
 
     @*<script src="~/lib/highlight.js/highlight.min.js"></script>
@@ -278,6 +298,15 @@
             $("#contacto_proyecto_id").val(xid);
             $('#newContact').modal('show');
          }
+
+
+         function DeleteContactProyecto(cid, pid, tid) {
+             $("#cid").val(cid);
+             $("#pid").val(pid);
+             $("#tid").val(tid);
+             $('#deleteContact').modal('show');
+         }
+
 
          $(document).ready(function () {
 
@@ -341,7 +370,6 @@
                         var err = "Error: " + textStatus + " " + errorThrow;
                         console.log(err);
                     })
-
 
             });
 
@@ -462,6 +490,66 @@
                         }
                         else {
                             alert('Problems add contact, we ask that you try again!');
+                        }
+
+                    })
+                    .fail(function (jqXHR, textStatus, errorThrow) {
+                        var err = "Error: " + textStatus + " " + errorThrow;
+                        console.log(err);
+                    })
+
+            });
+
+
+             $('#btnDeleteContact').click(function (event) {
+                
+                var form = $("#formDeleteContact");
+
+                if (form[0].checkValidity() === false) {
+                    event.preventDefault()
+                    event.stopPropagation()
+                    form.addClass('was-validated');
+                }
+                else {
+
+                    if ($('#cid').val() == "") {
+                        return;
+                    }
+
+                    if ($('#pid').val() == "") {
+                        return;
+                    }
+
+                }
+
+                let contact = {
+                    "contacto_id": $('#cid').val(),
+                    "proyecto_id": $('#pid').val(),
+                    "tipo_contacto_id": $('#pid').val()
+                    
+                };
+
+               var data = JSON.stringify(contact);
+               
+                $.ajax({
+                    type: "POST",
+                    url: '/Management/DeleteContactProject',
+                    contentType: 'application/json;charset=utf-8',
+                    dataType: 'json',
+                    async: true,
+                    data: data,
+                    success: function (result) {
+                        console.log(result)
+                    }
+                })
+                    .done(function (result) {
+                        if (result.exito) {
+                            $('#deleteContact').modal('hide');
+                            alert(result.mensaje);
+                            location.reload();
+                        }
+                        else {
+                            alert('Problems delete contact, we ask that you try again!');
                         }
 
                     })

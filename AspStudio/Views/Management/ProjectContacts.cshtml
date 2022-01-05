@@ -1,0 +1,339 @@
+﻿@using Domain.Entities;
+@model SOLDOZA_MST_GRL_PROYECTOS
+@{
+    ViewData["Title"] = "CustomerProjects";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<ul class="breadcrumb">
+    <li class="breadcrumb-item text-warning"><a href="#" class="text-warning">MANAGEMENT</a></li>
+    <li class="breadcrumb-item text-gray-900 active">CONTACTS PROJECTS</li>
+</ul>
+
+
+
+<!-- BEGIN col-4 -->
+	<div class="col-xl-12 col-lg-12">
+		<!-- BEGIN card -->
+		<div class="card mb-3">
+			<!-- BEGIN card-header -->
+			<div class="card-header d-flex align-items-center">
+				<span class="flex-grow-1 font-weight-600">List projects</span>
+				<a href="#" class="text-muted text-decoration-none fs-12px" role="button" data-bs-toggle="modal" data-bs-target="#addContact"><i class="fa fa-fw fa-plus"></i>Add Contact</a>
+			</div>
+			<!-- END card-header -->
+			<!-- BEGIN list-group -->
+			<div class="list-group list-group-flush">
+				<!-- BEGIN list-group-item -->
+				<div class="list-group-item d-flex px-3">
+					<div class="flex-fill">
+                        <input type="hidden" id="proyecto_id" value=@Model.id />	
+						<div class="font-weight-600 text-dark">Customer: @Model.clientes.nombre_cliente</div>
+                        <div class="font-weight-600 text-dark">Project:@Model.cod_proyecto @Model.descripcion_proyecto</div>
+                        <div class="fs-13px text-muted mb-2">Version:</div>
+                        <div class="col-xl-3">
+	                            
+                            <table class="table table-sm">
+                                <thead>
+                                    <tr>
+                                        <th>Code Version</th>
+                                        <th>Date Start</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if (Model.contactos != null)
+                                    {
+                                        foreach(var item in Model.versiones){
+                                            <tr>
+                                                <td>@item.cod_version</td>
+                                                <td>@item.fechainicio.ToString().Substring(0,10)</td>
+                                            </tr>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <tr>
+                                            <td colspan="2">No version to display</td>
+                                        </tr>
+
+                                    }
+                                </tbody>
+                            </table>
+
+                        </div>
+						<hr class="mt-15px mb-15px" />
+							
+                            <table class="table table-sm">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Code</th>
+                                        <th>Name Contact</th>
+                                        <th>Type</th>
+                                        <th>Email</th>
+                                        <th>Phone</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                @if (Model.contactos != null)
+                                {
+                                    foreach(var item in Model.contactos){
+                                        <tr>
+                                            <td>@item.contacto.cod_contacto</td>
+                                            <td>@item.contacto.nombre_contacto @item.contacto.apellidos_contacto</td>
+                                            <td>@item.tipocontacto.descripcion_tipo_contacto</td>
+                                            <td>@item.contacto.email_contacto</td>
+                                            <td>@item.contacto.telefono_contacto</td>
+                                            <td>
+                                                <a class="btn btn-outline-warning btn-sm" href="#" role="button" onclick="DeleteContactProyecto(@item.contacto_id, @item.proyecto_id, @item.tipo_contacto_id)">Delete contact</a>
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                                else
+                                {
+                                    <tr>
+                                        <td colspan="6">No records to display</td>
+                                    </tr>
+
+                                }
+                            </tbody>
+                        </table>
+                    
+                        <a href="@Url.Action("CustomerProjects","Management", new{id=Model.cliente_id})" class="text-blue text-decoration-none">Return list projects</a>
+			
+					</div>
+				</div>
+				<!-- END list-group-item -->
+			
+
+			</div>
+			<!-- END list-group -->
+		</div>
+		<!-- END card -->
+	</div>
+
+
+<!-- modal Delete project -->
+<div class="modal fade" id="deleteContact">
+  <div class="modal-dialog">
+    <form method="post" id="formDeleteContact"> 
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title text-primary">Delete Contact</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body">
+            
+              <div class="form-group">
+                <input type="hidden" id="cid" />
+                <input type="hidden" id="pid" />
+                <input type="hidden" id="tid" />
+            </div>
+
+            <div class="form-group">
+                <h2 class="text-danger">Are you sure you want to delete?</h2>
+            </div>
+                        
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
+            <button type="button" class="btn bg-red text-white" id="btnDeleteContact">Delete</button>
+          </div>
+        </div>
+    </form>
+  </div>
+</div>
+
+
+<!-- modal New project -->
+<div class="modal fade" id="addContact">
+  <div class="modal-dialog">
+    <form method="post" id="formNewContact"> 
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Add Contact</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body">
+            
+              <div class="form-group">
+                <input type="hidden" id="contacto_proyecto_id" />
+            </div>
+
+             <div class="form-group">
+                <label for="contacto_id">Contact Name</label>
+                <select class="form-control" id="contacto_id">
+                <option value="" disabled selected>Select contact</option>
+                    @foreach (var item in ViewBag.contactList) {
+                        <option value="@item.id">@item.nombre_contacto @item.apellidos_contacto</option>
+                    }
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="tipo_contacto_id">Type Contact</label>
+                <select class="form-control" id="tipo_contacto_id">
+                <option value="" disabled selected>Select type</option>
+                    @foreach (var item in ViewBag.typecontactList) {
+                        <option value="@item.id">@item.descripcion_tipo_contacto</option>
+                    }
+                </select>
+            </div>
+                        
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
+            <button type="button" class="btn bg-dark text-white" id="btnAddContact">Save</button>
+          </div>
+        </div>
+    </form>
+  </div>
+</div>
+
+@section Scripts{
+      
+
+    <script>
+
+         function DeleteContactProyecto(cid, pid, tid) {
+             $("#cid").val(cid);
+             $("#pid").val(pid);
+             $("#tid").val(tid);
+             $('#deleteContact').modal('show');
+         }
+
+
+         $(document).ready(function () {
+                        
+             $('#btnAddContact').click(function (event) {
+                
+                var form = $("#formNewContact");
+
+                if (form[0].checkValidity() === false) {
+                    event.preventDefault()
+                    event.stopPropagation()
+                    form.addClass('was-validated');
+                }
+                else {
+
+                    if ($('#contacto_id').val() == "") {
+                        alert('You must select name contact');
+                        $('#contact_id').focus();
+                        return;
+                    }
+
+                    if ($('#tipo_contacto_id').val() == "") {
+                        alert('You must select type contact');
+                        $('#tipo_contacto_id').focus();
+                        return;
+                    }
+
+                }
+
+                let contact = {
+                    "contacto_id": $('#contacto_id').val(),
+                    "proyecto_id": $('#proyecto_id').val(),
+                    "tipo_contacto_id": $('#tipo_contacto_id').val()
+                    
+                };
+
+               var data = JSON.stringify(contact);
+               
+                $.ajax({
+                    type: "POST",
+                    url: '/Management/AddContactProject',
+                    contentType: 'application/json;charset=utf-8',
+                    dataType: 'json',
+                    async: true,
+                    data: data,
+                    success: function (result) {
+                        console.log(result)
+                    }
+                })
+                    .done(function (result) {
+                        if (result.exito) {
+                            $('#addContact').modal('hide');
+                            alert(result.mensaje);
+                            location.reload();
+                        }
+                        else {
+                            alert('Problems add contact, we ask that you try again!');
+                        }
+
+                    })
+                    .fail(function (jqXHR, textStatus, errorThrow) {
+                        var err = "Error: " + textStatus + " " + errorThrow;
+                        console.log(err);
+                    })
+
+            });
+
+             $('#btnDeleteContact').click(function (event) {
+                
+                var form = $("#formDeleteContact");
+
+                if (form[0].checkValidity() === false) {
+                    event.preventDefault()
+                    event.stopPropagation()
+                    form.addClass('was-validated');
+                }
+                else {
+
+                    if ($('#cid').val() == "") {
+                        return;
+                    }
+
+                    if ($('#pid').val() == "") {
+                        return;
+                    }
+
+                }
+
+                let contact = {
+                    "contacto_id": $('#cid').val(),
+                    "proyecto_id": $('#pid').val(),
+                    "tipo_contacto_id": $('#pid').val()
+                    
+                };
+
+               var data = JSON.stringify(contact);
+               
+                $.ajax({
+                    type: "POST",
+                    url: '/Management/DeleteContactProject',
+                    contentType: 'application/json;charset=utf-8',
+                    dataType: 'json',
+                    async: true,
+                    data: data,
+                    success: function (result) {
+                        console.log(result)
+                    }
+                })
+                    .done(function (result) {
+                        if (result.exito) {
+                            $('#deleteContact').modal('hide');
+                            alert(result.mensaje);
+                            location.reload();
+                        }
+                        else {
+                            alert('Problems delete contact, we ask that you try again!');
+                        }
+
+                    })
+                    .fail(function (jqXHR, textStatus, errorThrow) {
+                        var err = "Error: " + textStatus + " " + errorThrow;
+                        console.log(err);
+                    })
+
+
+            });
+
+
+        });
+        
+
+    </script>
+
+}

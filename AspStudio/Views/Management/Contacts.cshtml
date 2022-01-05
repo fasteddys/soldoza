@@ -1,103 +1,76 @@
 ﻿@using Domain.Entities;
-@model SOLDOZA_MST_GRL_CLIENTES
+@model IEnumerable<SOLDOZA_MST_GRL_CONTACTOS>
 @{
-    ViewData["Title"] = "CustomerProjects";
+    ViewData["Title"] = "Projects";
     Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+@section Styles {
+    <link href="~/lib/datatables.net-bs4/css/dataTables.bootstrap4.min.css" rel="stylesheet" />
+    <link href="~/lib/datatables.net-buttons-bs4/css/buttons.bootstrap4.min.css" rel="stylesheet" />
+    <link href="~/lib/datatables.net-responsive-bs4/css/responsive.bootstrap4.min.css" rel="stylesheet" />
+    <link href="~/lib/bootstrap-table/dist/bootstrap-table.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/tom-select@2.0.0/dist/css/tom-select.css" rel="stylesheet">
+    
 }
 
 <ul class="breadcrumb">
     <li class="breadcrumb-item text-warning"><a href="#" class="text-warning">MANAGEMENT</a></li>
-    <li class="breadcrumb-item text-gray-900 active">CUSTOMERS CONTACTS</li>
+    <li class="breadcrumb-item text-gray-900 active">CONTACTS</li>
 </ul>
 
 <h1 class="page-header">
-    List customers contacts <small>page header description goes here...</small>
+    List Contacts <small>page header description goes here...</small>
 </h1>
 
-<!-- BEGIN col-4 -->
-	<div class="col-xl-12 col-lg-12">
-		<!-- BEGIN card -->
-		<div class="card mb-3">
-			<!-- BEGIN card-header -->
-			<div class="card-header d-flex align-items-center">
-				<span class="flex-grow-1 font-weight-600">List contacts</span>
-				<a href="#" class="text-muted text-decoration-none fs-12px" data-bs-toggle="modal" data-bs-target="#newContact"><i class="fa fa-fw fa-plus"></i> New contact</a>
-			</div>
-			<!-- END card-header -->
-			<!-- BEGIN list-group -->
-			<div class="list-group list-group-flush">
-				<!-- BEGIN list-group-item -->
-				<div class="list-group-item d-flex px-3">
-					<div class="flex-fill">
-                        <input type="hidden" id="cliente_id" value=@Model.id />
-						<div class="font-weight-600 text-dark">Code: @Model.cod_cliente</div>
-                        <div class="font-weight-600 text-dark">Customer: @Model.nombre_cliente</div>
-                        <div class="fs-13px text-muted mb-2">Country: @Model.pais</div>
-                        @*<div class="mb-1">
-	                            
-                        @if (ViewBag.projects.Count() >0)
-                        {
-                            <span class="badge bg-danger text-white rounded-sm fs-12px font-weight-500">@ViewBag.projects.Count().ToString() projects</span>
-                        }else
-                        {
-                                <span class="badge bg-danger text-white rounded-sm fs-12px font-weight-500">No found projects</span>
-                        }
+<button type="button" class="btn bg-warning me-2 " data-bs-toggle="modal" data-bs-target="#newContact">New Contact</button>
 
-                        </div>*@
-						@*<hr class="mt-15px mb-15px" />*@
-							
-                            <table class="table table-sm">
-                                <thead class="table-light">
-                                    <tr>
-                                        <th>Code</th>
-                                        <th>Names</th>
-                                        <th>Last Name</th>
-                                        <th>Email</th>
-                                        <th>Phone</th>
-                                        <th></th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                @if (ViewBag.contacts != null)
-                                {
-                                    foreach(var item in ViewBag.contacts){
-                                        <tr>
-                                            <td>@item.cod_contacto</td>
-                                            <td>@item.nombre_contacto</td>
-                                            <td>@item.apellidos_contacto</td>
-                                            <td>@item.email_contacto</td>
-                                            <td>@item.telefono_contacto</td>
-                                            <td><a class="btn btn-outline-warning btn-sm" href="#" role="button" onclick="ModalEditContact(@item.id,'@item.cod_contacto','@item.nombre_contacto','@item.apellidos_contacto','@item.email_contacto','@item.telefono_contacto');">Edit</a>  
-                                               
-                                        </tr>
-                                    }
-                                }
-                                else
-                                {
-                                    <tr>
-                                        <td colspan="6">No records to display</td>
-                                    </tr>
+<div class="card">
+	<div class="card-body">
+        <table id="datatableProject" class="table text-nowrap">
+             <thead>
+                 <tr>
+                     <th>Code</th>
+                     <th>Name</th>
+                     <th>Last Name</th>
+                     <th>Email</th>
+                     <th>Phone</th>
+                     <th>Customer</th>
+                     <th></th>
+                 </tr>
+             </thead>
+             <tbody>
+                @if (Model.Count() > 0)
+                {
+                    foreach(var item in Model){
+                        <tr>
+                            <td>@item.cod_contacto</td>
+                            <td>@item.nombre_contacto</td>
+                            <td>@item.apellidos_contacto</td>
+                            <td>@item.email_contacto</td>
+                            <td>@item.telefono_contacto</td>
+                            <td>@item.cliente.nombre_cliente</td>
+                            <td>
+                                <a class="btn btn-outline-warning btn-sm" href="#" role="button" onclick="ModalEditContact(@item.id,'@item.cod_contacto','@item.nombre_contacto','@item.apellidos_contacto','@item.email_contacto','@item.telefono_contacto');">Edit</a>
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="7">No records to display</td>
+                    </tr>
 
-                                }
-                            </tbody>
-                        </table>
-                    
-                        <a href="@Url.Action("Customers","Management")" class="text-blue text-decoration-none">Return list customers</a>
-			
-					</div>
-				</div>
-				<!-- END list-group-item -->
-			
-
-			</div>
-			<!-- END list-group -->
-		</div>
-		<!-- END card -->
-	</div>
+                }
+         </tbody>
+        </table>
+    </div>
+</div>
 
 
-
-<!-- modal New Contact -->
+<!-- modal New Project -->
 <div class="modal fade" id="newContact">
   <div class="modal-dialog modal-lg">
     <form method="post" id="formNewContact"> 
@@ -107,7 +80,7 @@
             <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
           </div>
           <div class="modal-body">
-
+             
             <div class="form-group">
                 <label for="cod_contacto">Contact Code</label>
                 <input type="text" class="form-control" id="cod_contacto" placeholder="Enter the customer code" autocomplete="off" style="text-transform:uppercase;"/>
@@ -131,7 +104,20 @@
                 <label for="telefono_contacto">Phone</label>
                 <input type="text" class="form-control" id="telefono_contacto" placeholder="Enter the phone" autocomplete="off" style="text-transform:uppercase;"/>
             </div>
-            
+           
+            <div class="form-group">
+                 <label for="cliente_id">Customer</label>
+
+                 <select id="cliente_id" placeholder="Select a customer..." autocomplete="off" style="text-transform:uppercase;">
+			        <option value="">Select a customer...</option>
+                     @foreach (var cust in ViewBag.CustomersList) {
+                            <option value="@cust.id">@cust.nombre_cliente</option>
+                        }
+		        </select>
+
+
+            </div>
+           
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
@@ -141,8 +127,6 @@
     </form>
   </div>
 </div>
-
-
 
 <!-- modal Edit Contact -->
 <div class="modal fade" id="editContact">
@@ -192,9 +176,48 @@
 </div>
 
 
-@section Scripts{     
+@section Scripts{
+
+    <script src="~/lib/highlight.js/highlight.min.js"></script>
+    <script src="~/js/demo/highlightjs.demo.js"></script>
+    <script src="~/lib/datatables.net/js/jquery.dataTables.min.js"></script>
+    <script src="~/lib/datatables.net-bs4/js/dataTables.bootstrap4.min.js"></script>
+    <script src="~/lib/datatables.net-buttons/js/dataTables.buttons.min.js"></script>
+
+    @*<script src="https://cdn.datatables.net/buttons/2.1.0/js/dataTables.buttons.min.js"></script>*@
+
+    <script src="~/lib/datatables.net-buttons/js/buttons.colVis.min.js"></script>
+    <script src="~/lib/datatables.net-buttons/js/buttons.flash.min.js"></script>
+    <script src="~/lib/datatables.net-buttons/js/buttons.html5.min.js"></script>
+    <script src="~/lib/datatables.net-buttons/js/buttons.print.min.js"></script>
+    <script src="~/lib/datatables.net-buttons/js/jszip.min.js"></script>
+    <script src="~/lib/datatables.net-buttons/js/pdfmake.min.js"></script>
+    <script src="~/lib/datatables.net-buttons/js/vfs_fonts.js"></script>
+    <script src="~/lib/datatables.net-buttons-bs4/js/buttons.bootstrap4.min.js"></script>
+
+    <script src="~/lib/datatables.net-responsive/js/dataTables.responsive.min.js"></script>
+    <script src="~/lib/datatables.net-responsive-bs4/js/responsive.bootstrap4.min.js"></script>
+    <script src="~/lib/bootstrap-table/dist/bootstrap-table.min.js"></script>
+    <script src="~/js/demo/table-plugins.demo.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/tom-select@2.0.0/dist/js/tom-select.complete.min.js"></script>
+
 
     <script>
+
+        ///// DATATABLE /////////////
+
+          $('#datatableProject').DataTable({
+            //dom: "<'row mb-3'<'col-sm-4'l><'col-sm-12 text-end'<'d-flex justify-content-end'fB>>>t<'d-flex align-items-center'<'me-auto'i><'mb-0'p>>",
+            lengthMenu: [ 10, 20, 30, 40, 50 ],
+            responsive: true,
+            buttons: [ 
+              { extend: 'print', className: 'btn btn-default' },
+              { extend: 'pdfHtml5', className: 'btn btn-default' },
+              { extend: 'excelHtml5', className: 'btn btn-default' }
+            ]
+          });
+         
+         ///// FUNCIONES  ///////
 
          function ModalEditContact(xid, xcod, xnombre, xapellidos, xemail, xtelefono) {
             $("#IdContact").val(xid);
@@ -206,10 +229,19 @@
             $('#editContact').modal('show');
         }
 
+
         $(document).ready(function () {
 
+            new TomSelect("#cliente_id",{
+	        create: false,
+	        sortField: {
+		        field: "text",
+		        direction: "asc"
+	        }
+            });
+
            
-            $('#btnGrabarContact').click(function (event) {
+              $('#btnGrabarContact').click(function (event) {
 
                 var form = $("#formNewContact");
 
@@ -235,6 +267,12 @@
                     if ($('#apellidos_contacto').val() == "") {
                         alert('You must enter the contact last name');
                         $('#apellidos_contacto').focus();
+                        return;
+                    }
+
+                     if ($('#cliente_id').val() == "") {
+                        alert('You must select the customer');
+                        $('#cliente_id').focus();
                         return;
                     }
 
@@ -281,8 +319,7 @@
             });
 
 
-
-            $('#btnEditContact').click(function (event) {
+             $('#btnEditContact').click(function (event) {
 
                 var form = $("#formEditContact");
 
@@ -356,10 +393,10 @@
 
 
 
-
         });
+        
         
 
     </script>
-
 }
+

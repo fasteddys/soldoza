@@ -36,6 +36,11 @@
           "controller": "Management",
           "action": "Contacts",
           "text": "Contacts"
+        },
+        {
+          "controller": "Management",
+          "action": "Materials",
+          "text": "Materials"
         }
       ]
     }

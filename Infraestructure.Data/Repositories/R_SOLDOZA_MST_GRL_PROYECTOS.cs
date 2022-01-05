@@ -25,7 +25,17 @@ namespace Infraestructure.Data.Repositories
             var projects = _context.proyectos.Include(p => p.versiones)
                                              .Include(p=>p.contactos).ThenInclude(cs=>cs.contacto)
                                              .Include(p => p.contactos).ThenInclude(cs => cs.tipocontacto)
-                                             .Where(p=>p.cliente_id==id); ;
+                                             .Where(p=>p.cliente_id==id);
+            return Task.FromResult(projects.AsEnumerable<SOLDOZA_MST_GRL_PROYECTOS>());
+        }
+
+        public Task<IEnumerable<SOLDOZA_MST_GRL_PROYECTOS>> GetProject(int id)
+        {
+            var projects = _context.proyectos.Include(p=>p.clientes)
+                                             .Include(p => p.versiones)
+                                             .Include(p => p.contactos).ThenInclude(cs => cs.contacto)
+                                             .Include(p => p.contactos).ThenInclude(cs => cs.tipocontacto)
+                                             .Where(p => p.id == id);
             return Task.FromResult(projects.AsEnumerable<SOLDOZA_MST_GRL_PROYECTOS>());
         }
 

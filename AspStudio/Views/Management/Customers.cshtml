@@ -191,13 +191,6 @@
             
             <div class="form-group">
                  <label for="E_pais">Country</label>
-                 @*<input class="form-control" list="EListapais" id="E_pais" placeholder="Search country" style="text-transform:uppercase;">
-                 <datalist id="EListapais">
-                       @foreach (var item in ViewBag.CountriesList) {
-                            <option value="@item.nombre_pais"></option>
-                        }
-                 </datalist>*@
-
                  <select id="E_pais" placeholder="Select a country..." autocomplete="off" style="text-transform:uppercase;">
 			        <option value="">Select a country...</option>
                      @foreach (var item in ViewBag.CountriesList) {
@@ -268,7 +261,6 @@
             responsive: true,
             buttons: [ 
               { extend: 'print', className: 'btn btn-default' },
-              //{ extend: 'csv', className: 'btn btn-default' },
               { extend: 'pdfHtml5', className: 'btn btn-default' },
               { extend: 'excelHtml5', className: 'btn btn-default' }
             ]
@@ -289,7 +281,6 @@
 
             $('#E_pais option').each(function() {
                 if($(this).val() == xpais) {
-                    alert($(this).val());
                     $(this).prop("selected", "selected");
                 }
             });
@@ -409,7 +400,6 @@
 
 
             $('#btnEditar').click(function (event) {
-                alert($("#E_pais").val());
                 var form = $("#formEditCustomer")
 
                 if (form[0].checkValidity() === false) {
@@ -496,9 +486,6 @@
         });
         
         
-
-         
-
 
     </script>
 }

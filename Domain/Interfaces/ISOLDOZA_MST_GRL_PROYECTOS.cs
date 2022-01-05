@@ -14,6 +14,8 @@ namespace Domain.Interfaces
         Task<IEnumerable<SOLDOZA_MST_GRL_PROYECTOS>> GetProjects(int id);
         Task<IEnumerable<SOLDOZA_MST_GRL_PROYECTOS>> GetAll();
 
+        Task<IEnumerable<SOLDOZA_MST_GRL_PROYECTOS>> GetProject(int id);
+
         bool InsertVersion(SOLDOZA_MST_GRL_PROYECTOVERSION version);
         bool UpdateVersion(SOLDOZA_MST_GRL_PROYECTOVERSION version);
 

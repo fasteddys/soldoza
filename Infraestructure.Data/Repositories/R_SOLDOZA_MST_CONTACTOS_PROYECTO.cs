@@ -28,7 +28,7 @@ namespace Infraestructure.Data.Repositories
                 using (var cn = new NpgsqlConnection(_context.Database.GetDbConnection().ConnectionString))
                 {
                     cn.Open();
-                    sql = @"call sp_contactos_proyecto_delete(:p_contacto_id, :p_contrato_id)";
+                    sql = @"call sp_contacto_proyecto_delete(:p_contacto_id, :p_proyecto_id)";
                     NpgsqlCommand cmd = new NpgsqlCommand(sql, cn);
                     cmd.Parameters.AddWithValue("p_contacto_id", DbType.Int32).Value = contact.contacto_id;
                     cmd.Parameters.AddWithValue("p_proyecto_id", DbType.Int32).Value = contact.proyecto_id;

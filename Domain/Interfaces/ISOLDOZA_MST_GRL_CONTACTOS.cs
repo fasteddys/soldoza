@@ -11,6 +11,7 @@ namespace Domain.Interfaces
         bool Insert(SOLDOZA_MST_GRL_CONTACTOS contact);
         bool Update(SOLDOZA_MST_GRL_CONTACTOS contact);
         Task<IEnumerable<SOLDOZA_MST_GRL_CONTACTOS>> GetAll(int id);
-        
+        Task<IEnumerable<SOLDOZA_MST_GRL_CONTACTOS>> GetAll();
+
     }
 }

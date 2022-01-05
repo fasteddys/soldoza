@@ -45,7 +45,6 @@ namespace AspStudio.Controllers
             _contactosproyecto = contactosproyecto;
         }
 
-
         public IActionResult Index()
         {
             return View();
@@ -61,6 +60,24 @@ namespace AspStudio.Controllers
             ViewBag.countriesList = countries;
             ViewBag.typeDocumentsList = typesDocuments;
             return View(customers);
+        }
+
+        public async Task<IActionResult> Projects()
+        {
+            var projects = await _proyectos.GetAll();
+            var customers = await _clientes.GetAll();
+
+            ViewBag.customersList = customers;
+            return View(projects);
+        }
+
+        public async Task<IActionResult> Contacts()
+        {
+            var contacts = await _contactos.GetAll();
+            var customers = await _clientes.GetAll();
+
+            ViewBag.customersList = customers;
+            return View(contacts);
         }
 
         [HttpPost]
@@ -169,6 +186,24 @@ namespace AspStudio.Controllers
             return View(customer);
         }
 
+        public async Task<IActionResult> ProjectContacts(int id)
+        {
+            var projects = await _proyectos.GetProject(id);
+            SOLDOZA_MST_GRL_PROYECTOS project = projects.FirstOrDefault();
+
+            if (project == null)
+            {
+                return NotFound();
+            }
+
+            var typecontact = await _tipocontacto.GetAll();
+            var contacts = await _contactos.GetAll(project.cliente_id);
+
+            ViewBag.typecontactList = typecontact;
+            ViewBag.contactList = contacts;
+
+            return View(project);
+        }
 
         [HttpPost]
         public IActionResult AddProject([FromBody] SOLDOZA_MST_GRL_PROYECTOS project)
@@ -283,7 +318,8 @@ namespace AspStudio.Controllers
                 return Json(new { exito = false, mensaje = "Error" });
             }
         }
-
+        
+        [HttpPost]
         public IActionResult AddContactProject([FromBody] SOLDOZA_MST_CONTACTOS_PROYECTO contact)
         {
             if (contact == null)
@@ -304,6 +340,33 @@ namespace AspStudio.Controllers
             if (result)
             {
                 return Json(new { exito = true, mensaje = "Successfully added contact" });
+            }
+            else
+            {
+                return Json(new { exito = false, mensaje = "Error" });
+            }
+        }
+        
+        [HttpPost]
+        public IActionResult DeleteContactProject([FromBody] SOLDOZA_MST_CONTACTOS_PROYECTO contact)
+        {
+            if (contact == null)
+            {
+                return View("Customers");
+            }
+
+            SOLDOZA_MST_CONTACTOS_PROYECTO cont = new SOLDOZA_MST_CONTACTOS_PROYECTO()
+            {
+                contacto_id = contact.contacto_id,
+                proyecto_id = contact.proyecto_id,
+                tipo_contacto_id = contact.tipo_contacto_id
+            };
+
+
+            bool result = _contactosproyecto.Delete(cont);
+            if (result)
+            {
+                return Json(new { exito = true, mensaje = "Successfully delete contact" });
             }
             else
             {

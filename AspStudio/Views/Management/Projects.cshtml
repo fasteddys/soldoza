@@ -1,0 +1,260 @@
+﻿@using Domain.Entities;
+@model IEnumerable<SOLDOZA_MST_GRL_PROYECTOS>
+@{
+    ViewData["Title"] = "Projects";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+@section Styles {
+    <link href="~/lib/datatables.net-bs4/css/dataTables.bootstrap4.min.css" rel="stylesheet" />
+    <link href="~/lib/datatables.net-buttons-bs4/css/buttons.bootstrap4.min.css" rel="stylesheet" />
+    <link href="~/lib/datatables.net-responsive-bs4/css/responsive.bootstrap4.min.css" rel="stylesheet" />
+    <link href="~/lib/bootstrap-table/dist/bootstrap-table.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/tom-select@2.0.0/dist/css/tom-select.css" rel="stylesheet">
+    
+}
+
+<ul class="breadcrumb">
+    <li class="breadcrumb-item text-warning"><a href="#" class="text-warning">MANAGEMENT</a></li>
+    <li class="breadcrumb-item text-gray-900 active">PROJECTS</li>
+</ul>
+
+<h1 class="page-header">
+    List Projects <small>page header description goes here...</small>
+</h1>
+
+<button type="button" class="btn bg-warning me-2 " data-bs-toggle="modal" data-bs-target="#newProject">New Project</button>
+
+<div class="card">
+	<div class="card-body">
+        <table id="datatableProject" class="table text-nowrap">
+             <thead>
+                 <tr>
+                     <th>Code</th>
+                     <th>Descripcion Project</th>
+                     <th>Customer</th>
+@*                     <th>Versions</th>*@
+                     <th></th>
+                 </tr>
+             </thead>
+             <tbody>
+                @if (Model.Count() > 0)
+                {
+                    foreach(var item in Model){
+                        <tr>
+                            <td>@item.cod_proyecto</td>
+                            <td>@item.descripcion_proyecto</td>
+                            <td>@item.clientes.nombre_cliente</td>
+                            @*<td>
+                                 <table class="table table-sm">
+                                    <tbody>
+                                        @foreach(var ver in item.versiones)
+                                            {
+                                                <tr>
+                                                    <td>@ver.cod_version</td>
+                                                    <td>@ver.fechainicio.ToString().Substring(0,10)</td>
+                                                </tr>
+                                            }
+                                                          
+                                    </tbody>
+                                </table>
+                            </td>*@
+                            <td>
+                                <a class="btn btn-outline-warning btn-sm" href="#" role="button">Details</a>
+                                <a class="btn btn-outline-warning btn-sm" href="#" role="button">Add Version</a> 
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="5">No records to display</td>
+                    </tr>
+
+                }
+         </tbody>
+        </table>
+    </div>
+</div>
+
+
+<!-- modal New Project -->
+<div class="modal fade" id="newProject">
+  <div class="modal-dialog modal-lg">
+    <form method="post" id="formNewProject"> 
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">New Project</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body">
+             
+            <div class="form-group">
+                <label for="cod_proyecto">Code</label>
+                <input type="text" class="form-control" id="cod_proyecto" placeholder="Enter the project code" autocomplete="off" style="text-transform:uppercase;"/>
+            </div>
+            <div class="form-group">
+                <label for="descripcion_proyecto">Description Project</label>
+                <input type="text" class="form-control" id="descripcion_proyecto" placeholder="Enter the project name" autocomplete="off" style="text-transform:uppercase;"/>
+            </div>
+           
+            <div class="form-group">
+                 <label for="cliente_id">Customer</label>
+
+                 <select id="cliente_id" placeholder="Select a customer..." autocomplete="off" style="text-transform:uppercase;">
+			        <option value="">Select a customer...</option>
+                     @foreach (var cust in ViewBag.CustomersList) {
+                            <option value="@cust.id">@cust.nombre_cliente</option>
+                        }
+		        </select>
+
+
+            </div>
+           
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
+            <button type="button" class="btn bg-dark text-white" id="btnAddProject">Save</button>
+          </div>
+        </div>
+    </form>
+  </div>
+</div>
+
+
+
+
+@section Scripts{
+
+    <script src="~/lib/highlight.js/highlight.min.js"></script>
+    <script src="~/js/demo/highlightjs.demo.js"></script>
+    <script src="~/lib/datatables.net/js/jquery.dataTables.min.js"></script>
+    <script src="~/lib/datatables.net-bs4/js/dataTables.bootstrap4.min.js"></script>
+    <script src="~/lib/datatables.net-buttons/js/dataTables.buttons.min.js"></script>
+
+    @*<script src="https://cdn.datatables.net/buttons/2.1.0/js/dataTables.buttons.min.js"></script>*@
+
+    <script src="~/lib/datatables.net-buttons/js/buttons.colVis.min.js"></script>
+    <script src="~/lib/datatables.net-buttons/js/buttons.flash.min.js"></script>
+    <script src="~/lib/datatables.net-buttons/js/buttons.html5.min.js"></script>
+    <script src="~/lib/datatables.net-buttons/js/buttons.print.min.js"></script>
+    <script src="~/lib/datatables.net-buttons/js/jszip.min.js"></script>
+    <script src="~/lib/datatables.net-buttons/js/pdfmake.min.js"></script>
+    <script src="~/lib/datatables.net-buttons/js/vfs_fonts.js"></script>
+    <script src="~/lib/datatables.net-buttons-bs4/js/buttons.bootstrap4.min.js"></script>
+
+    <script src="~/lib/datatables.net-responsive/js/dataTables.responsive.min.js"></script>
+    <script src="~/lib/datatables.net-responsive-bs4/js/responsive.bootstrap4.min.js"></script>
+    <script src="~/lib/bootstrap-table/dist/bootstrap-table.min.js"></script>
+    <script src="~/js/demo/table-plugins.demo.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/tom-select@2.0.0/dist/js/tom-select.complete.min.js"></script>
+
+
+    <script>
+
+        ///// DATATABLE /////////////
+
+          $('#datatableProject').DataTable({
+            //dom: "<'row mb-3'<'col-sm-4'l><'col-sm-12 text-end'<'d-flex justify-content-end'fB>>>t<'d-flex align-items-center'<'me-auto'i><'mb-0'p>>",
+            lengthMenu: [ 10, 20, 30, 40, 50 ],
+            responsive: true,
+            buttons: [ 
+              { extend: 'print', className: 'btn btn-default' },
+              { extend: 'pdfHtml5', className: 'btn btn-default' },
+              { extend: 'excelHtml5', className: 'btn btn-default' }
+            ]
+          });
+         
+         ///// FUNCIONES  ///////
+
+
+        $(document).ready(function () {
+
+            new TomSelect("#cliente_id",{
+	        create: false,
+	        sortField: {
+		        field: "text",
+		        direction: "asc"
+	        }
+            });
+
+           
+
+            $('#btnAddProject').click(function (event) {
+
+                 var form = $("#formNewProject");
+
+                if (form[0].checkValidity() === false) {
+                    event.preventDefault()
+                    event.stopPropagation()
+                    form.addClass('was-validated');
+                }
+                else {
+
+                    if ($('#cod_proyecto').val() == "") {
+                        alert("You must enter the code project");
+                        $('#cod_proyecto').focus();
+                        return;
+                    }
+
+                    if ($('#descripcion_proyecto').val() == "") {
+                        alert('You must enter the descripcion project');
+                        $('#descripcion_proyecto').focus();
+                        return;
+                    }
+
+                    if ($('#cliente_id').val() == "") {
+                        alert('You must select the customer');
+                        $('#cliente_id').focus();
+                        return;
+                    }
+
+                }
+
+                let project = {
+                    "cod_proyecto": $('#cod_proyecto').val(),
+                    "descripcion_proyecto": $('#descripcion_proyecto').val(),
+                    "cliente_id": $('#cliente_id').val()
+                };
+
+               var data = JSON.stringify(project);
+               
+                $.ajax({
+                    type: "POST",
+                    url: '/Management/AddProject',
+                    contentType: 'application/json;charset=utf-8',
+                    dataType: 'json',
+                    async: true,
+                    data: data,
+                    success: function (result) {
+                        console.log(result)
+                    }
+                })
+                    .done(function (result) {
+                        if (result.exito) {
+                            alert(result.mensaje);
+                            $('#newProject').modal('hide');
+                            location.reload();
+                        }
+                        else {
+                            alert('Problems creating a new project, we ask that you try again!');
+                        }
+
+                    })
+                    .fail(function (jqXHR, textStatus, errorThrow) {
+                        var err = "Error: " + textStatus + " " + errorThrow;
+                        console.log(err);
+                    })
+
+            });
+
+
+        });
+        
+        
+
+    </script>
+}
+

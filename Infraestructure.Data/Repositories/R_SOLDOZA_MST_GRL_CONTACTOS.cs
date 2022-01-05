@@ -82,5 +82,11 @@ namespace Infraestructure.Data.Repositories
             return Task.FromResult(contacts.AsEnumerable<SOLDOZA_MST_GRL_CONTACTOS>());
         }
 
+        public Task<IEnumerable<SOLDOZA_MST_GRL_CONTACTOS>> GetAll()
+        {
+            var contacts = _context.contactos.Include(c=>c.cliente);
+            return Task.FromResult(contacts.AsEnumerable<SOLDOZA_MST_GRL_CONTACTOS>());
+        }
+
     }
 }
