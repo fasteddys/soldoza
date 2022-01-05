@@ -7,7 +7,7 @@ namespace Infraestructure.Data.Model
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-               => optionsBuilder.UseNpgsql("Server=localhost;Port=5432;Database=dbsoldoza; User Id=postgres; Password=admin;");
+               => optionsBuilder.UseNpgsql("Server=dbsoldoza.postgres.database.azure.com;Database=postgres;Port=5432;User Id=adminsoldoza@dbsoldoza;Password=...Soldoza2021;Ssl Mode=Require;");
         public DbSet<SOLDOZA_MST_TIPO_DOCUMENTO> tipodocumento { get; set; }
         public DbSet<SOLDOZA_MST_PAIS> paises { get; set; }
         public DbSet<SOLDOZA_MST_GRL_CLIENTES> clientes { get; set; }
