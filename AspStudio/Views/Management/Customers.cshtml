@@ -1,0 +1,505 @@
+﻿@using Domain.Entities;
+@model IEnumerable<SOLDOZA_MST_GRL_CLIENTES>
+@{
+    ViewData["Title"] = "Customers";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section Styles {
+    <link href="~/lib/datatables.net-bs4/css/dataTables.bootstrap4.min.css" rel="stylesheet" />
+    <link href="~/lib/datatables.net-buttons-bs4/css/buttons.bootstrap4.min.css" rel="stylesheet" />
+    <link href="~/lib/datatables.net-responsive-bs4/css/responsive.bootstrap4.min.css" rel="stylesheet" />
+    <link href="~/lib/bootstrap-table/dist/bootstrap-table.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/tom-select@2.0.0/dist/css/tom-select.css" rel="stylesheet">
+    
+}
+
+<ul class="breadcrumb">
+    <li class="breadcrumb-item text-warning"><a href="#" class="text-warning">MANAGEMENT</a></li>
+    <li class="breadcrumb-item text-gray-900 active">CUSTOMERS</li>
+</ul>
+
+<h1 class="page-header">
+    List Customers <small>page header description goes here...</small>
+</h1>
+
+<button type="button" class="btn bg-warning me-2 " data-bs-toggle="modal" data-bs-target="#newCustomer">New Customer</button>
+
+<div class="card">
+	<div class="card-body">
+<table id="datatableCustomer" class="table text-nowrap w-100">
+     <thead>
+         <tr>
+             <th>Code</th>
+             <th>Customer Name</th>
+             <th>Type</th>
+             <th>Number Document</th>
+             <th>Country</th>
+             <th>Phone</th>
+             <th>Email</th>
+             <th></th>
+         </tr>
+     </thead>
+     <tbody>
+        @if (Model.Count() > 0)
+        {
+            foreach(var item in Model){
+                <tr>
+                    <td>@item.cod_cliente</td>
+                    <td>@item.nombre_cliente</td>
+                    <td>@item.tipodocumento.abrev_tipo_documento</td>
+                    <td>@item.nrodoc_cliente</td>
+                    <td>@item.pais</td>
+                    <td>@item.telefono</td>
+                    <td>@item.email</td>
+                    <td>
+                        <a class="btn btn-outline-warning btn-sm" href="@Url.Action("CustomerProjects","Management", new {id=@item.id})" role="button">Details</a> 
+                        <a class="btn btn-outline-warning btn-sm" href="#" role="button" onclick="ModalEditCustomer(@item.id,'@item.cod_cliente',@item.tipo_documento_id,'@item.nrodoc_cliente','@item.nombre_cliente','@item.direccion_cliente','@item.pais','@item.ciudad','@item.telefono','@item.email');">Edit</a>  
+                        <a class="btn btn-outline-warning btn-sm" href="@Url.Action("CustomerProjects","Management", new {id=@item.id})" role="button">Projects</a> 
+                        <a class="btn btn-outline-warning btn-sm" href="@Url.Action("CustomerContacts","Management", new{id=@item.id})" role="button">Contacts</a>
+                    </td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="6">No records to display</td>
+            </tr>
+
+        }
+    </tbody>
+</table>
+    </div>
+</div>
+
+
+<!-- modal New Customer -->
+<div class="modal fade" id="newCustomer">
+  <div class="modal-dialog modal-lg">
+    <form method="post" id="formNewCustomer"> 
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">New Customer</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body">
+            <div class="form-group">
+                <label for="cod_cliente">Customer Code</label>
+                <input type="text" class="form-control" id="cod_cliente" placeholder="Enter the customer code" autocomplete="off" style="text-transform:uppercase;"/>
+            </div>
+            <div class="form-group">
+                <label for="nombre_cliente">Customer Name</label>
+                <input type="text" class="form-control" id="nombre_cliente" placeholder="Enter the customer name" autocomplete="off" style="text-transform:uppercase;"/>
+            </div>
+            <div class="form-group">
+                <label for="tipo_documento_ID">Document Type</label>
+                <select class="form-control" id="tipo_documento_ID">
+                <option value="" disabled selected>Select type</option>
+                    @foreach (var item in ViewBag.typeDocumentsList) {
+                        <option value="@item.id">@item.abrev_tipo_documento</option>
+                    }
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="nrodoc_cliente">Number Document</label>
+                <input type="text" class="form-control" id="nrodoc_cliente" placeholder="Enter the number document" autocomplete="off" style="text-transform:uppercase;"/>
+            </div>
+            <div class="form-group">
+                <label for="direccion_cliente">Address</label>
+                <input type="text" class="form-control" id="direccion_cliente" placeholder="Enter the address" autocomplete="off" style="text-transform:uppercase;"/>
+            </div>
+            <div class="form-group">
+                 <label for="pais">Country</label>
+                @* <input class="form-control" list="Listapais" id="pais" placeholder="Search country" style="text-transform:uppercase;">
+                 <datalist id="Listapais">
+                       @foreach (var item in ViewBag.CountriesList) {
+                            <option value="@item.nombre_pais"></option>
+                        }
+                 </datalist>*@
+
+
+                 <select id="pais" placeholder="Select a country..." autocomplete="off" style="text-transform:uppercase;">
+			        <option value="">Select a country...</option>
+                     @foreach (var item in ViewBag.CountriesList) {
+                            <option value="@item.nombre_pais">@item.nombre_pais</option>
+                        }
+		        </select>
+
+
+            </div>
+            <div class="form-group">
+                <label for="city">City</label>
+                <input type="text" class="form-control" id="ciudad" placeholder="Enter the city" autocomplete="off" style="text-transform:uppercase;"/>
+            </div>
+             
+            <div class="form-group">
+                <label for="telefono">Phone</label>
+                <input type="text" class="form-control" id="telefono" placeholder="Enter the phone" autocomplete="off" style="text-transform:uppercase;"/>
+            </div>
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="text" class="form-control" id="email" placeholder="Enter the email" autocomplete="off"/>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
+            <button type="button" class="btn bg-dark text-white" id="btnGrabar">Save</button>
+          </div>
+        </div>
+    </form>
+  </div>
+</div>
+
+
+<!-- modal Edit Customer -->
+<div class="modal fade" id="editCustomer">
+  <div class="modal-dialog modal-lg">
+    <form method="post" id="formEditCustomer"> 
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Edit Customer</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body">
+              <input type="hidden" id="IdCustomer" />
+            <div class="form-group">
+                <label for="E_cod_cliente">Customer Code</label>
+                <input type="text" class="form-control" id="E_cod_cliente" placeholder="Enter the customer code" autocomplete="off" style="text-transform:uppercase;"/>
+            </div>
+             <div class="form-group">
+                <label for="E_tipo_documento_ID">Document Type</label>
+                <select class="form-control" id="E_tipo_documento_ID">
+                <option value="" disabled selected>Select type</option>
+                    @foreach (var item in ViewBag.typeDocumentsList) {
+                        <option value="@item.id">@item.abrev_tipo_documento</option>
+                    }
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="E_nrodoc_cliente">Number Document</label>
+                <input type="text" class="form-control" id="E_nrodoc_cliente" placeholder="Enter the number document" autocomplete="off" style="text-transform:uppercase;"/>
+            </div>
+            <div class="form-group">
+                <label for="E_nombre_cliente">Customer Name</label>
+                <input type="text" class="form-control" id="E_nombre_cliente" placeholder="Enter the customer name" autocomplete="off" style="text-transform:uppercase;"/>
+            </div>
+            <div class="form-group">
+                <label for="E_direccion_cliente">Address</label>
+                <input type="text" class="form-control" id="E_direccion_cliente" placeholder="Enter the address" autocomplete="off" style="text-transform:uppercase;"/>
+            </div>
+            
+            <div class="form-group">
+                 <label for="E_pais">Country</label>
+                 @*<input class="form-control" list="EListapais" id="E_pais" placeholder="Search country" style="text-transform:uppercase;">
+                 <datalist id="EListapais">
+                       @foreach (var item in ViewBag.CountriesList) {
+                            <option value="@item.nombre_pais"></option>
+                        }
+                 </datalist>*@
+
+                 <select id="E_pais" placeholder="Select a country..." autocomplete="off" style="text-transform:uppercase;">
+			        <option value="">Select a country...</option>
+                     @foreach (var item in ViewBag.CountriesList) {
+                            <option value="@item.nombre_pais">@item.nombre_pais</option>
+                        }
+		        </select>
+
+            </div>
+
+            <div class="form-group">
+                <label for="E_ciudad">City</label>
+                <input type="text" class="form-control" id="E_ciudad" placeholder="Enter the country" autocomplete="off" style="text-transform:uppercase;"/>
+            </div>
+
+            <div class="form-group">
+                <label for="E_telefono">Phone</label>
+                <input type="text" class="form-control" id="E_telefono" placeholder="Enter the phone" autocomplete="off" style="text-transform:uppercase;"/>
+            </div>
+            <div class="form-group">
+                <label for="E_email">Email</label>
+                <input type="text" class="form-control" id="E_email" placeholder="Enter the email" autocomplete="off"/>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
+            <button type="button" class="btn bg-dark text-white" id="btnEditar">Save</button>
+          </div>
+        </div>
+    </form>
+  </div>
+</div>
+
+@section Scripts{
+
+    <script src="~/lib/highlight.js/highlight.min.js"></script>
+    <script src="~/js/demo/highlightjs.demo.js"></script>
+    <script src="~/lib/datatables.net/js/jquery.dataTables.min.js"></script>
+    <script src="~/lib/datatables.net-bs4/js/dataTables.bootstrap4.min.js"></script>
+    <script src="~/lib/datatables.net-buttons/js/dataTables.buttons.min.js"></script>
+
+    @*<script src="https://cdn.datatables.net/buttons/2.1.0/js/dataTables.buttons.min.js"></script>*@
+
+    <script src="~/lib/datatables.net-buttons/js/buttons.colVis.min.js"></script>
+    <script src="~/lib/datatables.net-buttons/js/buttons.flash.min.js"></script>
+    <script src="~/lib/datatables.net-buttons/js/buttons.html5.min.js"></script>
+    <script src="~/lib/datatables.net-buttons/js/buttons.print.min.js"></script>
+    <script src="~/lib/datatables.net-buttons/js/jszip.min.js"></script>
+    <script src="~/lib/datatables.net-buttons/js/pdfmake.min.js"></script>
+    <script src="~/lib/datatables.net-buttons/js/vfs_fonts.js"></script>
+    <script src="~/lib/datatables.net-buttons-bs4/js/buttons.bootstrap4.min.js"></script>
+
+    <script src="~/lib/datatables.net-responsive/js/dataTables.responsive.min.js"></script>
+    <script src="~/lib/datatables.net-responsive-bs4/js/responsive.bootstrap4.min.js"></script>
+    <script src="~/lib/bootstrap-table/dist/bootstrap-table.min.js"></script>
+    <script src="~/js/demo/table-plugins.demo.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/tom-select@2.0.0/dist/js/tom-select.complete.min.js"></script>
+@*    <script src="~/js/demo/sidebar-scrollspy.demo.js"></script>*@
+
+
+
+    <script>
+
+        ///// DATATABLE /////////////
+
+          $('#datatableCustomer').DataTable({
+            dom: "<'row mb-3'<'col-sm-4'l><'col-sm-12 text-end'<'d-flex justify-content-end'fB>>>t<'d-flex align-items-center'<'me-auto'i><'mb-0'p>>",
+            lengthMenu: [ 10, 20, 30, 40, 50 ],
+            responsive: true,
+            buttons: [ 
+              { extend: 'print', className: 'btn btn-default' },
+              //{ extend: 'csv', className: 'btn btn-default' },
+              { extend: 'pdfHtml5', className: 'btn btn-default' },
+              { extend: 'excelHtml5', className: 'btn btn-default' }
+            ]
+          });
+         
+         ///// FUNCIONES  ///////
+
+        function ModalEditCustomer(xid, xcod, xtdID, xnrodoc, xnombre, xdireccion, xpais, xciudad, xtelefono, xemail) {
+            $("#IdCustomer").val(xid);
+            $("#E_cod_cliente").val(xcod);
+            $("#E_tipo_documento_ID").val(xtdID);
+            $("#E_nrodoc_cliente").val(xnrodoc);
+            $("#E_nombre_cliente").val(xnombre);
+            $("#E_direccion_cliente").val(xdireccion);
+            //$("#E_pais select").val(xpais);
+            //$('#E_pais option[value="' + xpais + '"]').attr("selected", true);
+            //$("#E_pais").val(xpais).change();
+
+            $('#E_pais option').each(function() {
+                if($(this).val() == xpais) {
+                    alert($(this).val());
+                    $(this).prop("selected", "selected");
+                }
+            });
+
+            $("#E_ciudad").val(xciudad);
+            $("#E_telefono").val(xtelefono);
+            $("#E_email").val(xemail);
+            $('#editCustomer').modal('show');
+        }
+
+        $(document).ready(function () {
+
+            new TomSelect("#pais",{
+	        create: false,
+	        sortField: {
+		        field: "text",
+		        direction: "asc"
+	        }
+            });
+
+            new TomSelect("#E_pais",{
+	        create: false,
+	        sortField: {
+		        field: "text",
+		        direction: "asc"
+	        }
+            });
+
+            $('#editCustomer').on('shown.bs.modal', function () {
+                $('#E_cod_cliente').focus();
+            });
+
+            $('#btnGrabar').click(function (event) {
+
+                var form = $("#formNewCustomer")
+
+                if (form[0].checkValidity() === false) {
+                    event.preventDefault()
+                    event.stopPropagation()
+                    form.addClass('was-validated');
+                }
+                else {
+
+                    if ($('#cod_cliente').val() == "") {
+                        alert("You must enter the code customer's");
+                        $('#cod_cliente').focus();
+                        return;
+                    }
+
+                    if ($('#tipo_documento_ID').val() == "") {
+                        alert('You must select the document type');
+                        return;
+                    }
+
+                    if ($('#nrodoc_cliente').val() == "") {
+                        alert('You must enter the number document');
+                        $('#nrodoc_cliente').focus();
+                        return;
+                    }
+
+                    if ($('#nombre_cliente').val() == "") {
+                        alert('You must enter the name customer');
+                        $('#nombre_cliente').focus();
+                        return;
+                    }
+
+                    if ($('#pais').val() == "") {
+                        alert('You must select the country');
+                        return;
+                    }
+
+                }
+
+                let customer = {
+                    "cod_cliente": $('#cod_cliente').val(),
+                    "nombre_cliente": $('#nombre_cliente').val(),
+                    "direccion_cliente": $('#direccion_cliente').val(),
+                    "tipo_documento_ID": $('#tipo_documento_ID').val(),
+                    "nrodoc_cliente": $('#nrodoc_cliente').val(),
+                    "pais": $('#pais').val(),
+                    "ciudad": $('#ciudad').val(),
+                    "telefono": $('#telefono').val(),
+                    "email": $('#email').val()
+                };
+
+                var data = JSON.stringify(customer);
+
+                $.ajax({
+                    type: "POST",
+                    url: '/Management/AddCustomer',
+                    contentType: 'application/json;charset=utf-8',
+                    dataType: 'json',
+                    async: true,
+                    data: data,
+                    success: function (result) {
+                        console.log(result)
+                    }
+                })
+                    .done(function (result) {
+                        if (result.exito) {
+                            $('#ModalNewCustomer').modal('hide');
+                            location.reload();
+                        }
+                        else {
+                            alert('Problems creating a new customer, we ask that you try again!');
+                        }
+
+                    })
+                    .fail(function (jqXHR, textStatus, errorThrow) {
+                        var err = "Error: " + textStatus + " " + errorThrow;
+                        console.log(err);
+                    })
+
+
+            });
+
+
+
+            $('#btnEditar').click(function (event) {
+                alert($("#E_pais").val());
+                var form = $("#formEditCustomer")
+
+                if (form[0].checkValidity() === false) {
+                    event.preventDefault()
+                    event.stopPropagation()
+                    form.addClass('was-validated');
+                }
+                else {
+
+                    if ($('#E_cod_cliente').val() == "") {
+                        alert("You must enter the code customer's");
+                        $('#cod_cliente').focus();
+                        return;
+                    }
+
+                    if ($('#E_tipo_documento_ID').val() == "") {
+                        alert('You must select the document type');
+                        return;
+                    }
+
+                    if ($('#E_nrodoc_cliente').val() == "") {
+                        alert('You must enter the number document');
+                        $('#nrodoc_cliente').focus();
+                        return;
+                    }
+
+                    if ($('#E_nombre_cliente').val() == "") {
+                        alert('You must enter the name customer');
+                        $('#nombre_cliente').focus();
+                        return;
+                    }                                       
+
+                    if ($('#E_pais').val() == "") {
+                        alert('You must select the country');
+                        return;
+                    }
+
+                }
+
+                let customer = {
+                    "Id": $('#IdCustomer').val(),
+                    "cod_cliente": $('#E_cod_cliente').val(),
+                    "nombre_cliente": $('#E_nombre_cliente').val(),
+                    "direccion_cliente": $('#E_direccion_cliente').val(),
+                    "tipo_documento_ID": $('#E_tipo_documento_ID').val(),
+                    "nrodoc_cliente": $('#E_nrodoc_cliente').val(),
+                    "pais": $('#E_pais').val(),
+                    "ciudad": $('#E_ciudad').val(),
+                    "telefono": $('#E_telefono').val(),
+                    "email": $('#E_email').val()
+                };
+
+                var data = JSON.stringify(customer);
+
+                $.ajax({
+                    type: "POST",
+                    url: '/Management/EditCustomer',
+                    contentType: 'application/json;charset=utf-8',
+                    dataType: 'json',
+                    data: data,
+                    success: function (result) {
+                        console.log(result)
+                    }
+                })
+                    .done(function (result) {
+                        if (result.exito) {
+                            $('#editCustomer').modal('hide');
+                            location.reload();
+                        }
+                        else {
+                            alert('Problems editing a customer, we ask that you try again!');
+                        }
+
+                    })
+                    .fail(function (jqXHR, textStatus, errorThrow) {
+                        var err = "Error: " + textStatus + " " + errorThrow;
+                        console.log(err);
+                    })
+
+
+            });
+
+
+        });
+        
+        
+
+         
+
+
+    </script>
+}
+

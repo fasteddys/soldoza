@@ -1,0 +1,365 @@
+﻿@using Domain.Entities;
+@model SOLDOZA_MST_GRL_CLIENTES
+@{
+    ViewData["Title"] = "CustomerProjects";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<ul class="breadcrumb">
+    <li class="breadcrumb-item text-warning"><a href="#" class="text-warning">MANAGEMENT</a></li>
+    <li class="breadcrumb-item text-gray-900 active">CUSTOMERS CONTACTS</li>
+</ul>
+
+<h1 class="page-header">
+    List customers contacts <small>page header description goes here...</small>
+</h1>
+
+<!-- BEGIN col-4 -->
+	<div class="col-xl-12 col-lg-12">
+		<!-- BEGIN card -->
+		<div class="card mb-3">
+			<!-- BEGIN card-header -->
+			<div class="card-header d-flex align-items-center">
+				<span class="flex-grow-1 font-weight-600">List contacts</span>
+				<a href="#" class="text-muted text-decoration-none fs-12px" data-bs-toggle="modal" data-bs-target="#newContact"><i class="fa fa-fw fa-plus"></i> New contact</a>
+			</div>
+			<!-- END card-header -->
+			<!-- BEGIN list-group -->
+			<div class="list-group list-group-flush">
+				<!-- BEGIN list-group-item -->
+				<div class="list-group-item d-flex px-3">
+					<div class="flex-fill">
+                        <input type="hidden" id="cliente_id" value=@Model.id />
+						<div class="font-weight-600 text-dark">Code: @Model.cod_cliente</div>
+                        <div class="font-weight-600 text-dark">Customer: @Model.nombre_cliente</div>
+                        <div class="fs-13px text-muted mb-2">Country: @Model.pais</div>
+                        @*<div class="mb-1">
+	                            
+                        @if (ViewBag.projects.Count() >0)
+                        {
+                            <span class="badge bg-danger text-white rounded-sm fs-12px font-weight-500">@ViewBag.projects.Count().ToString() projects</span>
+                        }else
+                        {
+                                <span class="badge bg-danger text-white rounded-sm fs-12px font-weight-500">No found projects</span>
+                        }
+
+                        </div>*@
+						@*<hr class="mt-15px mb-15px" />*@
+							
+                            <table class="table table-sm">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Code</th>
+                                        <th>Names</th>
+                                        <th>Last Name</th>
+                                        <th>Email</th>
+                                        <th>Phone</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                @if (ViewBag.contacts != null)
+                                {
+                                    foreach(var item in ViewBag.contacts){
+                                        <tr>
+                                            <td>@item.cod_contacto</td>
+                                            <td>@item.nombre_contacto</td>
+                                            <td>@item.apellidos_contacto</td>
+                                            <td>@item.email_contacto</td>
+                                            <td>@item.telefono_contacto</td>
+                                            <td><a class="btn btn-outline-warning btn-sm" href="#" role="button" onclick="ModalEditContact(@item.id,'@item.cod_contacto','@item.nombre_contacto','@item.apellidos_contacto','@item.email_contacto','@item.telefono_contacto');">Edit</a>  
+                                               
+                                        </tr>
+                                    }
+                                }
+                                else
+                                {
+                                    <tr>
+                                        <td colspan="6">No records to display</td>
+                                    </tr>
+
+                                }
+                            </tbody>
+                        </table>
+                    
+                        <a href="@Url.Action("Customers","Management")" class="text-blue text-decoration-none">Return list customers</a>
+			
+					</div>
+				</div>
+				<!-- END list-group-item -->
+			
+
+			</div>
+			<!-- END list-group -->
+		</div>
+		<!-- END card -->
+	</div>
+
+
+
+<!-- modal New Contact -->
+<div class="modal fade" id="newContact">
+  <div class="modal-dialog modal-lg">
+    <form method="post" id="formNewContact"> 
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">New Contact</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body">
+
+            <div class="form-group">
+                <label for="cod_contacto">Contact Code</label>
+                <input type="text" class="form-control" id="cod_contacto" placeholder="Enter the customer code" autocomplete="off" style="text-transform:uppercase;"/>
+            </div>
+           
+            <div class="form-group">
+                <label for="nombre_contacto">Name</label>
+                <input type="text" class="form-control" id="nombre_contacto" placeholder="Enter the customer name" autocomplete="off" style="text-transform:uppercase;"/>
+            </div>
+
+            <div class="form-group">
+                <label for="apellidos_contacto">Last Name</label>
+                <input type="text" class="form-control" id="apellidos_contacto" placeholder="Enter the customer name" autocomplete="off" style="text-transform:uppercase;"/>
+            </div>
+
+            <div class="form-group">
+                <label for="email_contacto">Email</label>
+                <input type="text" class="form-control" id="email_contacto" placeholder="Enter the email" autocomplete="off"/>
+            </div>
+            <div class="form-group">
+                <label for="telefono_contacto">Phone</label>
+                <input type="text" class="form-control" id="telefono_contacto" placeholder="Enter the phone" autocomplete="off" style="text-transform:uppercase;"/>
+            </div>
+            
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
+            <button type="button" class="btn bg-dark text-white" id="btnGrabarContact">Save</button>
+          </div>
+        </div>
+    </form>
+  </div>
+</div>
+
+
+
+<!-- modal New Contact -->
+<div class="modal fade" id="editContact">
+  <div class="modal-dialog modal-lg">
+    <form method="post" id="formEditContact"> 
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Edit Contact</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body">
+            <div class="form-group">
+                <input type="hidden" id="IdContact"/>
+            </div>
+            <div class="form-group">
+                <label for="E_cod_contacto">Contact Code</label>
+                <input type="text" class="form-control" id="E_cod_contacto" placeholder="Enter the customer code" autocomplete="off" style="text-transform:uppercase;"/>
+            </div>
+           
+            <div class="form-group">
+                <label for="E_nombre_contacto">Name</label>
+                <input type="text" class="form-control" id="E_nombre_contacto" placeholder="Enter the customer name" autocomplete="off" style="text-transform:uppercase;"/>
+            </div>
+
+            <div class="form-group">
+                <label for="E_apellidos_contacto">Last Name</label>
+                <input type="text" class="form-control" id="E_apellidos_contacto" placeholder="Enter the customer name" autocomplete="off" style="text-transform:uppercase;"/>
+            </div>
+
+            <div class="form-group">
+                <label for="E_email_contacto">Email</label>
+                <input type="text" class="form-control" id="E_email_contacto" placeholder="Enter the email" autocomplete="off"/>
+            </div>
+            <div class="form-group">
+                <label for="E_telefono_contacto">Phone</label>
+                <input type="text" class="form-control" id="E_telefono_contacto" placeholder="Enter the phone" autocomplete="off" style="text-transform:uppercase;"/>
+            </div>
+            
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
+            <button type="button" class="btn bg-dark text-white" id="btnEditContact">Save</button>
+          </div>
+        </div>
+    </form>
+  </div>
+</div>
+
+
+@section Scripts{     
+
+    <script>
+
+         function ModalEditContact(xid, xcod, xnombre, xapellidos, xemail, xtelefono) {
+            $("#IdContact").val(xid);
+            $("#E_cod_contacto").val(xcod);
+            $("#E_nombre_contacto").val(xnombre);
+            $("#E_apellidos_contacto").val(xapellidos);
+            $("#E_email_contacto").val(xemail);
+            $("#E_telefono_contacto").val(xtelefono);
+            $('#editContact').modal('show');
+        }
+
+        $(document).ready(function () {
+
+           
+            $('#btnGrabarContact').click(function (event) {
+
+                var form = $("#formNewContact");
+
+                if (form[0].checkValidity() === false) {
+                    event.preventDefault()
+                    event.stopPropagation()
+                    form.addClass('was-validated');
+                }
+                else {
+
+                    if ($('#cod_contacto').val() == "") {
+                        alert("You must enter the code contact");
+                        $('#cod_contacto').focus();
+                        return;
+                    }
+
+                    if ($('#nombre_contacto').val() == "") {
+                        alert('You must enter the contact name');
+                        $('#nombre_contacto').focus();
+                        return;
+                    }
+
+                    if ($('#apellidos_contacto').val() == "") {
+                        alert('You must enter the contact last name');
+                        $('#apellidos_contacto').focus();
+                        return;
+                    }
+
+                }
+
+                let contact = {
+                    "cliente_id": $('#cliente_id').val(),
+                    "cod_contacto": $('#cod_contacto').val(),
+                    "nombre_contacto": $('#nombre_contacto').val(),
+                    "apellidos_contacto": $('#apellidos_contacto').val(),
+                    "email_contacto": $('#email_contacto').val(),
+                    "telefono_contacto": $('#telefono_contacto').val()                    
+                };
+
+               var data = JSON.stringify(contact);
+               
+                $.ajax({
+                    type: "POST",
+                    url: '/Management/AddContact',
+                    contentType: 'application/json;charset=utf-8',
+                    dataType: 'json',
+                    async: true,
+                    data: data,
+                    success: function (result) {
+                        console.log(result)
+                    }
+                })
+                    .done(function (result) {
+                        if (result.exito) {
+                            alert(result.mensaje);
+                            $('#newContact').modal('hide');
+                            location.reload();
+                        }
+                        else {
+                            alert('Problems editing a contact, we ask that you try again!');
+                        }
+
+                    })
+                    .fail(function (jqXHR, textStatus, errorThrow) {
+                        var err = "Error: " + textStatus + " " + errorThrow;
+                        console.log(err);
+                    })
+
+            });
+
+
+
+            $('#btnEditContact').click(function (event) {
+
+                var form = $("#formEditContact");
+
+                if (form[0].checkValidity() === false) {
+                    event.preventDefault()
+                    event.stopPropagation()
+                    form.addClass('was-validated');
+                }
+                else {
+
+                    if ($('#E_cod_contacto').val() == "") {
+                        alert("You must enter the code contact");
+                        $('#E_cod_contacto').focus();
+                        return;
+                    }
+
+                    if ($('#E_nombre_contacto').val() == "") {
+                        alert('You must enter the contact name');
+                        $('#E_nombre_contacto').focus();
+                        return;
+                    }
+
+                    if ($('#E_apellidos_contacto').val() == "") {
+                        alert('You must enter the contact last name');
+                        $('#E_apellidos_contacto').focus();
+                        return;
+                    }
+
+                }
+
+                let contact = {
+                    "id": $('#IdContact').val(),
+                    "cod_contacto": $('#E_cod_contacto').val(),
+                    "nombre_contacto": $('#E_nombre_contacto').val(),
+                    "apellidos_contacto": $('#E_apellidos_contacto').val(),
+                    "email_contacto": $('#E_email_contacto').val(),
+                    "telefono_contacto": $('#E_telefono_contacto').val()                    
+                };
+
+               var data = JSON.stringify(contact);
+               
+                $.ajax({
+                    type: "POST",
+                    url: '/Management/EditContact',
+                    contentType: 'application/json;charset=utf-8',
+                    dataType: 'json',
+                    async: true,
+                    data: data,
+                    success: function (result) {
+                        console.log(result)
+                    }
+                })
+                    .done(function (result) {
+                        if (result.exito) {
+                            alert(result.mensaje);
+                            $('#editContact').modal('hide');
+                            location.reload();
+                        }
+                        else {
+                            alert('Problems creating a edit contact, we ask that you try again!');
+                        }
+
+                    })
+                    .fail(function (jqXHR, textStatus, errorThrow) {
+                        var err = "Error: " + textStatus + " " + errorThrow;
+                        console.log(err);
+                    })
+
+
+            });
+
+
+
+
+        });
+        
+
+    </script>
+
+}

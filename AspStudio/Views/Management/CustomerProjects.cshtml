@@ -1,0 +1,482 @@
+﻿@using Domain.Entities;
+@model SOLDOZA_MST_GRL_CLIENTES
+@{
+    ViewData["Title"] = "CustomerProjects";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section Styles{
+     <link href="~/lib/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css" rel="stylesheet" />
+}
+
+
+
+
+
+<ul class="breadcrumb">
+    <li class="breadcrumb-item text-warning"><a href="#" class="text-warning">MANAGEMENT</a></li>
+    <li class="breadcrumb-item text-gray-900 active">CUSTOMERS PROJECTS</li>
+</ul>
+
+
+
+<!-- BEGIN col-4 -->
+	<div class="col-xl-12 col-lg-12">
+		<!-- BEGIN card -->
+		<div class="card mb-3">
+			<!-- BEGIN card-header -->
+			<div class="card-header d-flex align-items-center">
+				<span class="flex-grow-1 font-weight-600">List projects</span>
+				<a href="#" class="text-muted text-decoration-none fs-12px"><i class="fa fa-fw fa-plus"></i> New project</a>
+			</div>
+			<!-- END card-header -->
+			<!-- BEGIN list-group -->
+			<div class="list-group list-group-flush">
+				<!-- BEGIN list-group-item -->
+				<div class="list-group-item d-flex px-3">
+					@*<div class="me-3">
+						<i class="fa fa-tools text-muted fa-fw fa-lg"></i> 
+					</div>*@
+					<div class="flex-fill">
+                        <input type="hidden" id="cliente_id" value=@Model.id />	
+						<div class="font-weight-600 text-dark">Code: @Model.cod_cliente</div>
+                        <div class="font-weight-600 text-dark">Customer: @Model.nombre_cliente</div>
+                        <div class="fs-13px text-muted mb-2">Country: @Model.pais</div>
+                        @*<div class="mb-1">
+	                            
+                        @if (ViewBag.projects.Count() >0)
+                        {
+                            <span class="badge bg-danger text-white rounded-sm fs-12px font-weight-500">@ViewBag.projects.Count().ToString() projects</span>
+                        }else
+                        {
+                                <span class="badge bg-danger text-white rounded-sm fs-12px font-weight-500">No found projects</span>
+                        }
+
+                        </div>*@
+						@*<hr class="mt-15px mb-15px" />*@
+							
+                            <table class="table table-sm">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Code</th>
+                                        <th>Description Project</th>
+                                        <th>Versions</th>
+                                        <th>Contacts</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                @if (ViewBag.projects != null)
+                                {
+                                    foreach(var item in ViewBag.projects){
+                                        <tr>
+                                            <td>@item.cod_proyecto</td>
+                                            <td>@item.descripcion_proyecto</td>
+                                            <td>
+                                                <table class="table table-sm">
+                                                    <tbody>
+                                                        @foreach(var ver in item.versiones)
+                                                            {
+                                                                <tr>
+                                                                    <td>@ver.cod_version</td>
+                                                                    <td>@ver.fechainicio.ToString().Substring(0,10)</td>
+                                                                    <td><a href="#" class="text-blue text-decoration-none">Edit</a>
+                                                                        <a href="#" class="text-blue text-decoration-none">Close</a></td>
+                                                                </tr>
+                                                            }
+                                                          
+                                                    </tbody>
+                                                </table>
+
+                                            </td>
+                                            <td>
+                                                <table class="table table-sm">
+                                                    <tbody>
+                                                        @foreach(var cont in item.contactos)
+                                                            {
+                                                                <tr>
+                                                                    <td>@cont.contacto.cod_contacto</td>
+                                                                    <td>@cont.contacto.nombre_contacto @cont.contacto.apellidos_contacto</td>
+                                                                    <td>@cont.tipocontacto.cod_tipo_contacto</td>
+                                                                    <td><a href="#" class="text-decoration-none fs-12px text-danger"><i class="fa fa-fw fa-times-circle"></i></a></td>
+                                                                </tr>
+                                                            }
+                                                          
+                                                    </tbody>
+                                                </table>
+
+                                            </td>
+                                            <td>
+                                                <a class="btn btn-outline-warning btn-sm" href="#" role="button" data-bs-toggle="modal" data-bs-target="#newVersion" onclick="AsignaProyectoID(@item.id)">Add version</a>
+                                                <a class="btn btn-outline-warning btn-sm" href="#" role="button" onclick="AddContactProyecto(@item.id)">Add contact</a>
+                                                <a class="btn btn-outline-warning btn-sm" href="@Url.Action("CustomerContacts","Management", new{id=@item.id})" role="button">Contacts</a>
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                                else
+                                {
+                                    <tr>
+                                        <td colspan="6">No records to display</td>
+                                    </tr>
+
+                                }
+                            </tbody>
+                        </table>
+                    
+                        <a href="@Url.Action("Customers","Management")" class="text-blue text-decoration-none">Return list customers</a>
+			
+					</div>
+				</div>
+				<!-- END list-group-item -->
+			
+
+			</div>
+			<!-- END list-group -->
+		</div>
+		<!-- END card -->
+	</div>
+
+
+<!-- modal New project -->
+<div class="modal fade" id="newProject">
+  <div class="modal-dialog">
+    <form method="post" id="formNewProject"> 
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">New Project</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body">
+            <div class="form-group">
+                <label for="cod_proyecto">Project Code</label>
+                <input type="text" class="form-control" id="cod_proyecto" placeholder="Enter the project code" autocomplete="off" style="text-transform:uppercase;"/>
+            </div>
+            <div class="form-group">
+                <label for="descripcion_proyecto">Description Project</label>
+                <input type="text" class="form-control" id="descripcion_proyecto" placeholder="Enter the descripcion project" autocomplete="off" style="text-transform:uppercase;"/>
+            </div>
+                        
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
+            <button type="button" class="btn bg-dark text-white" id="btnGrabarProject">Save</button>
+          </div>
+        </div>
+    </form>
+  </div>
+</div>
+
+
+<!-- modal New version -->
+<div class="modal fade" id="newVersion">
+  <div class="modal-dialog">
+    <form method="post" id="formNewVersion"> 
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">New Version</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body">
+             <div class="form-group">
+                <input type="hidden" id="proyecto_id" />
+            </div>
+            <div class="form-group">
+                <label for="cod_version">Code Version</label>
+                <input type="text" class="form-control" id="cod_version" placeholder="Enter the code version" autocomplete="off" style="text-transform:uppercase;"/>
+            </div>
+            <div class="form-group" id="myModalWithDatePicker">
+                <label for="fechainicio">Start Date</label>
+                <div class="input-group">
+                  <input type="text" class="form-control" id="fechainicio" placeholder="" autocomplete="off" />
+                  <label class="input-group-text" for="fechainicio">
+                    <i class="fa fa-calendar"></i>
+                  </label>
+                </div>
+            </div>
+                        
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
+            <button type="button" class="btn bg-dark text-white" id="btnGrabarVersion">Save</button>
+          </div>
+        </div>
+    </form>
+  </div>
+</div>
+
+
+
+
+<!-- modal New project -->
+<div class="modal fade" id="newContact">
+  <div class="modal-dialog">
+    <form method="post" id="formNewContact"> 
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Add Contact</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body">
+            
+              <div class="form-group">
+                <input type="hidden" id="contacto_proyecto_id" />
+            </div>
+
+             <div class="form-group">
+                <label for="contacto_id">Contact Name</label>
+                <select class="form-control" id="contacto_id">
+                <option value="" disabled selected>Select contact</option>
+                    @foreach (var item in ViewBag.contactList) {
+                        <option value="@item.id">@item.nombre_contacto @item.apellidos_contacto</option>
+                    }
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="tipo_contacto_id">Type Contact</label>
+                <select class="form-control" id="tipo_contacto_id">
+                <option value="" disabled selected>Select type</option>
+                    @foreach (var item in ViewBag.typecontactList) {
+                        <option value="@item.id">@item.descripcion_tipo_contacto</option>
+                    }
+                </select>
+            </div>
+                        
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
+            <button type="button" class="btn bg-dark text-white" id="btnAddContact">Save</button>
+          </div>
+        </div>
+    </form>
+  </div>
+</div>
+
+
+@section Scripts{
+
+    @*<script src="~/lib/highlight.js/highlight.min.js"></script>
+    <script src="~/js/demo/highlightjs.demo.js"></script>
+    <script src="~/js/demo/sidebar-scrollspy.demo.js"></script>*@
+    <script src="~/lib/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
+      
+
+    <script>
+
+         $('#fechainicio').datepicker({
+            autoclose: true,
+            container: '#myModalWithDatePicker',
+            format: 'yyyy-mm-dd'
+         });
+
+         function AsignaProyectoID(xid) {
+            $("#proyecto_id").val(xid);
+         }
+
+         function AddContactProyecto(xid) {
+            $("#contacto_proyecto_id").val(xid);
+            $('#newContact').modal('show');
+         }
+
+         $(document).ready(function () {
+
+           
+            $('#btnGrabarProject').click(function (event) {
+
+                var form = $("#formNewProject");
+
+                if (form[0].checkValidity() === false) {
+                    event.preventDefault()
+                    event.stopPropagation()
+                    form.addClass('was-validated');
+                }
+                else {
+
+                    if ($('#cod_proyecto').val() == "") {
+                        alert("You must enter the code project");
+                        $('#cod_proyecto').focus();
+                        return;
+                    }
+
+                    if ($('#descripcion_proyecto').val() == "") {
+                        alert('You must enter the descripcion project');
+                        $('#descripcion_proyecto').focus();
+                        return;
+                    }
+
+                }
+
+                let project = {
+                    "cod_proyecto": $('#cod_proyecto').val(),
+                    "descripcion_proyecto": $('#descripcion_proyecto').val(),
+                    "cliente_id": $('#cliente_id').val()
+                };
+
+               var data = JSON.stringify(project);
+               
+                $.ajax({
+                    type: "POST",
+                    url: '/Management/AddProject',
+                    contentType: 'application/json;charset=utf-8',
+                    dataType: 'json',
+                    async: true,
+                    data: data,
+                    success: function (result) {
+                        console.log(result)
+                    }
+                })
+                    .done(function (result) {
+                        if (result.exito) {
+                            alert(result.mensaje);
+                            $('#newProject').modal('hide');
+                            location.reload();
+                        }
+                        else {
+                            alert('Problems creating a new project, we ask that you try again!');
+                        }
+
+                    })
+                    .fail(function (jqXHR, textStatus, errorThrow) {
+                        var err = "Error: " + textStatus + " " + errorThrow;
+                        console.log(err);
+                    })
+
+
+            });
+
+
+            $('#btnGrabarVersion').click(function (event) {
+
+                var form = $("#formNewVersion");
+
+                if (form[0].checkValidity() === false) {
+                    event.preventDefault()
+                    event.stopPropagation()
+                    form.addClass('was-validated');
+                }
+                else {
+
+                    if ($('#cod_version').val() == "") {
+                        alert('You must enter the code version');
+                        $('#cod_version').focus();
+                        return;
+                    }
+
+                    if ($('#fechainicio').val() == "") {
+                        alert('You must select start date');
+                        return;
+                    }
+
+                }
+
+                let version = {
+                    "proyecto_id": $('#proyecto_id').val(),
+                    "cod_version": $('#cod_version').val(),
+                    "fechainicio": $('#fechainicio').val()
+                    
+                };
+
+               var data = JSON.stringify(version);
+               
+                $.ajax({
+                    type: "POST",
+                    url: '/Management/AddVersion',
+                    contentType: 'application/json;charset=utf-8',
+                    dataType: 'json',
+                    async: true,
+                    data: data,
+                    success: function (result) {
+                        console.log(result)
+                    }
+                })
+                    .done(function (result) {
+                        if (result.exito) {
+                            $('#newVersion').modal('hide');
+                            alert(result.mensaje);
+                            location.reload();
+                        }
+                        else {
+                            alert('Problems creating a new version, we ask that you try again!');
+                        }
+
+                    })
+                    .fail(function (jqXHR, textStatus, errorThrow) {
+                        var err = "Error: " + textStatus + " " + errorThrow;
+                        console.log(err);
+                    })
+
+            });
+
+
+             $('#btnAddContact').click(function (event) {
+                
+                var form = $("#formNewContact");
+
+                if (form[0].checkValidity() === false) {
+                    event.preventDefault()
+                    event.stopPropagation()
+                    form.addClass('was-validated');
+                }
+                else {
+
+                    if ($('#contacto_id').val() == "") {
+                        alert('You must select name contact');
+                        $('#contact_id').focus();
+                        return;
+                    }
+
+                    if ($('#tipo_contacto_id').val() == "") {
+                        alert('You must select type contact');
+                        $('#tipo_contacto_id').focus();
+                        return;
+                    }
+
+                }
+
+                let contact = {
+                    "contacto_id": $('#contacto_id').val(),
+                    "proyecto_id": $('#contacto_proyecto_id').val(),
+                    "tipo_contacto_id": $('#tipo_contacto_id').val()
+                    
+                };
+
+               var data = JSON.stringify(contact);
+               
+                $.ajax({
+                    type: "POST",
+                    url: '/Management/AddContactProject',
+                    contentType: 'application/json;charset=utf-8',
+                    dataType: 'json',
+                    async: true,
+                    data: data,
+                    success: function (result) {
+                        console.log(result)
+                    }
+                })
+                    .done(function (result) {
+                        if (result.exito) {
+                            $('#newContact').modal('hide');
+                            alert(result.mensaje);
+                            location.reload();
+                        }
+                        else {
+                            alert('Problems add contact, we ask that you try again!');
+                        }
+
+                    })
+                    .fail(function (jqXHR, textStatus, errorThrow) {
+                        var err = "Error: " + textStatus + " " + errorThrow;
+                        console.log(err);
+                    })
+
+
+            });
+
+
+        });
+        
+
+    </script>
+
+}
