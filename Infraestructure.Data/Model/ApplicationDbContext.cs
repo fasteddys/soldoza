@@ -17,10 +17,12 @@ namespace Infraestructure.Data.Model
         public DbSet<SOLDOZA_MST_GRL_CONTACTOS> contactos { get; set; }
         public DbSet<SOLDOZA_MST_CONTACTOS_PROYECTO> contactosproyecto { get; set; }
 
+        public DbSet<SOLDOZA_MST_MATERIALES> materiales { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             //modelBuilder.Entity<vpagoSuscripcion>().HasNoKey();
-     
+
+            modelBuilder.Entity<SOLDOZA_MST_MATERIALES>().HasKey(t => new { t.id });
 
             modelBuilder.Entity<SOLDOZA_MST_TIPO_DOCUMENTO>().HasKey(t => new { t.id });
             modelBuilder.Entity<SOLDOZA_MST_PAIS>().HasKey(t => new { t.id });

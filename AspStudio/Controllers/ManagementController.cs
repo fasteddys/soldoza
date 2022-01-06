@@ -27,12 +27,12 @@ namespace AspStudio.Controllers
         private readonly ISOLDOZA_MST_GRL_CONTACTOS _contactos;
         private readonly ISOLDOZA_MST_TIPO_CONTACTO _tipocontacto;
         private readonly ISOLDOZA_MST_CONTACTOS_PROYECTO _contactosproyecto;
-
+        private readonly ISOLDOZA_MST_MATERIALES _materiales;
 
         public ManagementController(ILogger<HomeController> logger, ApplicationDbContext context,
                                     ISOLDOZA_MST_GRL_CLIENTES clientes, ISOLDOZA_MST_PAIS paises, ISOLDOZA_MST_TIPO_DOCUMENTO tipodocumentos,
                                     ISOLDOZA_MST_GRL_PROYECTOS proyectos, ISOLDOZA_MST_GRL_CONTACTOS contactos, ISOLDOZA_MST_TIPO_CONTACTO tipocontacto,
-                                    ISOLDOZA_MST_CONTACTOS_PROYECTO contactosproyecto)
+                                    ISOLDOZA_MST_CONTACTOS_PROYECTO contactosproyecto, ISOLDOZA_MST_MATERIALES materiales)
         {
             _logger = logger;
             _context = context;
@@ -43,6 +43,7 @@ namespace AspStudio.Controllers
             _contactos = contactos;
             _tipocontacto = tipocontacto;
             _contactosproyecto = contactosproyecto;
+            _materiales = materiales;
         }
 
         public IActionResult Index()
@@ -78,6 +79,12 @@ namespace AspStudio.Controllers
 
             ViewBag.customersList = customers;
             return View(contacts);
+        }
+
+        public async Task<IActionResult> Materials()
+        {
+            var materials = await _materiales.GetAll();
+            return View(materials);
         }
 
         [HttpPost]
@@ -367,6 +374,49 @@ namespace AspStudio.Controllers
             if (result)
             {
                 return Json(new { exito = true, mensaje = "Successfully delete contact" });
+            }
+            else
+            {
+                return Json(new { exito = false, mensaje = "Error" });
+            }
+        }
+
+
+        [HttpPost]
+        public IActionResult AddMaterial([FromBody] SOLDOZA_MST_MATERIALES material)
+        {
+            if (material == null)
+            {
+                return View("Materials");
+            }
+
+
+
+            bool result = _materiales.Insert(material);
+            if (result)
+            {
+                return Json(new { exito = true, mensaje = "Successfully added material" });
+            }
+            else
+            {
+                return Json(new { exito = false, mensaje = "Error" });
+            }
+        }
+
+        [HttpPost]
+        public IActionResult EditMaterial([FromBody] SOLDOZA_MST_MATERIALES material)
+        {
+            if (material == null)
+            {
+                return View("Materials");
+            }
+
+
+
+            bool result = _materiales.Update(material);
+            if (result)
+            {
+                return Json(new { exito = true, mensaje = "Successfully edit material" });
             }
             else
             {

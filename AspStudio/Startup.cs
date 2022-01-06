@@ -41,7 +41,7 @@ namespace AspStudio
             {
                 options.UseNpgsql(cnn);
             });
-
+            services.AddTransient<ISOLDOZA_MST_MATERIALES, R_SOLDOZA_MST_MATERIALES>();
             services.AddTransient<ISOLDOZA_MST_GRL_CLIENTES, R_SOLDOZA_MST_GRL_CLIENTES>();
             services.AddTransient<ISOLDOZA_MST_PAIS, R_SOLDOZA_MST_PAIS>();
             services.AddTransient<ISOLDOZA_MST_TIPO_DOCUMENTO, R_SOLDOZA_MST_TIPO_DOCUMENTO>();

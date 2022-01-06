@@ -1,0 +1,370 @@
+﻿@using Domain.Entities;
+@model IEnumerable<SOLDOZA_MST_MATERIALES>
+@{
+    ViewData["Title"] = "Materials";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+@section Styles {
+    <link href="~/lib/datatables.net-bs4/css/dataTables.bootstrap4.min.css" rel="stylesheet" />
+    <link href="~/lib/datatables.net-buttons-bs4/css/buttons.bootstrap4.min.css" rel="stylesheet" />
+    <link href="~/lib/datatables.net-responsive-bs4/css/responsive.bootstrap4.min.css" rel="stylesheet" />
+    <link href="~/lib/bootstrap-table/dist/bootstrap-table.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/tom-select@2.0.0/dist/css/tom-select.css" rel="stylesheet">
+    
+}
+
+<ul class="breadcrumb">
+    <li class="breadcrumb-item text-warning"><a href="#" class="text-warning">MANAGEMENT</a></li>
+    <li class="breadcrumb-item text-gray-900 active">MATERIALS</li>
+</ul>
+
+<h1 class="page-header">
+    List Materials <small>page header description goes here...</small>
+</h1>
+
+<button type="button" class="btn bg-warning me-2 " data-bs-toggle="modal" data-bs-target="#newMaterial">New Material</button>
+
+<div class="card">
+	<div class="card-body">
+        <table id="datatableMateriales" class="table text-nowrap">
+             <thead>
+                 <tr>
+                     <th>Code</th>
+                     <th>Description</th>
+                     <th>P Num</th>
+                     <th>G Num</th>
+                     <th></th>
+                 </tr>
+             </thead>
+             <tbody>
+                @if (Model.Count() > 0)
+                {
+                    foreach(var item in Model){
+                        <tr>
+                            <td>@item.cod_material</td>
+                            <td>@item.descripcion_material</td>
+                            <td>@item.p_num</td>
+                            <td>@item.g_num</td>
+                            <td>
+                                <a class="btn btn-outline-warning btn-sm" href="#" role="button" onclick="ModalEditMaterial(@item.id,'@item.cod_material','@item.descripcion_material','@item.p_num','@item.g_num');">Edit</a>
+                            </td>
+                        </tr>
+                    }
+                }
+
+         </tbody>
+        </table>
+    </div>
+</div>
+
+
+<!-- modal New Project -->
+<div class="modal fade" id="newMaterial">
+  <div class="modal-dialog modal-lg">
+    <form method="post" id="formNewMaterial"> 
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">New Material</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body">
+             
+            <div class="form-group">
+                <label for="cod_material">Material Code</label>
+                <input type="text" class="form-control" id="cod_material" placeholder="Enter the material code" autocomplete="off" style="text-transform:uppercase;"/>
+            </div>
+           
+            <div class="form-group">
+                <label for="descripcion_material">Descripcion Material</label>
+                <input type="text" class="form-control" id="descripcion_material" placeholder="Enter the material description" autocomplete="off" style="text-transform:uppercase;"/>
+            </div>
+
+            <div class="form-group">
+                <label for="p_num">P Num</label>
+                <input type="text" class="form-control" id="p_num" placeholder="Enter the p num" autocomplete="off" style="text-transform:uppercase;"/>
+            </div>
+
+            <div class="form-group">
+                <label for="g_num">G Num</label>
+                <input type="text" class="form-control" id="g_num" placeholder="Enter the g num" autocomplete="off" style="text-transform:uppercase;"/>
+            </div>
+            
+           
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
+            <button type="button" class="btn bg-dark text-white" id="btnGrabarMaterial">Save</button>
+          </div>
+        </div>
+    </form>
+  </div>
+</div>
+
+<!-- modal Edit Contact -->
+<div class="modal fade" id="editMaterial">
+  <div class="modal-dialog modal-lg">
+    <form method="post" id="formEditMaterial"> 
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Edit Material</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body">
+            <div class="form-group">
+                <input type="hidden" id="IdMaterial"/>
+            </div>
+            
+            <div class="form-group">
+                <label for="E_cod_material">Material Code</label>
+                <input type="text" class="form-control" id="E_cod_material" placeholder="Enter the material code" autocomplete="off" style="text-transform:uppercase;"/>
+            </div>
+           
+            <div class="form-group">
+                <label for="E_descripcion_material">Descripcion Material</label>
+                <input type="text" class="form-control" id="E_descripcion_material" placeholder="Enter the material description" autocomplete="off" style="text-transform:uppercase;"/>
+            </div>
+
+            <div class="form-group">
+                <label for="E_p_num">P Num</label>
+                <input type="text" class="form-control" id="E_p_num" placeholder="Enter the p num" autocomplete="off" style="text-transform:uppercase;"/>
+            </div>
+
+            <div class="form-group">
+                <label for="E_g_num">G Num</label>
+                <input type="text" class="form-control" id="E_g_num" placeholder="Enter the g num" autocomplete="off" style="text-transform:uppercase;"/>
+            </div>
+            
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
+            <button type="button" class="btn bg-dark text-white" id="btnEditMaterial">Save</button>
+          </div>
+        </div>
+    </form>
+  </div>
+</div>
+
+
+
+@section Scripts{
+
+    <script src="~/lib/highlight.js/highlight.min.js"></script>
+    <script src="~/js/demo/highlightjs.demo.js"></script>
+    <script src="~/lib/datatables.net/js/jquery.dataTables.min.js"></script>
+    <script src="~/lib/datatables.net-bs4/js/dataTables.bootstrap4.min.js"></script>
+    <script src="~/lib/datatables.net-buttons/js/dataTables.buttons.min.js"></script>
+
+    @*<script src="https://cdn.datatables.net/buttons/2.1.0/js/dataTables.buttons.min.js"></script>*@
+
+    <script src="~/lib/datatables.net-buttons/js/buttons.colVis.min.js"></script>
+    <script src="~/lib/datatables.net-buttons/js/buttons.flash.min.js"></script>
+    <script src="~/lib/datatables.net-buttons/js/buttons.html5.min.js"></script>
+    <script src="~/lib/datatables.net-buttons/js/buttons.print.min.js"></script>
+    <script src="~/lib/datatables.net-buttons/js/jszip.min.js"></script>
+    <script src="~/lib/datatables.net-buttons/js/pdfmake.min.js"></script>
+    <script src="~/lib/datatables.net-buttons/js/vfs_fonts.js"></script>
+    <script src="~/lib/datatables.net-buttons-bs4/js/buttons.bootstrap4.min.js"></script>
+
+    <script src="~/lib/datatables.net-responsive/js/dataTables.responsive.min.js"></script>
+    <script src="~/lib/datatables.net-responsive-bs4/js/responsive.bootstrap4.min.js"></script>
+    <script src="~/lib/bootstrap-table/dist/bootstrap-table.min.js"></script>
+    <script src="~/js/demo/table-plugins.demo.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/tom-select@2.0.0/dist/js/tom-select.complete.min.js"></script>
+
+
+    <script>
+
+        ///// DATATABLE /////////////
+
+          $('#datatableMateriales').DataTable({
+            //dom: "<'row mb-3'<'col-sm-4'l><'col-sm-12 text-end'<'d-flex justify-content-end'fB>>>t<'d-flex align-items-center'<'me-auto'i><'mb-0'p>>",
+            lengthMenu: [ 10, 20, 30, 40, 50 ],
+            responsive: true,
+            buttons: [ 
+              { extend: 'print', className: 'btn btn-default' },
+              { extend: 'pdfHtml5', className: 'btn btn-default' },
+              { extend: 'excelHtml5', className: 'btn btn-default' }
+            ]
+          });
+         
+         ///// FUNCIONES  ///////
+
+         function ModalEditMaterial(xid, xcod, xdescripcion, xpnum, xgnum) {
+            $("#IdMaterial").val(xid);
+            $("#E_cod_material").val(xcod);
+            $("#E_descripcion_material").val(xdescripcion);
+            $("#E_p_num").val(xpnum);
+            $("#E_g_num").val(xgnum);
+            $('#editMaterial').modal('show');
+        }
+
+
+        $(document).ready(function () {
+
+           
+           
+              $('#btnGrabarMaterial').click(function (event) {
+
+                var form = $("#formNewMaterial");
+
+                if (form[0].checkValidity() === false) {
+                    event.preventDefault()
+                    event.stopPropagation()
+                    form.addClass('was-validated');
+                }
+                else {
+
+                    if ($('#cod_material').val() == "") {
+                        alert("You must enter the code material");
+                        $('#cod_material').focus();
+                        return;
+                    }
+
+                    if ($('#descripcion_material').val() == "") {
+                        alert('You must enter the material description');
+                        $('#descripcion_material').focus();
+                        return;
+                    }
+
+                    if ($('#p_num').val() == "") {
+                        alert('You must enter the p num');
+                        $('#p_num').focus();
+                        return;
+                    }
+
+                     if ($('#g_num').val() == "") {
+                        alert('You must select the g num');
+                        $('#g_num').focus();
+                        return;
+                    }
+
+                }
+
+                let material = {
+                    "cod_material": $('#cod_material').val().toUpperCase(),
+                    "descripcion_material": $('#descripcion_material').val().toUpperCase(),
+                    "p_num": $('#p_num').val().toUpperCase(),
+                    "g_num": $('#g_num').val().toUpperCase()                
+                };
+               console.log(material);
+               var data = JSON.stringify(material);
+               
+                $.ajax({
+                    type: "POST",
+                    url: '/Management/AddMaterial',
+                    contentType: 'application/json;charset=utf-8',
+                    dataType: 'json',
+                    async: true,
+                    data: data,
+                    success: function (result) {
+                        console.log(result)
+                    }
+                })
+                    .done(function (result) {
+                        if (result.exito) {
+                            alert(result.mensaje);
+                            $('#newMaterial').modal('hide');
+                            location.reload();
+                        }
+                        else {
+                            alert('Problems add a material, we ask that you try again!');
+                        }
+
+                    })
+                    .fail(function (jqXHR, textStatus, errorThrow) {
+                        var err = "Error: " + textStatus + " " + errorThrow;
+                        console.log(err);
+                    })
+
+            });
+
+
+             $('#btnEditMaterial').click(function (event) {
+
+                var form = $("#formEditMaterial");
+
+                if (form[0].checkValidity() === false) {
+                    event.preventDefault()
+                    event.stopPropagation()
+                    form.addClass('was-validated');
+                }
+                else {
+
+                    if ($('#E_cod_material').val() == "") {
+                        alert("You must enter the code material");
+                        $('#E_cod_material').focus();
+                        return;
+                    }
+
+                    if ($('#E_descripcion_material').val() == "") {
+                        alert('You must enter the material description');
+                        $('#E_descripcion_material').focus();
+                        return;
+                    }
+
+                    if ($('#E_p_num').val() == "") {
+                        alert('You must enter the p num');
+                        $('#E_p_num').focus();
+                        return;
+                    }
+
+                     if ($('#E_g_num').val() == "") {
+                        alert('You must select the g num');
+                        $('#E_g_num').focus();
+                        return;
+                    }
+
+                }
+
+               let material = {
+                    "id": $('#IdMaterial').val(),
+                    "cod_material": $('#E_cod_material').val().toUpperCase(),
+                    "descripcion_material": $('#E_descripcion_material').val().toUpperCase(),
+                    "p_num": $('#E_p_num').val().toUpperCase(),
+                    "g_num": $('#E_g_num').val().toUpperCase()                
+                };
+
+               
+               var data = JSON.stringify(material);
+               
+                $.ajax({
+                    type: "POST",
+                    url: '/Management/EditMaterial',
+                    contentType: 'application/json;charset=utf-8',
+                    dataType: 'json',
+                    async: true,
+                    data: data,
+                    success: function (result) {
+                        console.log(result)
+                    }
+                })
+                    .done(function (result) {
+                        if (result.exito) {
+                            alert(result.mensaje);
+                            $('#editMaterial').modal('hide');
+                            location.reload();
+                        }
+                        else {
+                            alert('Problems creating a edit material, we ask that you try again!');
+                        }
+
+                    })
+                    .fail(function (jqXHR, textStatus, errorThrow) {
+                        var err = "Error: " + textStatus + " " + errorThrow;
+                        console.log(err);
+                    })
+
+
+            });
+
+
+
+        });
+        
+        
+
+    </script>
+}
+
