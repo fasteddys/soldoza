@@ -41,6 +41,26 @@
           "controller": "Management",
           "action": "Materials",
           "text": "Materials"
+        },
+        {
+          "controller": "Management",
+          "action": "Zones",
+          "text": "Zones"
+        },
+        {
+          "controller": "Management",
+          "action": "Sides",
+          "text": "Sides"
+        },
+        {
+          "controller": "Management",
+          "action": "RENDS",
+          "text": "Results END"
+        },
+        {
+          "controller": "Management",
+          "action": "PosSol",
+          "text": "Welding Position"
         }
       ]
     }

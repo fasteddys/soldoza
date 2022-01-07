@@ -16,6 +16,10 @@ namespace Infraestructure.Data.Model
         public DbSet<SOLDOZA_MST_TIPO_CONTACTO> tipocontacto { get; set; }
         public DbSet<SOLDOZA_MST_GRL_CONTACTOS> contactos { get; set; }
         public DbSet<SOLDOZA_MST_CONTACTOS_PROYECTO> contactosproyecto { get; set; }
+        public DbSet<SOLDOZA_MST_ZONAS> zonas { get; set; }
+        public DbSet<SOLDOZA_ADM_MST_LADOS> lados { get; set; }
+        public DbSet<SOLDOZA_MST_RESULT_END> rend { get; set; }
+        public DbSet<SOLDOZA_MST_POS_SOLDEO> posol { get; set; }
 
         public DbSet<SOLDOZA_MST_MATERIALES> materiales { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -32,6 +36,10 @@ namespace Infraestructure.Data.Model
             modelBuilder.Entity<SOLDOZA_MST_TIPO_CONTACTO>().HasKey(t => new { t.id });
             modelBuilder.Entity<SOLDOZA_MST_GRL_CONTACTOS>().HasKey(t => new { t.id });
             modelBuilder.Entity<SOLDOZA_MST_CONTACTOS_PROYECTO>().HasKey(cp => new { cp.contacto_id, cp.proyecto_id });
+            modelBuilder.Entity<SOLDOZA_MST_ZONAS>().HasKey(t => new { t.id });
+            modelBuilder.Entity<SOLDOZA_ADM_MST_LADOS>().HasKey(t => new { t.id });
+            modelBuilder.Entity<SOLDOZA_MST_RESULT_END>().HasKey(t => new { t.id });
+            modelBuilder.Entity<SOLDOZA_MST_POS_SOLDEO>().HasKey(t => new { t.id });
 
 
             modelBuilder.Entity<SOLDOZA_MST_TIPO_DOCUMENTO>().HasMany(u => u.clientes).WithOne(u => u.tipodocumento).HasForeignKey(u => u.tipo_documento_id);

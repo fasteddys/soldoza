@@ -49,6 +49,10 @@ namespace AspStudio
             services.AddTransient<ISOLDOZA_MST_TIPO_CONTACTO, R_SOLDOZA_MST_TIPO_CONTACTO>();
             services.AddTransient<ISOLDOZA_MST_GRL_CONTACTOS, R_SOLDOZA_MST_GRL_CONTACTOS>();
             services.AddTransient<ISOLDOZA_MST_CONTACTOS_PROYECTO, R_SOLDOZA_MST_CONTACTOS_PROYECTO>();
+            services.AddTransient<ISOLDOZA_MST_ZONAS, R_SOLDOZA_MST_ZONAS>();
+            services.AddTransient<ISOLDOZA_ADM_MST_LADOS, R_SOLDOZA_ADM_MST_LADOS>();
+            services.AddTransient<ISOLDOZA_MST_RESULT_END, R_SOLDOZA_MST_RESULT_END>();
+            services.AddTransient<ISOLDOZA_MST_POS_SOLDEO, R_SOLDOZA_MST_POS_SOLDEO>();
 
             services.AddMemoryCache();
 

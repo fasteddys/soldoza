@@ -1,46 +1,37 @@
 ﻿using Domain.Entities;
 using Domain.Interfaces;
 using Infraestructure.Data.Model;
-using Microsoft.EntityFrameworkCore;
-using Npgsql;
 using System;
 using System.Collections.Generic;
-using System.Data;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Infraestructure.Data.Repositories
 {
-    public class R_SOLDOZA_MST_MATERIALES : ISOLDOZA_MST_MATERIALES
+    public class R_SOLDOZA_MST_POS_SOLDEO : ISOLDOZA_MST_POS_SOLDEO
     {
         private readonly ApplicationDbContext _context;
-        public R_SOLDOZA_MST_MATERIALES(ApplicationDbContext context)
+
+        public R_SOLDOZA_MST_POS_SOLDEO(ApplicationDbContext context)
         {
             _context = context;
         }
-
-        private string sql;
-        public Task<IEnumerable<SOLDOZA_MST_MATERIALES>> GetAll()
+        public IEnumerable<SOLDOZA_MST_POS_SOLDEO> GetAll()
         {
-            var materiales = _context.materiales;
-            return Task.FromResult(materiales.AsEnumerable<SOLDOZA_MST_MATERIALES>());
+            return _context.posol;
         }
 
-       
-        public bool Insert(SOLDOZA_MST_MATERIALES material)
+        public bool Insert(SOLDOZA_MST_POS_SOLDEO posol)
         {
             try
             {
-                if (material == null)
+                if (posol == null)
                 {
                     return false;
                 }
 
-                _context.Add(material);
+                _context.Add(posol);
                 _context.SaveChanges(true);
                 return true;
-
 
             }
             catch
@@ -49,16 +40,16 @@ namespace Infraestructure.Data.Repositories
             }
         }
 
-        public bool Update(SOLDOZA_MST_MATERIALES material)
+        public bool Update(SOLDOZA_MST_POS_SOLDEO posol)
         {
             try
             {
-                if (material == null)
+                if (posol == null)
                 {
                     return false;
                 }
 
-                _context.Update(material);
+                _context.Update(posol);
                 _context.SaveChanges(true);
                 return true;
             }
@@ -66,7 +57,6 @@ namespace Infraestructure.Data.Repositories
             {
                 return false;
             }
-
         }
     }
 }

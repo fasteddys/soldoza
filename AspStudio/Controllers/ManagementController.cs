@@ -28,11 +28,16 @@ namespace AspStudio.Controllers
         private readonly ISOLDOZA_MST_TIPO_CONTACTO _tipocontacto;
         private readonly ISOLDOZA_MST_CONTACTOS_PROYECTO _contactosproyecto;
         private readonly ISOLDOZA_MST_MATERIALES _materiales;
+        private readonly ISOLDOZA_MST_ZONAS _zonas;
+        private readonly ISOLDOZA_ADM_MST_LADOS _lados;
+        private readonly ISOLDOZA_MST_RESULT_END _rends;
+        private readonly ISOLDOZA_MST_POS_SOLDEO _posol;
 
         public ManagementController(ILogger<HomeController> logger, ApplicationDbContext context,
                                     ISOLDOZA_MST_GRL_CLIENTES clientes, ISOLDOZA_MST_PAIS paises, ISOLDOZA_MST_TIPO_DOCUMENTO tipodocumentos,
                                     ISOLDOZA_MST_GRL_PROYECTOS proyectos, ISOLDOZA_MST_GRL_CONTACTOS contactos, ISOLDOZA_MST_TIPO_CONTACTO tipocontacto,
-                                    ISOLDOZA_MST_CONTACTOS_PROYECTO contactosproyecto, ISOLDOZA_MST_MATERIALES materiales)
+                                    ISOLDOZA_MST_CONTACTOS_PROYECTO contactosproyecto, ISOLDOZA_MST_MATERIALES materiales, ISOLDOZA_MST_ZONAS zonas, 
+                                    ISOLDOZA_ADM_MST_LADOS lados, ISOLDOZA_MST_RESULT_END rends, ISOLDOZA_MST_POS_SOLDEO posol)
         {
             _logger = logger;
             _context = context;
@@ -44,6 +49,10 @@ namespace AspStudio.Controllers
             _tipocontacto = tipocontacto;
             _contactosproyecto = contactosproyecto;
             _materiales = materiales;
+            _zonas = zonas;
+            _lados = lados;
+            _rends = rends;
+            _posol = posol;
         }
 
         public IActionResult Index()
@@ -86,6 +95,27 @@ namespace AspStudio.Controllers
             var materials = await _materiales.GetAll();
             return View(materials);
         }
+        public  IActionResult Zones()
+        {
+            var zone = _zonas.GetAll();
+            return View(zone);
+        }
+        public IActionResult Sides()
+        {
+            var side = _lados.GetAll();
+            return View(side);
+        }
+        public IActionResult REnds()
+        {
+            var rend = _rends.GetAll();
+            return View(rend);
+        }
+        public IActionResult PosSol()
+        {
+            var posol =_posol.GetAll();
+            return View(posol);
+        }
+
 
         [HttpPost]
         public IActionResult AddCustomer([FromBody] SOLDOZA_MST_GRL_CLIENTES customer)
@@ -424,5 +454,172 @@ namespace AspStudio.Controllers
             }
         }
 
+        [HttpPost]
+        public IActionResult AddZone([FromBody] SOLDOZA_MST_ZONAS zone)
+        {
+            if (zone == null)
+            {
+                return View("Zones");
+            }
+
+
+
+            bool result = _zonas.Insert(zone);
+            if (result)
+            {
+                return Json(new { exito = true, mensaje = "Successfully added zone" });
+            }
+            else
+            {
+                return Json(new { exito = false, mensaje = "Error" });
+            }
+        }
+
+        [HttpPost]
+        public IActionResult EditZone([FromBody] SOLDOZA_MST_ZONAS zone)
+        {
+            if (zone == null)
+            {
+                return View("Zones");
+            }
+
+
+
+            bool result = _zonas.Update(zone);
+            if (result)
+            {
+                return Json(new { exito = true, mensaje = "Successfully edit zone" });
+            }
+            else
+            {
+                return Json(new { exito = false, mensaje = "Error" });
+            }
+        }
+
+        [HttpPost]
+        public IActionResult AddSide([FromBody] SOLDOZA_ADM_MST_LADOS side)
+        {
+            if (side == null)
+            {
+                return View("Sides");
+            }
+
+
+
+            bool result = _lados.Insert(side);
+            if (result)
+            {
+                return Json(new { exito = true, mensaje = "Successfully added side" });
+            }
+            else
+            {
+                return Json(new { exito = false, mensaje = "Error" });
+            }
+        }
+
+        [HttpPost]
+        public IActionResult EditSide([FromBody] SOLDOZA_ADM_MST_LADOS side)
+        {
+            if (side == null)
+            {
+                return View("Sides");
+            }
+
+
+
+            bool result = _lados.Update(side);
+            if (result)
+            {
+                return Json(new { exito = true, mensaje = "Successfully edit side" });
+            }
+            else
+            {
+                return Json(new { exito = false, mensaje = "Error" });
+            }
+        }
+
+        [HttpPost]
+        public IActionResult AddREND([FromBody] SOLDOZA_MST_RESULT_END rend)
+        {
+            if (rend == null)
+            {
+                return View("RENDS");
+            }
+
+
+
+            bool result = _rends.Insert(rend);
+            if (result)
+            {
+                return Json(new { exito = true, mensaje = "Successfully added result" });
+            }
+            else
+            {
+                return Json(new { exito = false, mensaje = "Error" });
+            }
+        }
+
+        [HttpPost]
+        public IActionResult EditREND([FromBody] SOLDOZA_MST_RESULT_END rend)
+        {
+            if (rend == null)
+            {
+                return View("RENDS");
+            }
+
+
+
+            bool result = _rends.Update(rend);
+            if (result)
+            {
+                return Json(new { exito = true, mensaje = "Successfully edit result" });
+            }
+            else
+            {
+                return Json(new { exito = false, mensaje = "Error" });
+            }
+        }
+
+        [HttpPost]
+        public IActionResult AddPOSSOL([FromBody] SOLDOZA_MST_POS_SOLDEO posol)
+        {
+            if (posol == null)
+            {
+                return View("POSSOL");
+            }
+
+
+
+            bool result = _posol.Insert(posol);
+            if (result)
+            {
+                return Json(new { exito = true, mensaje = "Successfully added welding position" });
+            }
+            else
+            {
+                return Json(new { exito = false, mensaje = "Error" });
+            }
+        }
+
+        [HttpPost]
+        public IActionResult EditPOSSOL([FromBody] SOLDOZA_MST_POS_SOLDEO posol)
+        {
+            if (posol == null)
+            {
+                return View("POSSOL");
+            }
+
+
+
+            bool result = _posol.Update(posol);
+            if (result)
+            {
+                return Json(new { exito = true, mensaje = "Successfully edit welding position" });
+            }
+            else
+            {
+                return Json(new { exito = false, mensaje = "Error" });
+            }
+        }
     }
 }
