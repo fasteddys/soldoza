@@ -18,7 +18,7 @@ namespace AspStudio.Controllers
 {
     public class ManagementController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
+        private readonly ILogger<ManagementController> _logger;
         private readonly ApplicationDbContext _context;
         private readonly ISOLDOZA_MST_GRL_CLIENTES _clientes;
         private readonly ISOLDOZA_MST_PAIS _paises;
@@ -32,12 +32,25 @@ namespace AspStudio.Controllers
         private readonly ISOLDOZA_ADM_MST_LADOS _lados;
         private readonly ISOLDOZA_MST_RESULT_END _rends;
         private readonly ISOLDOZA_MST_POS_SOLDEO _posol;
+        private readonly ISOLDOZA_MST_LUGAR_SOLDEO _lugsol;
+        private readonly ISOLDOZA_MST_END _ennode;
+        private readonly ISOLDOZA_MST_DIS_SOLDADURA _dissol;
+        private readonly ISOLDOZA_MST_PROC_SOLDADURA _procsol;
+        private readonly ISOLDOZA_MST_TIPO_JUNTA _tipjun;
+        private readonly ISOLDOZA_MST_SUBZONAS _subzona;
+        private readonly ISOLDOZA_ADM_MST_CONSU_MARCA _consumar;
+        private readonly ISOLDOZA_ADM_MST_CONSU_FABRICANTE _consufab;
+        private readonly ISOLDOZA_ADM_MST_CONSU_CLASF_AWS _consuclasfaws;
+        private readonly ISOLDOZA_MST_CONSUMIBLES _consumible;
 
-        public ManagementController(ILogger<HomeController> logger, ApplicationDbContext context,
+        public ManagementController(ILogger<ManagementController> logger, ApplicationDbContext context,
                                     ISOLDOZA_MST_GRL_CLIENTES clientes, ISOLDOZA_MST_PAIS paises, ISOLDOZA_MST_TIPO_DOCUMENTO tipodocumentos,
                                     ISOLDOZA_MST_GRL_PROYECTOS proyectos, ISOLDOZA_MST_GRL_CONTACTOS contactos, ISOLDOZA_MST_TIPO_CONTACTO tipocontacto,
                                     ISOLDOZA_MST_CONTACTOS_PROYECTO contactosproyecto, ISOLDOZA_MST_MATERIALES materiales, ISOLDOZA_MST_ZONAS zonas, 
-                                    ISOLDOZA_ADM_MST_LADOS lados, ISOLDOZA_MST_RESULT_END rends, ISOLDOZA_MST_POS_SOLDEO posol)
+                                    ISOLDOZA_ADM_MST_LADOS lados, ISOLDOZA_MST_RESULT_END rends, ISOLDOZA_MST_POS_SOLDEO posol, ISOLDOZA_MST_LUGAR_SOLDEO lugsol,
+                                    ISOLDOZA_MST_END ennode, ISOLDOZA_MST_DIS_SOLDADURA dissol, ISOLDOZA_MST_PROC_SOLDADURA procsol, ISOLDOZA_MST_TIPO_JUNTA tipjun,
+                                    ISOLDOZA_MST_SUBZONAS subzona, ISOLDOZA_ADM_MST_CONSU_MARCA consumar, ISOLDOZA_ADM_MST_CONSU_FABRICANTE consufab,
+                                    ISOLDOZA_ADM_MST_CONSU_CLASF_AWS consuclasfaws, ISOLDOZA_MST_CONSUMIBLES consumible)
         {
             _logger = logger;
             _context = context;
@@ -53,6 +66,16 @@ namespace AspStudio.Controllers
             _lados = lados;
             _rends = rends;
             _posol = posol;
+            _lugsol = lugsol;
+            _ennode = ennode;
+            _dissol = dissol;
+            _procsol = procsol;
+            _tipjun = tipjun;
+            _subzona = subzona;
+            _consumar = consumar;
+            _consufab = consufab;
+            _consuclasfaws = consuclasfaws;
+            _consumible = consumible;
         }
 
         public IActionResult Index()
@@ -115,6 +138,61 @@ namespace AspStudio.Controllers
             var posol =_posol.GetAll();
             return View(posol);
         }
+        public IActionResult LugSol()
+        {
+            var lugsol = _lugsol .GetAll();
+            return View(lugsol);
+        }
+        public IActionResult EnNoDe()
+        {
+            var ennode = _ennode.GetAll();
+            return View(ennode);
+        }
+        public IActionResult DisSol()
+        {
+            var dissol = _dissol.GetAll();
+            return View(dissol);
+        }
+        public IActionResult ProcSol()
+        {
+            var procsol = _procsol.GetAll();
+            return View(procsol);
+        }
+        public IActionResult TipJun()
+        {
+            var tipjun = _tipjun.GetAll();
+            return View(tipjun);
+        }
+        public async Task<IActionResult> SubZones()
+        {
+            var zonas = _zonas.GetAll();
+            var subzona = await _subzona.GetAll();
+
+            ViewBag.zonaslist = zonas;
+            return View(subzona);
+        }
+        public IActionResult ConsuMar()
+        {
+            var consumar = _consumar.GetAll();
+            return View(consumar);
+        }
+        public IActionResult ConsuFab()
+        {
+            var consufab = _consufab.GetAll();
+            return View(consufab);
+        }
+        public IActionResult ConsuClasfaws()
+        {
+            var consuclasfaws = _consuclasfaws.GetAll();
+            return View(consuclasfaws);
+        }
+        public IActionResult Consumible()
+        {
+            var consumible = _consumible.GetAll();
+            return View(consumible);
+        }
+
+
 
 
         [HttpPost]
@@ -615,6 +693,410 @@ namespace AspStudio.Controllers
             if (result)
             {
                 return Json(new { exito = true, mensaje = "Successfully edit welding position" });
+            }
+            else
+            {
+                return Json(new { exito = false, mensaje = "Error" });
+            }
+        }
+
+        [HttpPost]
+        public IActionResult AddLUGSOL([FromBody] SOLDOZA_MST_LUGAR_SOLDEO lugsol)
+        {
+            if (lugsol == null)
+            {
+                return View("POSSOL");
+            }
+
+
+
+            bool result = _lugsol.Insert(lugsol);
+            if (result)
+            {
+                return Json(new { exito = true, mensaje = "Successfully added welding place" });
+            }
+            else
+            {
+                return Json(new { exito = false, mensaje = "Error" });
+            }
+        }
+
+        [HttpPost]
+        public IActionResult EditLUGSOL([FromBody] SOLDOZA_MST_LUGAR_SOLDEO lugsol)
+        {
+            if (lugsol == null)
+            {
+                return View("POSSOL");
+            }
+
+
+
+            bool result = _lugsol.Update(lugsol);
+            if (result)
+            {
+                return Json(new { exito = true, mensaje = "Successfully edit welding place" });
+            }
+            else
+            {
+                return Json(new { exito = false, mensaje = "Error" });
+            }
+        }
+
+        [HttpPost]
+        public IActionResult AddENNODE([FromBody] SOLDOZA_MST_END ennode)
+        {
+            if (ennode == null)
+            {
+                return View("ENNODE");
+            }
+
+
+
+            bool result = _ennode.Insert(ennode);
+            if (result)
+            {
+                return Json(new { exito = true, mensaje = "Successfully added non-destructive testing" });
+            }
+            else
+            {
+                return Json(new { exito = false, mensaje = "Error" });
+            }
+        }
+
+        [HttpPost]
+        public IActionResult EditENNODE([FromBody] SOLDOZA_MST_END ennode)
+        {
+            if (ennode == null)
+            {
+                return View("ENNODE");
+            }
+
+
+
+            bool result = _ennode.Update(ennode);
+            if (result)
+            {
+                return Json(new { exito = true, mensaje = "Successfully edit non-destructive testing" });
+            }
+            else
+            {
+                return Json(new { exito = false, mensaje = "Error" });
+            }
+        }
+
+        [HttpPost]
+        public IActionResult AddDISSOL([FromBody] SOLDOZA_MST_DIS_SOLDADURA dissol)
+        {
+            if (dissol == null)
+            {
+                return View("DISSOL");
+            }
+
+
+
+            bool result = _dissol.Insert(dissol);
+            if (result)
+            {
+                return Json(new { exito = true, mensaje = "Successfully added welding design" });
+            }
+            else
+            {
+                return Json(new { exito = false, mensaje = "Error" });
+            }
+        }
+
+        [HttpPost]
+        public IActionResult EditDISSOL([FromBody] SOLDOZA_MST_DIS_SOLDADURA dissol)
+        {
+            if (dissol == null)
+            {
+                return View("DISSOL");
+            }
+
+
+
+            bool result = _dissol.Update(dissol);
+            if (result)
+            {
+                return Json(new { exito = true, mensaje = "Successfully edit welding design" });
+            }
+            else
+            {
+                return Json(new { exito = false, mensaje = "Error" });
+            }
+        }
+
+        [HttpPost]
+        public IActionResult AddPROCSOL([FromBody] SOLDOZA_MST_PROC_SOLDADURA procsol)
+        {
+            if (procsol == null)
+            {
+                return View("PROCSOL");
+            }
+
+
+
+            bool result = _procsol.Insert(procsol);
+            if (result)
+            {
+                return Json(new { exito = true, mensaje = "Successfully added welding process" });
+            }
+            else
+            {
+                return Json(new { exito = false, mensaje = "Error" });
+            }
+        }
+
+        [HttpPost]
+        public IActionResult EditPROCSOL([FromBody] SOLDOZA_MST_PROC_SOLDADURA procsol)
+        {
+            if (procsol == null)
+            {
+                return View("PROCSOL");
+            }
+
+
+
+            bool result = _procsol.Update(procsol);
+            if (result)
+            {
+                return Json(new { exito = true, mensaje = "Successfully edit welding process" });
+            }
+            else
+            {
+                return Json(new { exito = false, mensaje = "Error" });
+            }
+        }
+
+        [HttpPost]
+        public IActionResult AddTIPJUN([FromBody] SOLDOZA_MST_TIPO_JUNTA tipjun)
+        {
+            if (tipjun == null)
+            {
+                return View("TIPJUN");
+            }
+
+
+
+            bool result = _tipjun.Insert(tipjun);
+            if (result)
+            {
+                return Json(new { exito = true, mensaje = "Successfully added joint type" });
+            }
+            else
+            {
+                return Json(new { exito = false, mensaje = "Error" });
+            }
+        }
+
+        [HttpPost]
+        public IActionResult EditTIPJUN([FromBody] SOLDOZA_MST_TIPO_JUNTA tipjun)
+        {
+            if (tipjun == null)
+            {
+                return View("TIPJUN");
+            }
+
+
+
+            bool result = _tipjun.Update(tipjun);
+            if (result)
+            {
+                return Json(new { exito = true, mensaje = "Successfully edit joint type" });
+            }
+            else
+            {
+                return Json(new { exito = false, mensaje = "Error" });
+            }
+        }
+
+        [HttpPost]
+        public IActionResult AddSUBZONA([FromBody] SOLDOZA_MST_SUBZONAS subzona)
+        {
+            if (subzona == null)
+            {
+                return View("NPLAN");
+            }
+
+            bool result = _subzona.Insert(subzona);
+            if (result)
+            {
+                return Json(new { exito = true, mensaje = "Successfully added plan" });
+            }
+            else
+            {
+                return Json(new { exito = false, mensaje = "Error" });
+            }
+        }
+
+        [HttpPost]
+        public IActionResult EditSUBZONA([FromBody] SOLDOZA_MST_SUBZONAS subzona)
+        {
+            if (subzona == null)
+            {
+                return View("NPLAN");
+            }
+
+            bool result = _subzona.Update(subzona);
+            if (result)
+            {
+                return Json(new { exito = true, mensaje = "Successfully edit plan" });
+            }
+            else
+            {
+                return Json(new { exito = false, mensaje = "Error" });
+            }
+        }
+
+        [HttpPost]
+        public IActionResult AddCONSUMAR([FromBody] SOLDOZA_ADM_MST_CONSU_MARCA consumar)
+        {
+            if (consumar == null)
+            {
+                return View("CONSUMAR");
+            }
+
+
+
+            bool result = _consumar.Insert(consumar);
+            if (result)
+            {
+                return Json(new { exito = true, mensaje = "Successfully added brand" });
+            }
+            else
+            {
+                return Json(new { exito = false, mensaje = "Error" });
+            }
+        }
+
+        [HttpPost]
+        public IActionResult EditCONSUMAR([FromBody] SOLDOZA_ADM_MST_CONSU_MARCA consumar)
+        {
+            if (consumar == null)
+            {
+                return View("CONSUMAR");
+            }
+
+
+
+            bool result = _consumar.Update(consumar);
+            if (result)
+            {
+                return Json(new { exito = true, mensaje = "Successfully edit brand" });
+            }
+            else
+            {
+                return Json(new { exito = false, mensaje = "Error" });
+            }
+        }
+
+        [HttpPost]
+        public IActionResult AddCONSUFAB([FromBody] SOLDOZA_ADM_MST_CONSU_FABRICANTE consufab)
+        {
+            if (consufab == null)
+            {
+                return View("CONSUFAB");
+            }
+
+            bool result = _consufab.Insert(consufab);
+            if (result)
+            {
+                return Json(new { exito = true, mensaje = "Successfully added manufacturer" });
+            }
+            else
+            {
+                return Json(new { exito = false, mensaje = "Error" });
+            }
+        }
+
+        [HttpPost]
+        public IActionResult EditCONSUFAB([FromBody] SOLDOZA_ADM_MST_CONSU_FABRICANTE consufab)
+        {
+            if (consufab == null)
+            {
+                return View("CONSUFAB");
+            }
+
+            bool result = _consufab.Update(consufab);
+            if (result)
+            {
+                return Json(new { exito = true, mensaje = "Successfully edit manufacturer" });
+            }
+            else
+            {
+                return Json(new { exito = false, mensaje = "Error" });
+            }
+        }
+
+        [HttpPost]
+        public IActionResult AddCONSUCLASFAWS([FromBody] SOLDOZA_ADM_MST_CONSU_CLASF_AWS consuclasfaws)
+        {
+            if (consuclasfaws == null)
+            {
+                return View("CONSUCLASFAWS");
+            }
+
+            bool result = _consuclasfaws.Insert(consuclasfaws);
+            if (result)
+            {
+                return Json(new { exito = true, mensaje = "Successfully added AWS classification" });
+            }
+            else
+            {
+                return Json(new { exito = false, mensaje = "Error" });
+            }
+        }
+
+        [HttpPost]
+        public IActionResult EditCONSUCLASFAWS([FromBody] SOLDOZA_ADM_MST_CONSU_CLASF_AWS consuclasfaws)
+        {
+            if (consuclasfaws == null)
+            {
+                return View("CONSUCLASFAWS");
+            }
+
+            bool result = _consuclasfaws.Update(consuclasfaws);
+            if (result)
+            {
+                return Json(new { exito = true, mensaje = "Successfully edit AWS classification" });
+            }
+            else
+            {
+                return Json(new { exito = false, mensaje = "Error" });
+            }
+        }
+
+        [HttpPost]
+        public IActionResult AddCONSUMIBLE([FromBody] SOLDOZA_MST_CONSUMIBLES consumible)
+        {
+            if (consumible == null)
+            {
+                return View("CONSUMIBLE");
+            }
+
+            bool result = _consumible.Insert(consumible);
+            if (result)
+            {
+                return Json(new { exito = true, mensaje = "Successfully added consumible" });
+            }
+            else
+            {
+                return Json(new { exito = false, mensaje = "Error" });
+            }
+        }
+
+        [HttpPost]
+        public IActionResult EditCONSUMIBLE([FromBody] SOLDOZA_MST_CONSUMIBLES consumible)
+        {
+            if (consumible == null)
+            {
+                return View("CONSUMIBLE");
+            }
+
+            bool result = _consumible.Update(consumible);
+            if (result)
+            {
+                return Json(new { exito = true, mensaje = "Successfully edit consumible" });
             }
             else
             {

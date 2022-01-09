@@ -20,6 +20,18 @@ namespace Infraestructure.Data.Model
         public DbSet<SOLDOZA_ADM_MST_LADOS> lados { get; set; }
         public DbSet<SOLDOZA_MST_RESULT_END> rend { get; set; }
         public DbSet<SOLDOZA_MST_POS_SOLDEO> posol { get; set; }
+        public DbSet<SOLDOZA_MST_LUGAR_SOLDEO> lusol { get; set; }
+        public DbSet<SOLDOZA_MST_END> enode { get; set; }
+        public DbSet<SOLDOZA_MST_DIS_SOLDADURA> disol { get; set; }
+        public DbSet<SOLDOZA_MST_PROC_SOLDADURA> prosol { get; set; }
+        public DbSet<SOLDOZA_MST_TIPO_JUNTA> tijun { get; set; }
+        public DbSet<SOLDOZA_MST_PLANOS> planos { get; set; }
+        public DbSet<SOLDOZA_MST_SUBZONAS> suzona { get; set; }
+        public DbSet<SOLDOZA_ADM_MST_CONSU_MARCA> comar { get; set; }
+        public DbSet<SOLDOZA_ADM_MST_CONSU_FABRICANTE> cofab { get; set; }
+        public DbSet<SOLDOZA_ADM_MST_CONSU_CLASF_AWS> coclasfaws { get; set; }
+        public DbSet<SOLDOZA_MST_CONSUMIBLES> consu { get; set; }
+
 
         public DbSet<SOLDOZA_MST_MATERIALES> materiales { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -40,6 +52,17 @@ namespace Infraestructure.Data.Model
             modelBuilder.Entity<SOLDOZA_ADM_MST_LADOS>().HasKey(t => new { t.id });
             modelBuilder.Entity<SOLDOZA_MST_RESULT_END>().HasKey(t => new { t.id });
             modelBuilder.Entity<SOLDOZA_MST_POS_SOLDEO>().HasKey(t => new { t.id });
+            modelBuilder.Entity<SOLDOZA_MST_LUGAR_SOLDEO>().HasKey(t => new { t.id });
+            modelBuilder.Entity<SOLDOZA_MST_END>().HasKey(t => new { t.id });
+            modelBuilder.Entity<SOLDOZA_MST_DIS_SOLDADURA>().HasKey(t => new { t.id });
+            modelBuilder.Entity<SOLDOZA_MST_PROC_SOLDADURA>().HasKey(t => new { t.id });
+            modelBuilder.Entity<SOLDOZA_MST_TIPO_JUNTA>().HasKey(t => new { t.id });
+            modelBuilder.Entity<SOLDOZA_MST_PLANOS>().HasKey(t => new { t.id });
+            modelBuilder.Entity<SOLDOZA_MST_SUBZONAS>().HasKey(t => new { t.id });
+            modelBuilder.Entity<SOLDOZA_ADM_MST_CONSU_MARCA>().HasKey(t => new { t.id });
+            modelBuilder.Entity<SOLDOZA_ADM_MST_CONSU_FABRICANTE>().HasKey(t => new { t.id });
+            modelBuilder.Entity<SOLDOZA_ADM_MST_CONSU_CLASF_AWS>().HasKey(t => new { t.id });
+            modelBuilder.Entity<SOLDOZA_MST_CONSUMIBLES>().HasKey(t => new { t.id });
 
 
             modelBuilder.Entity<SOLDOZA_MST_TIPO_DOCUMENTO>().HasMany(u => u.clientes).WithOne(u => u.tipodocumento).HasForeignKey(u => u.tipo_documento_id);
@@ -49,7 +72,13 @@ namespace Infraestructure.Data.Model
             modelBuilder.Entity<SOLDOZA_MST_GRL_CONTACTOS>().HasMany(u => u.contactos).WithOne(u => u.contacto).HasForeignKey(u => u.contacto_id);
             modelBuilder.Entity<SOLDOZA_MST_GRL_PROYECTOS>().HasMany(u => u.contactos).WithOne(u => u.proyecto).HasForeignKey(u => u.proyecto_id);
             modelBuilder.Entity<SOLDOZA_MST_TIPO_CONTACTO>().HasMany(u => u.contactos).WithOne(u => u.tipocontacto).HasForeignKey(u => u.tipo_contacto_id);
-          
+            modelBuilder.Entity<SOLDOZA_MST_GRL_PROYECTOS>().HasMany(u => u.planos).WithOne(u => u.proyecto).HasForeignKey(u => u.proyecto_id);
+            modelBuilder.Entity<SOLDOZA_MST_ZONAS>().HasMany(u => u.subzona).WithOne(u => u.zona).HasForeignKey(u => u.zona_id);
+            modelBuilder.Entity<SOLDOZA_ADM_MST_CONSU_MARCA>().HasMany(u => u.consu).WithOne(u => u.marca).HasForeignKey(u => u.marca_id);
+            modelBuilder.Entity<SOLDOZA_ADM_MST_CONSU_FABRICANTE>().HasMany(u => u.consu).WithOne(u => u.fabricante).HasForeignKey(u => u.fabricante_id);
+            modelBuilder.Entity<SOLDOZA_ADM_MST_CONSU_CLASF_AWS>().HasMany(u => u.consu).WithOne(u => u.clasf_aws).HasForeignKey(u => u.clasf_aws_id);
+            modelBuilder.Entity<SOLDOZA_MST_PROC_SOLDADURA>().HasMany(u => u.consu).WithOne(u => u.proc_soldadura).HasForeignKey(u => u.proc_soldadura_id);
+
 
             //modelBuilder.Entity<Categoria>().HasMany(c => c.catalogos).WithOne(c => c.categoria).HasForeignKey(c => c.categoriaID).IsRequired();
 

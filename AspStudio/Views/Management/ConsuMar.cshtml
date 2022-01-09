@@ -1,0 +1,316 @@
+﻿@using Domain.Entities;
+@model IEnumerable<SOLDOZA_ADM_MST_CONSU_MARCA>
+@{
+    ViewData["Title"] = "Brand";
+    //ViewData["Title"] = "Non-Destructive Test Results";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+@section Styles {
+    <link href="~/lib/datatables.net-bs4/css/dataTables.bootstrap4.min.css" rel="stylesheet" />
+    <link href="~/lib/datatables.net-buttons-bs4/css/buttons.bootstrap4.min.css" rel="stylesheet" />
+    <link href="~/lib/datatables.net-responsive-bs4/css/responsive.bootstrap4.min.css" rel="stylesheet" />
+    <link href="~/lib/bootstrap-table/dist/bootstrap-table.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/tom-select@2.0.0/dist/css/tom-select.css" rel="stylesheet">
+
+}
+
+<ul class="breadcrumb">
+    <li class="breadcrumb-item text-warning"><a href="#" class="text-warning">MANAGEMENT</a></li>
+    <li class="breadcrumb-item text-gray-900 active">Brand</li>
+</ul>
+
+<h1 class="page-header">
+    List Brand <small>page header description goes here...</small>
+</h1>
+
+<button type="button" class="btn bg-warning me-2 " data-bs-toggle="modal" data-bs-target="#newCONSUMAR">New Brand</button>
+
+<div class="card">
+    <div class="card-body">
+        <table id="datatableCONSUMAR" class="table text-nowrap">
+            <thead>
+                <tr>
+                    <th>Code</th>
+                    <th>Description</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.Count() > 0)
+                {
+                    foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@item.cod_marca</td>
+                            <td>@item.descripcion_marca</td>
+                            <td>
+                                <a class="btn btn-outline-warning btn-sm" href="#" role="button" onclick="ModalEditCONSUMAR(@item.id,'@item.cod_marca','@item.descripcion_marca');">Edit</a>
+                            </td>
+                        </tr>
+                    }
+                }
+
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+<!-- modal New Project -->
+<div class="modal fade" id="newCONSUMAR">
+    <div class="modal-dialog modal-lg">
+        <form method="post" id="formNewCONSUMAR">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">New Brand</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+
+                    <div class="form-group">
+                        <label for="cod_marca">Brand Code</label>
+                        <input type="text" class="form-control" id="cod_marca" placeholder="Enter the brand code" autocomplete="off" style="text-transform:uppercase;" />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="descripcion_marca">Descripcion Brand</label>
+                        <input type="text" class="form-control" id="descripcion_marca" placeholder="Enter the brand description" autocomplete="off" style="text-transform:uppercase;" />
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn bg-dark text-white" id="btnGrabarCONSUMAR">Save</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- modal Edit Contact -->
+<div class="modal fade" id="EditCONSUMAR">
+    <div class="modal-dialog modal-lg">
+        <form method="post" id="formEditCONSUMAR">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit Brand</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <input type="hidden" id="IdCONSUMAR" />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="E_cod_marca">Brand Code</label>
+                        <input type="text" class="form-control" id="E_cod_marca" placeholder="Enter the brand code" autocomplete="off" style="text-transform:uppercase;" />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="E_descripcion_marca">Descripcion Brand</label>
+                        <input type="text" class="form-control" id="E_descripcion_marca" placeholder="Enter the brand description" autocomplete="off" style="text-transform:uppercase;" />
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn bg-dark text-white" id="btnEditCONSUMAR">Save</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+
+@section Scripts{
+
+    <script src="~/lib/highlight.js/highlight.min.js"></script>
+    <script src="~/js/demo/highlightjs.demo.js"></script>
+    <script src="~/lib/datatables.net/js/jquery.dataTables.min.js"></script>
+    <script src="~/lib/datatables.net-bs4/js/dataTables.bootstrap4.min.js"></script>
+    <script src="~/lib/datatables.net-buttons/js/dataTables.buttons.min.js"></script>
+
+    @*<script src="https://cdn.datatables.net/buttons/2.1.0/js/dataTables.buttons.min.js"></script>*@
+
+    <script src="~/lib/datatables.net-buttons/js/buttons.colVis.min.js"></script>
+    <script src="~/lib/datatables.net-buttons/js/buttons.flash.min.js"></script>
+    <script src="~/lib/datatables.net-buttons/js/buttons.html5.min.js"></script>
+    <script src="~/lib/datatables.net-buttons/js/buttons.print.min.js"></script>
+    <script src="~/lib/datatables.net-buttons/js/jszip.min.js"></script>
+    <script src="~/lib/datatables.net-buttons/js/pdfmake.min.js"></script>
+    <script src="~/lib/datatables.net-buttons/js/vfs_fonts.js"></script>
+    <script src="~/lib/datatables.net-buttons-bs4/js/buttons.bootstrap4.min.js"></script>
+
+    <script src="~/lib/datatables.net-responsive/js/dataTables.responsive.min.js"></script>
+    <script src="~/lib/datatables.net-responsive-bs4/js/responsive.bootstrap4.min.js"></script>
+    <script src="~/lib/bootstrap-table/dist/bootstrap-table.min.js"></script>
+    <script src="~/js/demo/table-plugins.demo.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/tom-select@2.0.0/dist/js/tom-select.complete.min.js"></script>
+
+
+    <script>
+
+        ///// DATATABLE /////////////
+
+        $('#datatableCONSUMAR').DataTable({
+            dom: "<'row mb-3'<'col-sm-4'l><'col-sm-12 text-end'<'d-flex justify-content-end'fB>>>t<'d-flex align-items-center'<'me-auto'i><'mb-0'p>>",
+            lengthMenu: [ 10, 20, 30, 40, 50 ],
+            responsive: true,
+            buttons: [
+              { extend: 'print', className: 'btn btn-default' },
+              { extend: 'pdfHtml5', className: 'btn btn-default' },
+              { extend: 'excelHtml5', className: 'btn btn-default' }
+            ]
+          });
+
+         ///// FUNCIONES  ///////
+
+        function ModalEditCONSUMAR(xid, xcod, xdescripcion) {
+            $("#IdCONSUMAR").val(xid);
+            $("#E_cod_marca").val(xcod);
+            $("#E_descripcion_marca").val(xdescripcion);
+            $('#EditCONSUMAR').modal('show');
+        }
+
+
+        $(document).ready(function () {
+
+
+
+            $('#btnGrabarCONSUMAR').click(function (event) {
+
+                var form = $("#formNewCONSUMAR");
+
+                if (form[0].checkValidity() === false) {
+                    event.preventDefault()
+                    event.stopPropagation()
+                    form.addClass('was-validated');
+                }
+                else {
+
+                    if ($('#cod_marca').val() == "") {
+                        alert("You must enter the brand code");
+                        $('#cod_marca').focus();
+                        return;
+                    }
+
+                    if ($('#descripcion_marca').val() == "") {
+                        alert('You must enter the brand description');
+                        $('#descripcion_marca').focus();
+                        return;
+                    }
+
+
+                }
+
+                let CONSUMAR = {
+                    "cod_marca": $('#cod_marca').val().toUpperCase(),
+                    "descripcion_marca": $('#descripcion_marca').val().toUpperCase()
+                };
+                var data = JSON.stringify(CONSUMAR);
+
+                $.ajax({
+                    type: "POST",
+                    url: '/Management/AddCONSUMAR',
+                    contentType: 'application/json;charset=utf-8',
+                    dataType: 'json',
+                    async: true,
+                    data: data,
+                    success: function (result) {
+                        console.log(result)
+                    }
+                })
+                    .done(function (result) {
+                        if (result.exito) {
+                            alert(result.mensaje);
+                            $('#newCONSUMAR').modal('hide');
+                            location.reload();
+                        }
+                        else {
+                            alert('Problems add a brand, we ask that you try again!');
+                        }
+
+                    })
+                    .fail(function (jqXHR, textStatus, errorThrow) {
+                        var err = "Error: " + textStatus + " " + errorThrow;
+                        console.log(err);
+                    })
+
+            });
+
+
+            $('#btnEditCONSUMAR').click(function (event) {
+
+                var form = $("#formEditCONSUMAR");
+
+                if (form[0].checkValidity() === false) {
+                    event.preventDefault()
+                    event.stopPropagation()
+                    form.addClass('was-validated');
+                }
+                else {
+
+                    if ($('#E_cod_marca').val() == "") {
+                        alert("You must enter the brand code");
+                        $('#E_cod_marca').focus();
+                        return;
+                    }
+
+                    if ($('#E_descripcion_marca').val() == "") {
+                        alert('You must enter the brand description');
+                        $('#E_descripcion_marca').focus();
+                        return;
+                    }
+                }
+
+                let CONSUMAR = {
+                   "id": $('#IdCONSUMAR').val(),
+                    "cod_marca": $('#E_cod_marca').val().toUpperCase(),
+                    "descripcion_marca": $('#E_descripcion_marca').val().toUpperCase()
+                };
+
+
+                var data = JSON.stringify(CONSUMAR);
+
+                $.ajax({
+                    type: "POST",
+                    url: '/Management/EditCONSUMAR',
+                    contentType: 'application/json;charset=utf-8',
+                    dataType: 'json',
+                    async: true,
+                    data: data,
+                    success: function (result) {
+                        console.log(result)
+                    }
+                })
+                    .done(function (result) {
+                        if (result.exito) {
+                            alert(result.mensaje);
+                            $('#EditCONSUMAR').modal('hide');
+                            location.reload();
+                        }
+                        else {
+                            alert('Problems creating a edit brand, we ask that you try again!');
+                        }
+
+                    })
+                    .fail(function (jqXHR, textStatus, errorThrow) {
+                        var err = "Error: " + textStatus + " " + errorThrow;
+                        console.log(err);
+                    })
+
+
+            });
+
+
+
+        });
+
+
+
+    </script>
+}
+

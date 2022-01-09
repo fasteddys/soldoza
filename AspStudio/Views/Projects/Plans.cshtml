@@ -1,0 +1,345 @@
+﻿@using Domain.Entities;
+@model IEnumerable<SOLDOZA_MST_PLANOS>
+@{
+    ViewData["Title"] = "Plans";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+@section Styles {
+    <link href="~/lib/datatables.net-bs4/css/dataTables.bootstrap4.min.css" rel="stylesheet" />
+    <link href="~/lib/datatables.net-buttons-bs4/css/buttons.bootstrap4.min.css" rel="stylesheet" />
+    <link href="~/lib/datatables.net-responsive-bs4/css/responsive.bootstrap4.min.css" rel="stylesheet" />
+    <link href="~/lib/bootstrap-table/dist/bootstrap-table.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/tom-select@2.0.0/dist/css/tom-select.css" rel="stylesheet">
+
+}
+
+<ul class="breadcrumb">
+    <li class="breadcrumb-item text-warning"><a href="#" class="text-warning">PROJECTS</a></li>
+    <li class="breadcrumb-item text-gray-900 active">PLANS</li>
+</ul>
+
+<h1 class="page-header">
+    List Plans <small>page header description goes here...</small>
+</h1>
+
+<button type="button" class="btn bg-warning me-2 " data-bs-toggle="modal" data-bs-target="#newNPLAN">New Plan</button>
+
+<div class="card">
+    <div class="card-body">
+        <table id="datatableNPLAN" class="table text-nowrap">
+            <thead>
+                <tr>
+                    <th>Code</th>
+                    <th>Description</th>
+                    <th>Project</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.Count() > 0)
+                {
+                    foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@item.cod_num_plano</td>
+                            <td>@item.descripcion_plano</td>
+                            <td>@item.proyecto.cod_proyecto</td>
+                            <td>
+                                <a class="btn btn-outline-warning btn-sm" href="#" role="button" onclick="ModalEditNPLAN(@item.id,'@item.cod_num_plano','@item.descripcion_plano',@item.proyecto_id);">Edit</a>
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+<!-- modal New Project -->
+<div class="modal fade" id="newNPLAN">
+    <div class="modal-dialog modal-lg">
+        <form method="post" id="formNewNPLAN">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">New Plan</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+
+                    <div class="form-group">
+                        <label for="cod_num_plano">Plan Code</label>
+                        <input type="text" class="form-control" id="cod_num_plano" placeholder="Enter the plan code" autocomplete="off" style="text-transform:uppercase;" />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="descripcion_plano">Plan Description</label>
+                        <input type="text" class="form-control" id="descripcion_plano" placeholder="Enter the plan description" autocomplete="off" style="text-transform:uppercase;" />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="proyecto_id">Project</label>
+
+                        <select id="proyecto_id" placeholder="Select a project..." autocomplete="off" style="text-transform:uppercase;">
+                            <option value="">Select a customer...</option>
+                            @foreach (var cust in ViewBag.proyectlist)
+                            {
+                                <option value="@cust.id">@cust.cod_proyecto  @cust.descripcion_proyecto</option>
+                            }
+                        </select>
+
+
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn bg-dark text-white" id="btnGrabarNPLAN">Save</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- modal Edit Contact -->
+<div class="modal fade" id="editNPLAN">
+    <div class="modal-dialog modal-lg">
+        <form method="post" id="formEditNPLAN">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit Plan</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <input type="hidden" id="IdNPLAN" />
+                        <input type="hidden" id="IdPROYECTO" />
+                    </div>
+                    <div class="form-group">
+                        <label for="E_cod_num_plano">Plan Code</label>
+                        <input type="text" class="form-control" id="E_cod_num_plano" placeholder="Enter the plan code" autocomplete="off" style="text-transform:uppercase;" />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="E_descripcion_plano">Plan Description</label>
+                        <input type="text" class="form-control" id="E_descripcion_plano" placeholder="Enter the plan description" autocomplete="off" style="text-transform:uppercase;" />
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn bg-dark text-white" id="btnEditNPLAN">Save</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+@section Scripts{
+
+    <script src="~/lib/highlight.js/highlight.min.js"></script>
+    <script src="~/js/demo/highlightjs.demo.js"></script>
+    <script src="~/lib/datatables.net/js/jquery.dataTables.min.js"></script>
+    <script src="~/lib/datatables.net-bs4/js/dataTables.bootstrap4.min.js"></script>
+    <script src="~/lib/datatables.net-buttons/js/dataTables.buttons.min.js"></script>
+
+    @*<script src="https://cdn.datatables.net/buttons/2.1.0/js/dataTables.buttons.min.js"></script>*@
+
+    <script src="~/lib/datatables.net-buttons/js/buttons.colVis.min.js"></script>
+    <script src="~/lib/datatables.net-buttons/js/buttons.flash.min.js"></script>
+    <script src="~/lib/datatables.net-buttons/js/buttons.html5.min.js"></script>
+    <script src="~/lib/datatables.net-buttons/js/buttons.print.min.js"></script>
+    <script src="~/lib/datatables.net-buttons/js/jszip.min.js"></script>
+    <script src="~/lib/datatables.net-buttons/js/pdfmake.min.js"></script>
+    <script src="~/lib/datatables.net-buttons/js/vfs_fonts.js"></script>
+    <script src="~/lib/datatables.net-buttons-bs4/js/buttons.bootstrap4.min.js"></script>
+
+    <script src="~/lib/datatables.net-responsive/js/dataTables.responsive.min.js"></script>
+    <script src="~/lib/datatables.net-responsive-bs4/js/responsive.bootstrap4.min.js"></script>
+    <script src="~/lib/bootstrap-table/dist/bootstrap-table.min.js"></script>
+    <script src="~/js/demo/table-plugins.demo.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/tom-select@2.0.0/dist/js/tom-select.complete.min.js"></script>
+
+
+    <script>
+
+        ///// DATATABLE /////////////
+
+        $('#datatableNPLAN').DataTable({
+            dom: "<'row mb-3'<'col-sm-4'l><'col-sm-12 text-end'<'d-flex justify-content-end'fB>>>t<'d-flex align-items-center'<'me-auto'i><'mb-0'p>>",
+            lengthMenu: [ 10, 20, 30, 40, 50 ],
+            responsive: true,
+            buttons: [
+              { extend: 'print', className: 'btn btn-default' },
+              { extend: 'pdfHtml5', className: 'btn btn-default' },
+              { extend: 'excelHtml5', className: 'btn btn-default' }
+            ]
+          });
+
+         ///// FUNCIONES  ///////
+
+         function ModalEditNPLAN(xid, xcod, xdescripcion, xidproyecto) {
+            $("#IdNPLAN").val(xid);
+            $("#E_cod_num_plano").val(xcod);
+             $("#E_descripcion_plano").val(xdescripcion);
+             $("#IdPROYECTO").val(xidproyecto);
+            $('#editNPLAN').modal('show');
+        }
+
+
+        $(document).ready(function () {
+
+            new TomSelect("#proyecto_id",{
+	        create: false,
+	        sortField: {
+		        field: "text",
+		        direction: "asc"
+	        }
+            });
+
+
+              $('#btnGrabarNPLAN').click(function (event) {
+
+                  var form = $("#formNewNPLAN");
+
+                if (form[0].checkValidity() === false) {
+                    event.preventDefault()
+                    event.stopPropagation()
+                    form.addClass('was-validated');
+                }
+                else {
+
+                    if ($('#cod_num_plano').val() == "") {
+                        alert("You must enter the code plan");
+                        $('#cod_num_plano').focus();
+                        return;
+                    }
+
+                    if ($('#descripcion_plano').val() == "") {
+                        alert('You must enter the description plan');
+                        $('#descripcion_plano').focus();
+                        return;
+                    }
+
+                     if ($('#proyecto_id').val() == "") {
+                        alert('You must select the project');
+                         $('#proyecto_id').focus();
+                        return;
+                    }
+
+                }
+
+                let nplan = {
+                    "proyecto_id": $('#proyecto_id').val(),
+                    "cod_num_plano": $('#cod_num_plano').val(),
+                    "descripcion_plano": $('#descripcion_plano').val()
+                };
+
+                  var data = JSON.stringify(nplan);
+
+                $.ajax({
+                    type: "POST",
+                    url: '/Projects/AddNPLAN',
+                    contentType: 'application/json;charset=utf-8',
+                    dataType: 'json',
+                    async: true,
+                    data: data,
+                    success: function (result) {
+                        console.log(result)
+                    }
+                })
+                    .done(function (result) {
+                        if (result.exito) {
+                            //alert(result.mensaje);
+                            $('#newNPLAN').modal('hide');
+                            location.reload();
+                        }
+                        else {
+                            alert('Problems add a plan, we ask that you try again!');
+                        }
+
+                    })
+                    .fail(function (jqXHR, textStatus, errorThrow) {
+                        var err = "Error: " + textStatus + " " + errorThrow;
+                        console.log(err);
+                    })
+
+            });
+
+
+             $('#btnEditNPLAN').click(function (event) {
+
+                 var form = $("#formEditNPLAN");
+
+                if (form[0].checkValidity() === false) {
+                    event.preventDefault()
+                    event.stopPropagation()
+                    form.addClass('was-validated');
+                }
+                else {
+
+                    if ($('#E_cod_num_plano').val() == "") {
+                        alert("You must enter the code plan");
+                        $('#E_cod_num_plano').focus();
+                        return;
+                    }
+
+                    if ($('#E_descripcion_plano').val() == "") {
+                        alert('You must enter the description plan');
+                        $('#E_descripcion_plano').focus();
+                        return;
+                    }
+
+                }
+
+                 let nplan = {
+                    "id": $('#IdNPLAN').val(),
+                    "proyecto_id": $('#IdPROYECTO').val(),
+                    "cod_num_plano": $('#E_cod_num_plano').val(),
+                    "descripcion_plano": $('#E_descripcion_plano').val()
+                };
+
+                 var data = JSON.stringify(nplan);
+
+                $.ajax({
+                    type: "POST",
+                    url: '/Projects/EditNPLAN',
+                    contentType: 'application/json;charset=utf-8',
+                    dataType: 'json',
+                    async: true,
+                    data: data,
+                    success: function (result) {
+                        console.log(result)
+                    }
+                })
+                    .done(function (result) {
+                        if (result.exito) {
+                            //alert(result.mensaje);
+                            $('#editNPLAN').modal('hide');
+                            location.reload();
+                        }
+                        else {
+                            alert('Problems creating a edit plan, we ask that you try again!');
+                        }
+
+                    })
+                    .fail(function (jqXHR, textStatus, errorThrow) {
+                        var err = "Error: " + textStatus + " " + errorThrow;
+                        console.log(err);
+                    })
+
+
+            });
+
+
+
+        });
+
+
+
+    </script>
+}
+

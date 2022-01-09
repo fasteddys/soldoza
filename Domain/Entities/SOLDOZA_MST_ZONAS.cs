@@ -13,5 +13,7 @@ namespace Domain.Entities
         public int id { get; set; }
         public string cod_zona { get; set; }
         public string descripcion_zona { get; set; }
+
+        public virtual ICollection<SOLDOZA_MST_SUBZONAS> subzona { get; set; } = new HashSet<SOLDOZA_MST_SUBZONAS>();
     }
 }

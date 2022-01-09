@@ -49,8 +49,13 @@
         },
         {
           "controller": "Management",
-          "action": "Sides",
-          "text": "Sides"
+          "action": "SubZones",
+          "text": "Sub Zones"
+        },
+        {
+          "controller": "Management",
+          "action": "TipJun",
+          "text": "Joint Type"
         },
         {
           "controller": "Management",
@@ -61,6 +66,63 @@
           "controller": "Management",
           "action": "PosSol",
           "text": "Welding Position"
+        },
+        {
+          "controller": "Management",
+          "action": "LugSol",
+          "text": "Welding Place"
+        },
+        {
+          "controller": "Management",
+          "action": "EnNoDe",
+          "text": "Non-Destructive Testing"
+        },
+        {
+          "controller": "Management",
+          "action": "DisSol",
+          "text": "Welding Design"
+        },
+        {
+          "controller": "Management",
+          "action": "ProcSol",
+          "text": "Welding Process"
+        },
+        {
+          "controller": "Management",
+          "action": "TipJun",
+          "text": "Joint Type"
+        },
+        {
+          "controller": "Management",
+          "action": "ConsuMar",
+          "text": "Brand"
+        },
+        {
+          "controller": "Management",
+          "action": "ConsuFab",
+          "text": "Manufacturer"
+        },
+        {
+          "controller": "Management",
+          "action": "ConsuClasfaws",
+          "text": "AWS Classification"
+        }
+      ]
+    },
+    {
+      "controller": "Projects",
+      "icon": "fa fa-heart",
+      "text": "Projects",
+      "children": [
+        {
+          "controller": "Projects",
+          "action": "Index",
+          "text": "List Projects"
+        },
+        {
+          "controller": "Projects",
+          "action": "Plans",
+          "text": "List Plans"
         }
       ]
     }

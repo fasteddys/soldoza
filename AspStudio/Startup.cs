@@ -53,6 +53,17 @@ namespace AspStudio
             services.AddTransient<ISOLDOZA_ADM_MST_LADOS, R_SOLDOZA_ADM_MST_LADOS>();
             services.AddTransient<ISOLDOZA_MST_RESULT_END, R_SOLDOZA_MST_RESULT_END>();
             services.AddTransient<ISOLDOZA_MST_POS_SOLDEO, R_SOLDOZA_MST_POS_SOLDEO>();
+            services.AddTransient<ISOLDOZA_MST_LUGAR_SOLDEO, R_SOLDOZA_MST_LUGAR_SOLDEO>();
+            services.AddTransient<ISOLDOZA_MST_END, R_SOLDOZA_MST_END>();
+            services.AddTransient<ISOLDOZA_MST_DIS_SOLDADURA, R_SOLDOZA_MST_DIS_SOLDADURA>();
+            services.AddTransient<ISOLDOZA_MST_PROC_SOLDADURA, R_SOLDOZA_MST_PROC_SOLDADURA>();
+            services.AddTransient<ISOLDOZA_MST_TIPO_JUNTA, R_SOLDOZA_MST_TIPO_JUNTA>();
+            services.AddTransient<ISOLDOZA_MST_PLANOS, R_SOLDOZA_MST_PLANOS>();
+            services.AddTransient<ISOLDOZA_MST_SUBZONAS, R_SOLDOZA_MST_SUBZONAS>();
+            services.AddTransient<ISOLDOZA_ADM_MST_CONSU_MARCA, R_SOLDOZA_ADM_MST_CONSU_MARCA>();
+            services.AddTransient<ISOLDOZA_ADM_MST_CONSU_FABRICANTE, R_SOLDOZA_ADM_MST_CONSU_FABRICANTE>();
+            services.AddTransient<ISOLDOZA_ADM_MST_CONSU_CLASF_AWS, R_SOLDOZA_ADM_MST_CONSU_CLASF_AWS>();
+            services.AddTransient<ISOLDOZA_MST_CONSUMIBLES, R_SOLDOZA_MST_CONSUMIBLES>();
 
             services.AddMemoryCache();
 
