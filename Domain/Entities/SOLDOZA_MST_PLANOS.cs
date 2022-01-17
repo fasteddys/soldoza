@@ -17,5 +17,6 @@ namespace Domain.Entities
 
         [ForeignKey("proyecto_id")]
         public SOLDOZA_MST_GRL_PROYECTOS proyecto { get; set; }
+        public virtual ICollection<SOLDOZA_PY_REVISIONES> revisiones { get; set; } = new HashSet<SOLDOZA_PY_REVISIONES>();
     }
 }

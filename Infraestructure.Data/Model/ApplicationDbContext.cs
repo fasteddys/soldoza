@@ -34,6 +34,8 @@ namespace Infraestructure.Data.Model
 
 
         public DbSet<SOLDOZA_MST_MATERIALES> materiales { get; set; }
+        public DbSet<SOLDOZA_PY_REVISIONES> revisiones { get; set; }
+        public DbSet<SOLDOZA_PY_REVISIONES_FECHAS> revisiones_fechas { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             //modelBuilder.Entity<vpagoSuscripcion>().HasNoKey();
@@ -63,6 +65,8 @@ namespace Infraestructure.Data.Model
             modelBuilder.Entity<SOLDOZA_ADM_MST_CONSU_FABRICANTE>().HasKey(t => new { t.id });
             modelBuilder.Entity<SOLDOZA_ADM_MST_CONSU_CLASF_AWS>().HasKey(t => new { t.id });
             modelBuilder.Entity<SOLDOZA_MST_CONSUMIBLES>().HasKey(t => new { t.id });
+            modelBuilder.Entity<SOLDOZA_PY_REVISIONES>().HasKey(t => new { t.id });
+            modelBuilder.Entity<SOLDOZA_PY_REVISIONES_FECHAS>().HasKey(t => new { t.id });
 
 
             modelBuilder.Entity<SOLDOZA_MST_TIPO_DOCUMENTO>().HasMany(u => u.clientes).WithOne(u => u.tipodocumento).HasForeignKey(u => u.tipo_documento_id);
@@ -73,6 +77,10 @@ namespace Infraestructure.Data.Model
             modelBuilder.Entity<SOLDOZA_MST_GRL_PROYECTOS>().HasMany(u => u.contactos).WithOne(u => u.proyecto).HasForeignKey(u => u.proyecto_id);
             modelBuilder.Entity<SOLDOZA_MST_TIPO_CONTACTO>().HasMany(u => u.contactos).WithOne(u => u.tipocontacto).HasForeignKey(u => u.tipo_contacto_id);
             modelBuilder.Entity<SOLDOZA_MST_GRL_PROYECTOS>().HasMany(u => u.planos).WithOne(u => u.proyecto).HasForeignKey(u => u.proyecto_id);
+
+            modelBuilder.Entity<SOLDOZA_MST_PLANOS>().HasMany(u => u.revisiones).WithOne(u => u.plano).HasForeignKey(u => u.plano_id);
+            modelBuilder.Entity<SOLDOZA_PY_REVISIONES>().HasMany(u => u.fechas).WithOne(u => u.revision).HasForeignKey(u => u.revision_id);
+
             modelBuilder.Entity<SOLDOZA_MST_ZONAS>().HasMany(u => u.subzona).WithOne(u => u.zona).HasForeignKey(u => u.zona_id);
             modelBuilder.Entity<SOLDOZA_ADM_MST_CONSU_MARCA>().HasMany(u => u.consu).WithOne(u => u.marca).HasForeignKey(u => u.marca_id);
             modelBuilder.Entity<SOLDOZA_ADM_MST_CONSU_FABRICANTE>().HasMany(u => u.consu).WithOne(u => u.fabricante).HasForeignKey(u => u.fabricante_id);

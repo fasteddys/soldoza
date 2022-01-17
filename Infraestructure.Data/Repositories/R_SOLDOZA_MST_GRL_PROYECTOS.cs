@@ -22,9 +22,10 @@ namespace Infraestructure.Data.Repositories
         private string sql;
         public Task<IEnumerable<SOLDOZA_MST_GRL_PROYECTOS>> GetProjects(int id)
         {
-            var projects = _context.proyectos.Include(p => p.versiones)
+            var projects = _context.proyectos.Include(p=>p.versiones)
+                                             .Include(p=>p.planos)
                                              .Include(p=>p.contactos).ThenInclude(cs=>cs.contacto)
-                                             .Include(p => p.contactos).ThenInclude(cs => cs.tipocontacto)
+                                             .Include(p=>p.contactos).ThenInclude(cs=>cs.tipocontacto)
                                              .Where(p=>p.cliente_id==id);
             return Task.FromResult(projects.AsEnumerable<SOLDOZA_MST_GRL_PROYECTOS>());
         }
@@ -32,10 +33,11 @@ namespace Infraestructure.Data.Repositories
         public Task<IEnumerable<SOLDOZA_MST_GRL_PROYECTOS>> GetProject(int id)
         {
             var projects = _context.proyectos.Include(p=>p.clientes)
-                                             .Include(p => p.versiones)
-                                             .Include(p => p.contactos).ThenInclude(cs => cs.contacto)
-                                             .Include(p => p.contactos).ThenInclude(cs => cs.tipocontacto)
-                                             .Where(p => p.id == id);
+                                             .Include(p=>p.versiones)
+                                             .Include(p=>p.planos)
+                                             .Include(p=>p.contactos).ThenInclude(cs=>cs.contacto)
+                                             .Include(p=>p.contactos).ThenInclude(cs=>cs.tipocontacto)
+                                             .Where(p=>p.id == id);
             return Task.FromResult(projects.AsEnumerable<SOLDOZA_MST_GRL_PROYECTOS>());
         }
 
@@ -86,7 +88,7 @@ namespace Infraestructure.Data.Repositories
 
         public Task<IEnumerable<SOLDOZA_MST_GRL_PROYECTOS>> GetAll()
         {
-            var projects = _context.proyectos.Include(p => p.clientes).Include(p => p.versiones);
+            var projects = _context.proyectos.Include(p => p.clientes).Include(p => p.versiones).Include(p=>p.planos);
             return Task.FromResult(projects.AsEnumerable<SOLDOZA_MST_GRL_PROYECTOS>());
         }
 

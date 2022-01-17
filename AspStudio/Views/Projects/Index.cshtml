@@ -1,0 +1,212 @@
+﻿@using Domain.Entities;
+@model IEnumerable<SOLDOZA_MST_GRL_PROYECTOS>
+@{
+    ViewData["Title"] = "List Projects";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+@section Styles {
+    <link href="~/lib/datatables.net-bs4/css/dataTables.bootstrap4.min.css" rel="stylesheet" />
+    <link href="~/lib/datatables.net-buttons-bs4/css/buttons.bootstrap4.min.css" rel="stylesheet" />
+    <link href="~/lib/datatables.net-responsive-bs4/css/responsive.bootstrap4.min.css" rel="stylesheet" />
+    <link href="~/lib/bootstrap-table/dist/bootstrap-table.min.css" rel="stylesheet" />
+    <link href="~/lib/sweetalert2/css/sweetalert2.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/tom-select@2.0.0/dist/css/tom-select.css" rel="stylesheet">
+
+    <style>
+        .table.no-border tr td, .table.no-border tr th { border-width: 0;}
+    </style>
+}
+
+
+<div class="container">
+	<!-- BEGIN row -->
+	<div class="row justify-content-center">
+		<!-- BEGIN col-10 -->
+		<div class="col-xl-12">
+			
+
+            <div class="col-xl-12">
+					<ul class="breadcrumb">
+						<li class="breadcrumb-item"><a href="#">PROJECTS</a></li>
+						<li class="breadcrumb-item active">INDEX</li>
+					</ul>
+					
+					<h1 class="page-header">
+						List projects <small>page header description goes here...</small>
+					</h1>
+					                   
+                    <div class="row">
+                        <div class="col-xs-6 col-md-3">
+                            <div class="form-group">
+                            <label for="">Customer</label>
+                            <div class="input-group">
+                                <select id="cliente_id" class="form-control" autocomplete="off" style="text-transform:uppercase;">
+		                            <option value=0>All customer...</option>
+                                    @foreach (var cust in ViewBag.CustomersList) {
+                                        <option value="@cust.id">@cust.nombre_cliente</option>
+                                    }
+	                            </select>
+                                <button type="button" class="btn bg-warning btn-sm" id="btnLoad">Load</button>
+                            </div>
+                            </div>
+                        </div>   
+                    </div>
+
+
+					<hr class="mb-4" />
+					
+					<!-- BEGIN #datatable -->
+					<div id="datatable" class="mb-5">
+						<div class="card">
+							<div class="card-body">
+								<table class="table text-nowrap w-100 table-hover" id="datatableProjects">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>Code</th>
+                                            <th>Description Project</th>
+                                            <th>Plans</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="data">
+                                       @foreach(var item in Model){
+                                            <tr>
+                                                <td>@item.cod_proyecto</td>
+                                                <td>@item.descripcion_proyecto</td>
+                                                <td>
+                                                    <table class="table table-sm no-border">
+                                                            @foreach(var ver in item.planos)
+                                                            {
+                                                                <tr>
+                                                                    <td>@ver.cod_num_plano</td>
+                                                                </tr>
+                                                            }
+                                                    </table>
+                                                </td>
+                                                <td>
+                                                    <a class="btn btn-outline-warning btn-sm" href="#" role="button">Plans</a>
+                                                    <a class="btn btn-outline-warning btn-sm" href="#" role="button">Revisions</a>
+                                                    <a class="btn btn-outline-warning btn-sm" href="#" role="button">Pos</a>
+                                                </td>
+                                            </tr>
+                                        }
+
+                                    </tbody>
+                            </table>
+
+							</div>
+							
+						</div>
+					</div>
+					<!-- END #datatable -->
+					
+				</div>
+				<!-- END col-9-->
+
+
+
+		</div>
+		<!-- END col-10 -->
+	</div>
+	<!-- END row -->
+</div>
+
+
+<!-- END container -->
+
+
+
+
+@section Scripts{
+
+    <script src="~/lib/highlight.js/highlight.min.js"></script>
+    <script src="~/js/demo/highlightjs.demo.js"></script>
+    <script src="~/lib/datatables.net/js/jquery.dataTables.min.js"></script>
+    <script src="~/lib/datatables.net-bs4/js/dataTables.bootstrap4.min.js"></script>
+    <script src="~/lib/datatables.net-buttons/js/dataTables.buttons.min.js"></script>
+
+    @*<script src="https://cdn.datatables.net/buttons/2.1.0/js/dataTables.buttons.min.js"></script>*@
+
+    <script src="~/lib/datatables.net-buttons/js/buttons.colVis.min.js"></script>
+    <script src="~/lib/datatables.net-buttons/js/buttons.flash.min.js"></script>
+    <script src="~/lib/datatables.net-buttons/js/buttons.html5.min.js"></script>
+    <script src="~/lib/datatables.net-buttons/js/buttons.print.min.js"></script>
+    <script src="~/lib/datatables.net-buttons/js/jszip.min.js"></script>
+    <script src="~/lib/datatables.net-buttons/js/pdfmake.min.js"></script>
+    <script src="~/lib/datatables.net-buttons/js/vfs_fonts.js"></script>
+    <script src="~/lib/datatables.net-buttons-bs4/js/buttons.bootstrap4.min.js"></script>
+
+    <script src="~/lib/datatables.net-responsive/js/dataTables.responsive.min.js"></script>
+    <script src="~/lib/datatables.net-responsive-bs4/js/responsive.bootstrap4.min.js"></script>
+    <script src="~/lib/bootstrap-table/dist/bootstrap-table.min.js"></script>
+    <script src="~/js/demo/table-plugins.demo.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/tom-select@2.0.0/dist/js/tom-select.complete.min.js"></script>
+    <script src="~/lib/sweetalert2/js/sweetalert2.js"></script>
+
+    <script>
+
+        ///// DATATABLE /////////////
+
+        
+
+         ///// FUNCIONES  ///////
+
+
+        $(document).ready(function () {
+
+            $('#datatableProjects').DataTable({
+                dom: "<'row mb-12'<'col-xl-4'l><'col-xl-12 text-end'<'d-flex justify-content-end'fB>>>t<'d-flex align-items-center'<'me-auto'i><'mb-0'p>>",
+                lengthMenu: [ 10, 20, 30, 40, 50 ],
+                responsive: true,
+                buttons: [
+                  { extend: 'print', className: 'btn btn-default' },
+                  { extend: 'pdfHtml5', className: 'btn btn-default' },
+                  { extend: 'excelHtml5', className: 'btn btn-default' }
+                ]
+              });
+
+
+             $('#btnLoad').click(function (event) {
+                
+                var id = $('#cliente_id').val();
+                $.ajax({
+                    type: "POST",
+                    url: '/Projects/ProjectList',
+                    data: { id: id },
+                    success: function (response) {
+                        console.log(response);
+                        //$("#data").html(response);
+                        $('#datatableProjects').DataTable().destroy();
+                        $("#data").html(response);
+                        $('#datatableProjects').DataTable({
+                        dom: "<'row mb-12'<'col-xl-4'l><'col-xl-12 text-end'<'d-flex justify-content-end'fB>>>t<'d-flex align-items-center'<'me-auto'i><'mb-0'p>>",
+                        lengthMenu: [ 10, 20, 30, 40, 50 ],
+                        responsive: true,
+                        buttons: [
+                            { extend: 'print', className: 'btn btn-default' },
+                            { extend: 'pdfHtml5', className: 'btn btn-default' },
+                            { extend: 'excelHtml5', className: 'btn btn-default' }
+                        ]
+                        });
+                        $('#datatableProjects').DataTable().draw();
+                        
+                           
+                    },
+                    error: function (xhr, textStatus, error) {
+                        console.log(xhr.responseText);
+                        console.log(xhr.statusText);
+                        console.log(textStatus);
+                        console.log(error);
+                    }
+                })
+
+             });
+
+        });
+
+
+    </script>
+}
+

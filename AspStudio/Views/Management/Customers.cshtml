@@ -11,7 +11,21 @@
     <link href="~/lib/datatables.net-responsive-bs4/css/responsive.bootstrap4.min.css" rel="stylesheet" />
     <link href="~/lib/bootstrap-table/dist/bootstrap-table.min.css" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/tom-select@2.0.0/dist/css/tom-select.css" rel="stylesheet">
-    
+
+    <style>
+       /* remove validation icons */
+        .form-control.is-invalid, .was-validated .form-control:invalid {
+            background-image: none !important;
+            border-color: #ced4da;
+            padding-right: 0.75em;
+        }
+
+        .form-control.is-valid, .was-validated .form-control:valid {
+            background-image: none !important;
+            border-color: #ced4da;
+            padding-right: 0.75em;
+        }
+    </style>
 }
 
 <ul class="breadcrumb">
@@ -23,7 +37,7 @@
     List Customers <small>page header description goes here...</small>
 </h1>
 
-<button type="button" class="btn bg-warning me-2 " data-bs-toggle="modal" data-bs-target="#newCustomer">New Customer</button>
+<button type="button" class="btn bg-warning me-2" onclick="ModalNewCustomer();">New Customer</button>
 
 <div class="card">
 	<div class="card-body">
@@ -35,8 +49,6 @@
              <th>Type</th>
              <th>Number Document</th>
              <th>Country</th>
-             <th>Phone</th>
-             <th>Email</th>
              <th></th>
          </tr>
      </thead>
@@ -50,8 +62,6 @@
                     <td>@item.tipodocumento.abrev_tipo_documento</td>
                     <td>@item.nrodoc_cliente</td>
                     <td>@item.pais</td>
-                    <td>@item.telefono</td>
-                    <td>@item.email</td>
                     <td>
                         <a class="btn btn-outline-warning btn-sm" href="@Url.Action("CustomerProjects","Management", new {id=@item.id})" role="button">Details</a> 
                         <a class="btn btn-outline-warning btn-sm" href="#" role="button" onclick="ModalEditCustomer(@item.id,'@item.cod_cliente',@item.tipo_documento_id,'@item.nrodoc_cliente','@item.nombre_cliente','@item.direccion_cliente','@item.pais','@item.ciudad','@item.telefono','@item.email');">Edit</a>  
@@ -70,6 +80,9 @@
         }
     </tbody>
 </table>
+
+
+
     </div>
 </div>
 
@@ -77,7 +90,7 @@
 <!-- modal New Customer -->
 <div class="modal fade" id="newCustomer">
   <div class="modal-dialog modal-lg">
-    <form method="post" id="formNewCustomer"> 
+    <form method="post" id="formNewCustomer" novalidate> 
         <div class="modal-content">
           <div class="modal-header">
             <h5 class="modal-title">New Customer</h5>
@@ -86,65 +99,64 @@
           <div class="modal-body">
             <div class="form-group">
                 <label for="cod_cliente">Customer Code</label>
-                <input type="text" class="form-control" id="cod_cliente" placeholder="Enter the customer code" autocomplete="off" style="text-transform:uppercase;"/>
+                <input type="text" class="form-control" id="cod_cliente" autocomplete="off" style="text-transform:uppercase;" required/>
+                <div class="invalid-feedback">Please fill out this field.</div>
             </div>
             <div class="form-group">
                 <label for="nombre_cliente">Customer Name</label>
-                <input type="text" class="form-control" id="nombre_cliente" placeholder="Enter the customer name" autocomplete="off" style="text-transform:uppercase;"/>
+                <input type="text" class="form-control" id="nombre_cliente" autocomplete="off" style="text-transform:uppercase;" required/>
+                <div class="invalid-feedback">Please fill out this field.</div>
             </div>
             <div class="form-group">
                 <label for="tipo_documento_ID">Document Type</label>
-                <select class="form-control" id="tipo_documento_ID">
-                <option value="" disabled selected>Select type</option>
+                <select class="form-control" id="tipo_documento_ID" required>
+                <option value="" disabled selected>SELECT TYPE</option>
                     @foreach (var item in ViewBag.typeDocumentsList) {
                         <option value="@item.id">@item.abrev_tipo_documento</option>
                     }
                 </select>
+                <div class="invalid-feedback">Please fill out this field.</div>
             </div>
             <div class="form-group">
                 <label for="nrodoc_cliente">Number Document</label>
-                <input type="text" class="form-control" id="nrodoc_cliente" placeholder="Enter the number document" autocomplete="off" style="text-transform:uppercase;"/>
+                <input type="text" class="form-control" id="nrodoc_cliente" autocomplete="off" style="text-transform:uppercase;" required />
+                <div class="invalid-feedback">Please fill out this field.</div>
             </div>
             <div class="form-group">
                 <label for="direccion_cliente">Address</label>
-                <input type="text" class="form-control" id="direccion_cliente" placeholder="Enter the address" autocomplete="off" style="text-transform:uppercase;"/>
+                <input type="text" class="form-control" id="direccion_cliente" autocomplete="off" style="text-transform:uppercase;" required/>
+                <div class="invalid-feedback">Please fill out this field.</div>
             </div>
             <div class="form-group">
                  <label for="pais">Country</label>
-                @* <input class="form-control" list="Listapais" id="pais" placeholder="Search country" style="text-transform:uppercase;">
-                 <datalist id="Listapais">
-                       @foreach (var item in ViewBag.CountriesList) {
-                            <option value="@item.nombre_pais"></option>
-                        }
-                 </datalist>*@
-
-
-                 <select id="pais" placeholder="Select a country..." autocomplete="off" style="text-transform:uppercase;">
-			        <option value="">Select a country...</option>
-                     @foreach (var item in ViewBag.CountriesList) {
+                <select id="pais" placeholder="SELECT A COUNTRY..." required autocomplete="off" style="text-transform:uppercase;">
+                    <option value="">SELECT A COUNTRY...</option> 
+                    @foreach (var item in ViewBag.CountriesList) {
                             <option value="@item.nombre_pais">@item.nombre_pais</option>
-                        }
+                     }
 		        </select>
-
+                <div class="invalid-feedback">Please fill out this field.</div>
 
             </div>
             <div class="form-group">
                 <label for="city">City</label>
-                <input type="text" class="form-control" id="ciudad" placeholder="Enter the city" autocomplete="off" style="text-transform:uppercase;"/>
+                <input type="text" class="form-control" id="ciudad" autocomplete="off" style="text-transform:uppercase;"/>
             </div>
              
             <div class="form-group">
                 <label for="telefono">Phone</label>
-                <input type="text" class="form-control" id="telefono" placeholder="Enter the phone" autocomplete="off" style="text-transform:uppercase;"/>
+                <input type="text" class="form-control" id="telefono" autocomplete="off" style="text-transform:uppercase;"/>
             </div>
             <div class="form-group">
                 <label for="email">Email</label>
-                <input type="text" class="form-control" id="email" placeholder="Enter the email" autocomplete="off"/>
+                <input type="text" class="form-control" id="email" autocomplete="off"/>
             </div>
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
-            <button type="button" class="btn bg-dark text-white" id="btnGrabar">Save</button>
+            <button type="button" class="btn bg-dark text-white" id="btnGrabar">
+                <span id="loaderN" class="spinner-border spinner-border-sm" role="status" aria-hidden="true" style="display:none;"></span> Save
+            </button>
           </div>
         </div>
     </form>
@@ -155,7 +167,7 @@
 <!-- modal Edit Customer -->
 <div class="modal fade" id="editCustomer">
   <div class="modal-dialog modal-lg">
-    <form method="post" id="formEditCustomer"> 
+    <form method="post" id="formEditCustomer" class="was-validated"> 
         <div class="modal-content">
           <div class="modal-header">
             <h5 class="modal-title">Edit Customer</h5>
@@ -166,6 +178,8 @@
             <div class="form-group">
                 <label for="E_cod_cliente">Customer Code</label>
                 <input type="text" class="form-control" id="E_cod_cliente" placeholder="Enter the customer code" autocomplete="off" style="text-transform:uppercase;"/>
+                @*<div class="valid-feedback">Valid.</div>*@
+                <div class="invalid-feedback">Please fill out this field.</div>
             </div>
              <div class="form-group">
                 <label for="E_tipo_documento_ID">Document Type</label>
@@ -180,6 +194,7 @@
                 <label for="E_nrodoc_cliente">Number Document</label>
                 <input type="text" class="form-control" id="E_nrodoc_cliente" placeholder="Enter the number document" autocomplete="off" style="text-transform:uppercase;"/>
             </div>
+
             <div class="form-group">
                 <label for="E_nombre_cliente">Customer Name</label>
                 <input type="text" class="form-control" id="E_nombre_cliente" placeholder="Enter the customer name" autocomplete="off" style="text-transform:uppercase;"/>
@@ -216,7 +231,9 @@
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
-            <button type="button" class="btn bg-dark text-white" id="btnEditar">Save</button>
+            <button type="button" class="btn bg-dark text-white" id="btnEditar">
+                <span id="loader" class="spinner-border spinner-border-sm" role="status" aria-hidden="true" style="display:none;"></span> Save
+            </button>
           </div>
         </div>
     </form>
@@ -247,10 +264,8 @@
     <script src="~/lib/bootstrap-table/dist/bootstrap-table.min.js"></script>
     <script src="~/js/demo/table-plugins.demo.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/tom-select@2.0.0/dist/js/tom-select.complete.min.js"></script>
-@*    <script src="~/js/demo/sidebar-scrollspy.demo.js"></script>*@
-
-
-
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+   
     <script>
 
         ///// DATATABLE /////////////
@@ -275,15 +290,8 @@
             $("#E_nrodoc_cliente").val(xnrodoc);
             $("#E_nombre_cliente").val(xnombre);
             $("#E_direccion_cliente").val(xdireccion);
-            //$("#E_pais select").val(xpais);
-            //$('#E_pais option[value="' + xpais + '"]').attr("selected", true);
-            //$("#E_pais").val(xpais).change();
 
-            $('#E_pais option').each(function() {
-                if($(this).val() == xpais) {
-                    $(this).prop("selected", "selected");
-                }
-            });
+            control.setValue(xpais);
 
             $("#E_ciudad").val(xciudad);
             $("#E_telefono").val(xtelefono);
@@ -291,22 +299,42 @@
             $('#editCustomer').modal('show');
         }
 
+        function ModalNewCustomer() {
+            var form = $("#formNewCustomer");
+            form[0].reset();
+            form.get(0).reset();
+            form.removeClass('was-validated');
+            controlN.wrapper.classList.toggle('is-invalid',controlN.isValid);
+            $('#newCustomer').modal('show');
+        }
+
         $(document).ready(function () {
 
-            new TomSelect("#pais",{
-	        create: false,
-	        sortField: {
-		        field: "text",
-		        direction: "asc"
-	        }
+            controlN= new TomSelect("#pais",{
+	            create: false,
+	            sortField: {
+		            field: "text",
+		            direction: "asc"
+	            },
+	            onChange:function(){
+		            this.wrapper.classList.toggle('is-invalid',!this.isValid);
+	            }
             });
 
-            new TomSelect("#E_pais",{
-	        create: false,
-	        sortField: {
-		        field: "text",
-		        direction: "asc"
-	        }
+            control=new TomSelect("#E_pais",{
+	            create: false,
+	            sortField: {
+		            field: "text",
+		            direction: "asc"
+	            },
+	            onChange:function(){
+		            this.wrapper.classList.toggle('is-invalid',!this.isValid);
+	            }
+            });
+
+            
+            $('#newCustomer').on('shown.bs.modal', function(){
+                $('cod_cliente').focus();
             });
 
             $('#editCustomer').on('shown.bs.modal', function () {
@@ -315,55 +343,27 @@
 
             $('#btnGrabar').click(function (event) {
 
-                var form = $("#formNewCustomer")
+                var form = $("#formNewCustomer");
+                form.addClass('was-validated');
+
+                controlN.wrapper.classList.toggle('is-invalid',!controlN.isValid);
 
                 if (form[0].checkValidity() === false) {
                     event.preventDefault()
                     event.stopPropagation()
-                    form.addClass('was-validated');
+                    return;
                 }
-                else {
-
-                    if ($('#cod_cliente').val() == "") {
-                        alert("You must enter the code customer's");
-                        $('#cod_cliente').focus();
-                        return;
-                    }
-
-                    if ($('#tipo_documento_ID').val() == "") {
-                        alert('You must select the document type');
-                        return;
-                    }
-
-                    if ($('#nrodoc_cliente').val() == "") {
-                        alert('You must enter the number document');
-                        $('#nrodoc_cliente').focus();
-                        return;
-                    }
-
-                    if ($('#nombre_cliente').val() == "") {
-                        alert('You must enter the name customer');
-                        $('#nombre_cliente').focus();
-                        return;
-                    }
-
-                    if ($('#pais').val() == "") {
-                        alert('You must select the country');
-                        return;
-                    }
-
-                }
-
+ 
                 let customer = {
-                    "cod_cliente": $('#cod_cliente').val(),
-                    "nombre_cliente": $('#nombre_cliente').val(),
-                    "direccion_cliente": $('#direccion_cliente').val(),
+                    "cod_cliente": $('#cod_cliente').val().toUpperCase(),
+                    "nombre_cliente": $('#nombre_cliente').val().toUpperCase(),
+                    "direccion_cliente": $('#direccion_cliente').val().toUpperCase(),
                     "tipo_documento_ID": $('#tipo_documento_ID').val(),
-                    "nrodoc_cliente": $('#nrodoc_cliente').val(),
-                    "pais": $('#pais').val(),
-                    "ciudad": $('#ciudad').val(),
-                    "telefono": $('#telefono').val(),
-                    "email": $('#email').val()
+                    "nrodoc_cliente": $('#nrodoc_cliente').val().toUpperCase(),
+                    "pais": $('#pais').val().toUpperCase(),
+                    "ciudad": $('#ciudad').val().toUpperCase(),
+                    "telefono": $('#telefono').val().toUpperCase(),
+                    "email": $('#email').val().toLowerCase()
                 };
 
                 var data = JSON.stringify(customer);
@@ -375,21 +375,28 @@
                     dataType: 'json',
                     async: true,
                     data: data,
+                    beforeSend: function () {
+                        $('#loaderN').show();
+                    },
                     success: function (result) {
-                        console.log(result)
-                    }
-                })
-                    .done(function (result) {
                         if (result.exito) {
-                            $('#ModalNewCustomer').modal('hide');
-                            location.reload();
+                            $('#newCustomer').modal('hide');
+                            swal("Good job!", result.mensaje, "success").then(function() {
+                                location.reload();
+                            });
+                                                
                         }
                         else {
-                            alert('Problems creating a new customer, we ask that you try again!');
+                            swal({
+                              icon: "error",
+                              text: "Problems creating a customer, we ask that you try again!",
+                            });
                         }
-
-                    })
-                    .fail(function (jqXHR, textStatus, errorThrow) {
+                    },
+                    complete: function () {
+                        $('#loaderN').hide();
+                    },
+                }).fail(function (jqXHR, textStatus, errorThrow) {
                         var err = "Error: " + textStatus + " " + errorThrow;
                         console.log(err);
                     })
@@ -400,56 +407,27 @@
 
 
             $('#btnEditar').click(function (event) {
-                var form = $("#formEditCustomer")
+                var form = $("#formEditCustomer");
+                form.addClass('was-validated');
+                control.wrapper.classList.toggle('is-invalid',!control.isValid);
 
                 if (form[0].checkValidity() === false) {
                     event.preventDefault()
                     event.stopPropagation()
-                    form.addClass('was-validated');
+                    return;
                 }
-                else {
-
-                    if ($('#E_cod_cliente').val() == "") {
-                        alert("You must enter the code customer's");
-                        $('#cod_cliente').focus();
-                        return;
-                    }
-
-                    if ($('#E_tipo_documento_ID').val() == "") {
-                        alert('You must select the document type');
-                        return;
-                    }
-
-                    if ($('#E_nrodoc_cliente').val() == "") {
-                        alert('You must enter the number document');
-                        $('#nrodoc_cliente').focus();
-                        return;
-                    }
-
-                    if ($('#E_nombre_cliente').val() == "") {
-                        alert('You must enter the name customer');
-                        $('#nombre_cliente').focus();
-                        return;
-                    }                                       
-
-                    if ($('#E_pais').val() == "") {
-                        alert('You must select the country');
-                        return;
-                    }
-
-                }
-
+                
                 let customer = {
                     "Id": $('#IdCustomer').val(),
-                    "cod_cliente": $('#E_cod_cliente').val(),
-                    "nombre_cliente": $('#E_nombre_cliente').val(),
-                    "direccion_cliente": $('#E_direccion_cliente').val(),
+                    "cod_cliente": $('#E_cod_cliente').val().toUpperCase(),
+                    "nombre_cliente": $('#E_nombre_cliente').val().toUpperCase(),
+                    "direccion_cliente": $('#E_direccion_cliente').val().toUpperCase(),
                     "tipo_documento_ID": $('#E_tipo_documento_ID').val(),
-                    "nrodoc_cliente": $('#E_nrodoc_cliente').val(),
-                    "pais": $('#E_pais').val(),
-                    "ciudad": $('#E_ciudad').val(),
-                    "telefono": $('#E_telefono').val(),
-                    "email": $('#E_email').val()
+                    "nrodoc_cliente": $('#E_nrodoc_cliente').val().toUpperCase(),
+                    "pais": $('#E_pais').val().toUpperCase(),
+                    "ciudad": $('#E_ciudad').val().toUpperCase(),
+                    "telefono": $('#E_telefono').val().toUpperCase(),
+                    "email": $('#E_email').val().toLowerCase()
                 };
 
                 var data = JSON.stringify(customer);
@@ -460,24 +438,31 @@
                     contentType: 'application/json;charset=utf-8',
                     dataType: 'json',
                     data: data,
+                    beforeSend: function () {
+                        $('#loader').show();
+                    },
                     success: function (result) {
-                        console.log(result)
-                    }
-                })
-                    .done(function (result) {
                         if (result.exito) {
                             $('#editCustomer').modal('hide');
-                            location.reload();
+                            swal("Good job!", result.mensaje, "success").then(function() {
+                                location.reload();
+                            });
+                                                
                         }
                         else {
-                            alert('Problems editing a customer, we ask that you try again!');
+                            swal({
+                              icon: "error",
+                              text: "Problems editing a customer, we ask that you try again!",
+                            });
                         }
-
-                    })
-                    .fail(function (jqXHR, textStatus, errorThrow) {
+                    },
+                    complete: function () {
+                        $('#loader').hide();
+                    },
+                }).fail(function (jqXHR, textStatus, errorThrow) {
                         var err = "Error: " + textStatus + " " + errorThrow;
                         console.log(err);
-                    })
+                  })
 
 
             });

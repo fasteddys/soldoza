@@ -29,7 +29,7 @@ namespace Infraestructure.Data.Repositories
                 using (var cn = new NpgsqlConnection(_context.Database.GetDbConnection().ConnectionString))
                 {
                     cn.Open();
-                    sql = @"INSERT INTO SOLDOZA_MST_GRL_CLIENTES(cod_cliente, tipo_documento_ID, nrodoc_cliente, nombre_cliente, direccion_cliente, " +
+                    sql = @"INSERT INTO soldoza_mst_grl_clientes(cod_cliente, tipo_documento_ID, nrodoc_cliente, nombre_cliente, direccion_cliente, " +
                                                             "pais, ciudad, telefono, email, usuario_creacion, fecha_creacion, usuario_actualizacion, " +
                                                             "fecha_actualizacion, estado) VALUES('" + customer.cod_cliente.ToUpper() + "'," +
                                                             customer.tipo_documento_id + ",'" + customer.nrodoc_cliente + "','" +
@@ -55,7 +55,7 @@ namespace Infraestructure.Data.Repositories
             {
                 cn.Open();
 
-                sql = @"UPDATE SOLDOZA_MST_GRL_CLIENTES SET cod_cliente ='" + customer.cod_cliente.ToUpper() + "'," +
+                sql = @"UPDATE soldoza_mst_grl_clientes SET cod_cliente ='" + customer.cod_cliente.ToUpper() + "'," +
                                                            "tipo_documento_ID =" + customer.tipo_documento_id + "," +
                                                            "nrodoc_cliente ='" + customer.nrodoc_cliente + "'," +
                                                            "nombre_cliente ='" + customer.nombre_cliente.ToUpper() + "'," +
@@ -66,10 +66,10 @@ namespace Infraestructure.Data.Repositories
                                                            "email ='" + customer.email.ToLower() + "'," +
                                                            "usuario_actualizacion ='" + customer.usuario_actualizacion + "'," +
                                                            "fecha_actualizacion = CURRENT_TIMESTAMP " +
-                                                           "WHERE Id =" + customer.id;
+                                                           "WHERE id =" + customer.id;
                 NpgsqlCommand cmd = new NpgsqlCommand(sql, cn);
                 cmd.CommandText = sql;
-                cmd.ExecuteNonQueryAsync();
+                cmd.ExecuteNonQuery();
                 cn.Close();
             }
         }
