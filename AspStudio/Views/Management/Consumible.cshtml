@@ -24,3 +24,583 @@
     List Supply <small>page header description goes here...</small>
 </h1>
 
+<<<<<<< HEAD
+<button type="button" class="btn bg-warning me-2 " data-bs-toggle="modal" data-bs-target="#newCONSUMIBLE">New Supply</button>
+
+<div class="card">
+    <div class="card-body">
+        <table id="datatableCONSUMIBLE" class="table text-nowrap">
+            <thead>
+                <tr>
+                    <th>Code</th>
+                    <th>Brand</th>
+                    <th>Diameter</th>
+                    <th>Manufacturer</th>
+                    <th>Welding Proccess</th>
+                    <th>Performance</th>
+                    <th>AWS Classification</th>
+                    <th>F°</th>
+                    <th>A°</th>
+                    <th>Density</th>
+                    <th>Electrode Length</th>
+                    <th>Price</th>
+                    <th>Electrode/Kg</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.Count() > 0)
+                {
+                    foreach (var item in Model)
+                    {
+                <tr>
+                    <td>@item.cod_consumible</td>
+                    <td>@item.marca.cod_marca</td>
+                    <td>@item.diametro</td>
+                    <td>@item.fabricante.cod_fabricante</td>
+                    <td>@item.proc_soldadura.cod_proc_soldadura</td>
+                    <td>@item.ref_rendto</td>
+                    <td>@item.clasf_aws.cod_clasf_aws</td>
+                    <td>@item.f_num</td>
+                    <td>@item.a_num</td>
+                    <td>@item.densidad</td>
+                    <td>@item.long_electrodo</td>
+                    <td>@item.precio</td>
+                    <td>@item.num_elect_kg</td>
+                    <td>
+                        <a class="btn btn-outline-warning btn-sm" href="#" role="button" onclick="ModalEditCONSUMIBLE(@item.id,'@item.cod_consumible',@item.marca_id,@item.diametro,@item.fabricante_id,@item.proc_soldadura_id,@item.ref_rendto,@item.clasf_aws_id,'@item.f_num','@item.a_num',@item.densidad,'@item.long_electrodo',@item.precio,@item.num_elect_kg);">Edit</a>
+                    </td>
+                </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+<!-- modal New Project -->
+<div class="modal fade" id="newCONSUMIBLE">
+    <div class="modal-dialog modal-lg">
+        <form method="post" id="formNewCONSUMIBLE">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">New Supply</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+
+                    <div class="form-group">
+                        <label for="cod_CONSUMIBLE">Supply Code</label>
+                        <input type="text" class="form-control" id="cod_CONSUMIBLE" placeholder="Enter the supply code" autocomplete="off" style="text-transform:uppercase;" />
+                    </div>
+                    <div class="form-group">
+                        <label for="marca_id">Brand</label>
+
+                        <select id="marca_id" placeholder="Select a brand..." autocomplete="off" style="text-transform:uppercase;">
+                            <option value="">Select a brand...</option>
+                            @foreach (var cust in ViewBag.marcaslist)
+                            {
+                                <option value="@cust.id">@cust.cod_marca  @cust.descripcion_marca</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="diametro">Diameter</label>
+                        <input type="text" class="form-control" id="diametro" placeholder="Enter the diameter" autocomplete="off" style="text-transform:uppercase;" />
+                    </div>
+                    <div class="form-group">
+                        <label for="fabricante_id">Manufacturer</label>
+
+                        <select id="fabricante_id" placeholder="Select a manufacturer..." autocomplete="off" style="text-transform:uppercase;">
+                            <option value="">Select a manufacturer...</option>
+                            @foreach (var cust in ViewBag.fabricanteslist)
+                            {
+                                <option value="@cust.id">@cust.cod_fabricante  @cust.descripcion_fabricante</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="proc_soldadura_id">Welding Process</label>
+
+                        <select id="proc_soldadura_id" placeholder="Select a welding process..." autocomplete="off" style="text-transform:uppercase;">
+                            <option value="">Select a welding process...</option>
+                            @foreach (var cust in ViewBag.proc_soldaduralist)
+                            {
+                                <option value="@cust.id">@cust.cod_proc_soldadura  @cust.descripcion_proc_soldadura</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="ref_rendto">Performance</label>
+                        <input type="text" class="form-control" id="ref_rendto" placeholder="Enter the performance" autocomplete="off" style="text-transform:uppercase;" />
+                    </div>
+                    <div class="form-group">
+                        <label for="clasf_aws_id">AWS Classification</label>
+
+                        <select id="clasf_aws_id" placeholder="Select a AWS classification..." autocomplete="off" style="text-transform:uppercase;">
+                            <option value="">Select a AWS classification...</option>
+                            @foreach (var cust in ViewBag.clasfawslist)
+                            {
+                                <option value="@cust.id">@cust.cod_clasf_aws  @cust.descripcion_clasf_aws</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="f_num">F°</label>
+                        <input type="text" class="form-control" id="f_num" placeholder="Enter the f° value" autocomplete="off" style="text-transform:uppercase;" />
+                    </div>
+                    <div class="form-group">
+                        <label for="a_num">A°</label>
+                        <input type="text" class="form-control" id="a_num" placeholder="Enter the a° value" autocomplete="off" style="text-transform:uppercase;" />
+                    </div>
+                    <div class="form-group">
+                        <label for="densidad">Density</label>
+                        <input type="text" class="form-control" id="densidad" placeholder="Enter the density" autocomplete="off" style="text-transform:uppercase;" />
+                    </div>
+                    <div class="form-group">
+                        <label for="long_electrodo">Electrode Length</label>
+                        <input type="text" class="form-control" id="long_electrodo" placeholder="Enter the electrode length" autocomplete="off" style="text-transform:uppercase;" />
+                    </div>
+                    <div class="form-group">
+                        <label for="precio">Price</label>
+                        <input type="text" class="form-control" id="precio" placeholder="Enter the price" autocomplete="off" style="text-transform:uppercase;" />
+                    </div>
+                    <div class="form-group">
+                        <label for="num_elect_kg">Electrode/Kg</label>
+                        <input type="text" class="form-control" id="num_elect_kg" placeholder="Enter the electrode/kg" autocomplete="off" style="text-transform:uppercase;" />
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn bg-dark text-white" id="btnGrabarCONSUMIBLE">Save</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- modal Edit Contact -->
+<div class="modal fade" id="editCONSUMIBLE">
+    <div class="modal-dialog modal-lg">
+        <form method="post" id="formEditCONSUMIBLE">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit supply</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <input type="hidden" id="IdCONSUMIBLE" />
+                        <input type="hidden" id="IdMARCA" />
+                        <input type="hidden" id="IdFABRICANTE" />
+                        <input type="hidden" id="IdPROCSOL" />
+                        <input type="hidden" id="IdCLASAWS" />
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="E_cod_CONSUMIBLE">Supply Code</label>
+                        <input type="text" class="form-control" id="E_cod_CONSUMIBLE" placeholder="Enter the supply code" autocomplete="off" style="text-transform:uppercase;" />
+                    </div>
+                    <div class="form-group">
+                        <label for="E_diametro">Diameter</label>
+                        <input type="text" class="form-control" id="E_diametro" placeholder="Enter the diameter" autocomplete="off" style="text-transform:uppercase;" />
+                    </div>
+                    <div class="form-group">
+                        <label for="E_ref_rendto">Performance</label>
+                        <input type="text" class="form-control" id="E_ref_rendto" placeholder="Enter the performance" autocomplete="off" style="text-transform:uppercase;" />
+                    </div>
+                    <div class="form-group">
+                        <label for="E_f_num">F°</label>
+                        <input type="text" class="form-control" id="E_f_num" placeholder="Enter the f° value" autocomplete="off" style="text-transform:uppercase;" />
+                    </div>
+                    <div class="form-group">
+                        <label for="E_a_num">A°</label>
+                        <input type="text" class="form-control" id="E_a_num" placeholder="Enter the a° value" autocomplete="off" style="text-transform:uppercase;" />
+                    </div>
+                    <div class="form-group">
+                        <label for="E_densidad">Density</label>
+                        <input type="text" class="form-control" id="E_densidad" placeholder="Enter the density" autocomplete="off" style="text-transform:uppercase;" />
+                    </div>
+                    <div class="form-group">
+                        <label for="E_long_electrodo">Electrode Length</label>
+                        <input type="text" class="form-control" id="E_long_electrodo" placeholder="Enter the electrode length" autocomplete="off" style="text-transform:uppercase;" />
+                    </div>
+                    <div class="form-group">
+                        <label for="E_precio">Price</label>
+                        <input type="text" class="form-control" id="E_precio" placeholder="Enter the price" autocomplete="off" style="text-transform:uppercase;" />
+                    </div>
+                    <div class="form-group">
+                        <label for="E_num_elect_kg">Electrode/Kg</label>
+                        <input type="text" class="form-control" id="E_num_elect_kg" placeholder="Enter the electrode/kg" autocomplete="off" style="text-transform:uppercase;" />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn bg-dark text-white" id="btnEditCONSUMIBLE">Save</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+@section Scripts{
+
+    <script src="~/lib/highlight.js/highlight.min.js"></script>
+    <script src="~/js/demo/highlightjs.demo.js"></script>
+    <script src="~/lib/datatables.net/js/jquery.dataTables.min.js"></script>
+    <script src="~/lib/datatables.net-bs4/js/dataTables.bootstrap4.min.js"></script>
+    <script src="~/lib/datatables.net-buttons/js/dataTables.buttons.min.js"></script>
+    <script src="~/lib/datatables.net-buttons/js/buttons.colVis.min.js"></script>
+    <script src="~/lib/datatables.net-buttons/js/buttons.flash.min.js"></script>
+    <script src="~/lib/datatables.net-buttons/js/buttons.html5.min.js"></script>
+    <script src="~/lib/datatables.net-buttons/js/buttons.print.min.js"></script>
+    <script src="~/lib/datatables.net-buttons/js/jszip.min.js"></script>
+    <script src="~/lib/datatables.net-buttons/js/pdfmake.min.js"></script>
+    <script src="~/lib/datatables.net-buttons/js/vfs_fonts.js"></script>
+    <script src="~/lib/datatables.net-buttons-bs4/js/buttons.bootstrap4.min.js"></script>
+
+    <script src="~/lib/datatables.net-responsive/js/dataTables.responsive.min.js"></script>
+    <script src="~/lib/datatables.net-responsive-bs4/js/responsive.bootstrap4.min.js"></script>
+    <script src="~/lib/bootstrap-table/dist/bootstrap-table.min.js"></script>
+    <script src="~/js/demo/table-plugins.demo.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/tom-select@2.0.0/dist/js/tom-select.complete.min.js"></script>
+
+
+    <script>
+
+        ///// DATATABLE /////////////
+
+        $('#datatableCONSUMIBLE').DataTable({
+            dom: "<'row mb-3'<'col-sm-4'l><'col-sm-12 text-end'<'d-flex justify-content-end'fB>>>t<'d-flex align-items-center'<'me-auto'i><'mb-0'p>>",
+            lengthMenu: [ 10, 20, 30, 40, 50 ],
+            responsive: true,
+            buttons: [
+              { extend: 'print', className: 'btn btn-default' },
+              { extend: 'pdfHtml5', className: 'btn btn-default' },
+              { extend: 'excelHtml5', className: 'btn btn-default' }
+            ]
+          });
+
+         ///// FUNCIONES  ///////
+
+        function ModalEditCONSUMIBLE(xid, xcod, xmarca, xdiametro, xfabricante, xproc_soldadura, xref_rendto, xclasf_aws, xf_num, xa_num, xdensidad, xlong_electrodo, xprecio, xnum_elect_kg) {
+            $("#IdCONSUMIBLE").val(xid);
+            $("#E_cod_CONSUMIBLE").val(xcod);
+            $("#E_diametro").val(xdiametro);
+            $("#E_ref_rendto").val(xref_rendto);
+            $("#E_f_num").val(xf_num);
+            $("#E_a_num").val(xa_num);
+            $("#E_densidad").val(xdensidad);
+            $("#E_long_electrodo").val(xlong_electrodo);
+            $("#E_precio").val(xprecio);
+            $("#E_num_elect_kg").val(xnum_elect_kg);
+            $("#IdZONA").val(xidzona);
+            $("#IdMARCA").val(xmarca);
+            $("#IdFABRICANTE").val(xfabricante);
+            $("#IdPROCSOL").val(xproc_soldadura);
+            $("#IdCLASAWS").val(xclasf_aws);
+            $('#editCONSUMIBLE').modal('show');
+        }
+
+        $(document).ready(function () {
+
+            new TomSelect("#marca_id",{
+            create: false,
+            sortField: {
+            field: "text",
+            direction: "asc"
+            }
+            });
+
+            new TomSelect("#fabricante_id", {
+            create: false,
+            sortField: {
+            field: "text",
+            direction: "asc"
+            }
+            });
+
+            new TomSelect("#proc_soldadura_id", {
+            create: false,
+            sortField: {
+            field: "text",
+            direction: "asc"
+            }
+            });
+
+            new TomSelect("#clasf_aws_id", {
+            create: false,
+            sortField: {
+            field: "text",
+            direction: "asc"
+            }
+            });
+        //});
+              $('#btnGrabarCONSUMIBLE').click(function (event) {
+
+                  var form = $("#formNewCONSUMIBLE");
+
+                if (form[0].checkValidity() === false) {
+                    event.preventDefault()
+                    event.stopPropagation()
+                    form.addClass('was-validated');
+                }
+                else {
+
+                    if ($('#cod_CONSUMIBLE').val() == "") {
+                        alert("You must enter the supply code");
+                        $('#cod_CONSUMIBLE').focus();
+                        return;
+                    }
+
+                    if ($('#diametro').val() == "") {
+                        alert('You must enter the diameter');
+                        $('#diametro').focus();
+                        return;
+                    }
+
+                    if ($('#ref_rendto').val() == "") {
+                        alert('You must select the performance');
+                        $('#ref_rendto').focus();
+                        return;
+                    }
+
+                    if ($('#f_num').val() == "") {
+                        alert('You must select the f°');
+                        $('#f_num').focus();
+                        return;
+                    }
+
+                    if ($('#a_num').val() == "") {
+                        alert('You must select the a°');
+                        $('#a_num').focus();
+                        return;
+                    }
+
+                    if ($('#densidad').val() == "") {
+                        alert('You must select the density');
+                        $('#densidad').focus();
+                        return;
+                    }
+
+                    if ($('#long_electrodo').val() == "") {
+                        alert('You must select the electrode length');
+                        $('#long_electrodo').focus();
+                        return;
+                    }
+
+                    if ($('#precio').val() == "") {
+                        alert('You must select the electrode price');
+                        $('#precio').focus();
+                        return;
+                    }
+
+                    if ($('#num_elect_kg').val() == "") {
+                        alert('You must select the electrode/kg');
+                        $('#num_elect_kg').focus();
+                        return;
+                    }
+
+                    if ($('#marca_id').val() == "") {
+                        alert('You must select the brand');
+                        $('#marca_id').focus();
+                        return;
+                    }
+
+                    if ($('#fabricante_id').val() == "") {
+                        alert('You must select the manufacturer');
+                        $('#fabricante_id').focus();
+                        return;
+                    }
+
+                    if ($('#proc_soldadura_id').val() == "") {
+                        alert('You must select the welding process');
+                        $('#proc_soldadura_id').focus();
+                        return;
+                    }
+
+                    if ($('#clasf_aws_id').val() == "") {
+                        alert('You must select the AWS classification');
+                        $('#clasf_aws_id').focus();
+                        return;
+                    }
+
+
+                }
+
+                let CONSUMIBLE = {
+                    "marca_id": $('#marca_id').val(),
+                    "fabricante_id": $('#fabricante_id').val(),
+                    "proc_soldadura_id": $('#proc_soldadura_id').val(),
+                    "clasf_aws_id": $('#clasf_aws_id').val(),
+                    "cod_CONSUMIBLE": $('#cod_CONSUMIBLE').val().toUpperCase(),
+                    "diametro": $('#diametro').val().toUpperCase(),
+                    "ref_rendto": $('#ref_rendto').val(),
+                    "f_num": $('#f_num').val().toUpperCase(),
+                    "a_num": $('#a_num').val().toUpperCase(),
+                    "densidad": $('#densidad').val(),
+                    "long_electrodo": $('#long_electrodo').val().toUpperCase(),
+                    "precio": $('#precio').val(),
+                    "num_elect_kg": $('#num_elect_kg').val()
+                };
+
+                  var data = JSON.stringify(CONSUMIBLE);
+
+                $.ajax({
+                    type: "POST",
+                    url: '/Management/AddCONSUMIBLE',
+                    contentType: 'application/json;charset=utf-8',
+                    dataType: 'json',
+                    async: true,
+                    data: data,
+                    success: function (result) {
+                        console.log(result)
+                    }
+                })
+                    .done(function (result) {
+                        if (result.exito) {
+                            //alert(result.mensaje);
+                            $('#newCONSUMIBLE').modal('hide');
+                            location.reload();
+                        }
+                        else {
+                            alert('Problems add a supply, we ask that you try again!');
+                        }
+
+                    })
+                    .fail(function (jqXHR, textStatus, errorThrow) {
+                        var err = "Error: " + textStatus + " " + errorThrow;
+                        console.log(err);
+                    })
+
+            });
+
+
+             $('#btnEditCONSUMIBLE').click(function (event) {
+
+                 var form = $("#formEditCONSUMIBLE");
+
+                if (form[0].checkValidity() === false) {
+                    event.preventDefault()
+                    event.stopPropagation()
+                    form.addClass('was-validated');
+                }
+                else {
+
+                    if ($('#E_cod_CONSUMIBLE').val() == "") {
+                        alert("You must enter the supply code");
+                        $('#E_cod_CONSUMIBLE').focus();
+                        return;
+                    }
+
+                    if ($('#E_diametro').val() == "") {
+                        alert('You must enter the diameter');
+                        $('#E_diametro').focus();
+                        return;
+                    }
+
+                    if ($('#E_ref_rendto').val() == "") {
+                        alert('You must select the performance');
+                        $('#E_ref_rendto').focus();
+                        return;
+                    }
+
+                    if ($('#E_f_num').val() == "") {
+                        alert('You must select the f°');
+                        $('#E_f_num').focus();
+                        return;
+                    }
+
+                    if ($('#E_a_num').val() == "") {
+                        alert('You must select the a°');
+                        $('#E_a_num').focus();
+                        return;
+                    }
+
+                    if ($('#E_densidad').val() == "") {
+                        alert('You must select the density');
+                        $('#E_densidad').focus();
+                        return;
+                    }
+
+                    if ($('#E_long_electrodo').val() == "") {
+                        alert('You must select the electrode length');
+                        $('#E_long_electrodo').focus();
+                        return;
+                    }
+
+                    if ($('#E_precio').val() == "") {
+                        alert('You must select the electrode price');
+                        $('#E_precio').focus();
+                        return;
+                    }
+
+                    if ($('#E_num_elect_kg').val() == "") {
+                        alert('You must select the electrode/kg');
+                        $('#E_num_elect_kg').focus();
+                        return;
+                    }
+
+
+                }
+
+                 let CONSUMIBLE = {
+                    "id": $('#IdCONSUMIBLE').val(),
+                    "marca_id": $('#marca_id').val(),
+                    "fabricante_id": $('#fabricante_id').val(),
+                    "proc_soldadura_id": $('#proc_soldadura_id').val(),
+                    "clasf_aws_id": $('#clasf_aws_id').val(),
+                    "cod_CONSUMIBLE": $('#cod_CONSUMIBLE').val().toUpperCase(),
+                    "diametro": $('#diametro').val().toUpperCase(),
+                    "ref_rendto": $('#ref_rendto').val(),
+                    "f_num": $('#f_num').val().toUpperCase(),
+                    "a_num": $('#a_num').val().toUpperCase(),
+                    "densidad": $('#densidad').val(),
+                    "long_electrodo": $('#long_electrodo').val().toUpperCase(),
+                    "precio": $('#precio').val(),
+                    "num_elect_kg": $('#num_elect_kg').val()
+                };
+
+                 var data = JSON.stringify(CONSUMIBLE);
+
+                $.ajax({
+                    type: "POST",
+                    url: '/Management/EditCONSUMIBLE',
+                    contentType: 'application/json;charset=utf-8',
+                    dataType: 'json',
+                    async: true,
+                    data: data,
+                    success: function (result) {
+                        console.log(result)
+                    }
+                })
+                    .done(function (result) {
+                        if (result.exito) {
+                            //alert(result.mensaje);
+                            $('#editCONSUMIBLE').modal('hide');
+                            location.reload();
+                        }
+                        else {
+                            alert('Problems creating a edit supply, we ask that you try again!');
+                        }
+
+                    })
+                    .fail(function (jqXHR, textStatus, errorThrow) {
+                        var err = "Error: " + textStatus + " " + errorThrow;
+                        console.log(err);
+                    })
+
+
+            });
+
+
+
+        });
+
+
+
+    </script>
+}
