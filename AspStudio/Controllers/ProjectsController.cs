@@ -134,6 +134,18 @@ namespace AspStudio.Controllers
         }
 
 
+        public async Task<IActionResult> Reviews(int id)
+        {
+            var projects = _proyectos.GetProject(id);
+            if (projects == null)
+            {
+                return View("Index");
+            }
+
+
+
+        }
+
 
 
     }
