@@ -13,7 +13,20 @@
     <link href="~/lib/datatables.net-responsive-bs4/css/responsive.bootstrap4.min.css" rel="stylesheet" />
     <link href="~/lib/bootstrap-table/dist/bootstrap-table.min.css" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/tom-select@2.0.0/dist/css/tom-select.css" rel="stylesheet">
+    <style>
+        /* remove validation icons */
+        .form-control.is-invalid, .was-validated .form-control:invalid {
+            background-image: none !important;
+            border-color: #ced4da;
+            padding-right: 0.75em;
+        }
 
+        .form-control.is-valid, .was-validated .form-control:valid {
+            background-image: none !important;
+            border-color: #ced4da;
+            padding-right: 0.75em;
+        }
+    </style>
 }
 
 <ul class="breadcrumb">
@@ -25,7 +38,7 @@
     List Non-Destructive Test Results <small>page header description goes here...</small>
 </h1>
 
-<button type="button" class="btn bg-warning me-2 " data-bs-toggle="modal" data-bs-target="#newREND">New Result</button>
+<button type="button" class="btn bg-warning me-2 " onclick="ModalNewREND();">New Result</button>
 
 <div class="card">
     <div class="card-body">
@@ -61,7 +74,7 @@
 <!-- modal New Project -->
 <div class="modal fade" id="newREND">
     <div class="modal-dialog modal-lg">
-        <form method="post" id="formNewREND">
+        <form method="post" id="formNewREND" novalidate>
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">New Result</h5>
@@ -71,18 +84,22 @@
 
                     <div class="form-group">
                         <label for="cod_result_end">Result Code</label>
-                        <input type="text" class="form-control" id="cod_result_end" placeholder="Enter the Result code" autocomplete="off" style="text-transform:uppercase;" />
+                        <input type="text" class="form-control" id="cod_result_end" placeholder="Enter the Result code" autocomplete="off" style="text-transform:uppercase;" required />
+                        <div class="invalid-feedback">Please fill out this field.</div>
                     </div>
 
                     <div class="form-group">
                         <label for="descripcion_result_end">Descripcion Result</label>
-                        <input type="text" class="form-control" id="descripcion_result_end" placeholder="Enter the result description" autocomplete="off" style="text-transform:uppercase;" />
+                        <input type="text" class="form-control" id="descripcion_result_end" placeholder="Enter the result description" autocomplete="off" style="text-transform:uppercase;" required />
+                        <div class="invalid-feedback">Please fill out this field.</div>
                     </div>
 
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn bg-dark text-white" id="btnGrabarREND">Save</button>
+                    <button type="button" class="btn bg-dark text-white" id="btnGrabarREND">
+                        <span id="loaderN" class="spinner-border spinner-border-sm" role="status" aria-hidden="true" style="display:none;"></span> Save
+                    </button>
                 </div>
             </div>
         </form>
@@ -92,7 +109,7 @@
 <!-- modal Edit Contact -->
 <div class="modal fade" id="EditREND">
     <div class="modal-dialog modal-lg">
-        <form method="post" id="formEditREND">
+        <form method="post" id="formEditREND" novalidate>
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">Edit Result</h5>
@@ -105,18 +122,22 @@
 
                     <div class="form-group">
                         <label for="E_cod_result_end">Result Code</label>
-                        <input type="text" class="form-control" id="E_cod_result_end" placeholder="Enter the result code" autocomplete="off" style="text-transform:uppercase;" />
+                        <input type="text" class="form-control" id="E_cod_result_end" placeholder="Enter the result code" autocomplete="off" style="text-transform:uppercase;" required />
+                        <div class="invalid-feedback">Please fill out this field.</div>
                     </div>
 
                     <div class="form-group">
                         <label for="E_descripcion_result_end">Descripcion Result</label>
-                        <input type="text" class="form-control" id="E_descripcion_result_end" placeholder="Enter the result description" autocomplete="off" style="text-transform:uppercase;" />
+                        <input type="text" class="form-control" id="E_descripcion_result_end" placeholder="Enter the result description" autocomplete="off" style="text-transform:uppercase;" required />
+                        <div class="invalid-feedback">Please fill out this field.</div>
                     </div>
 
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn bg-dark text-white" id="btnEditREND">Save</button>
+                    <button type="button" class="btn bg-dark text-white" id="btnEditREND">
+                        <span id="loaderE" class="spinner-border spinner-border-sm" role="status" aria-hidden="true" style="display:none;"></span> Save
+                    </button>
                 </div>
             </div>
         </form>
@@ -149,7 +170,7 @@
     <script src="~/lib/bootstrap-table/dist/bootstrap-table.min.js"></script>
     <script src="~/js/demo/table-plugins.demo.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/tom-select@2.0.0/dist/js/tom-select.complete.min.js"></script>
-
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 
     <script>
 
@@ -157,16 +178,16 @@
 
         $('#datatableREND').DataTable({
             dom: "<'row mb-3'<'col-sm-4'l><'col-sm-12 text-end'<'d-flex justify-content-end'fB>>>t<'d-flex align-items-center'<'me-auto'i><'mb-0'p>>",
-            lengthMenu: [ 10, 20, 30, 40, 50 ],
+            lengthMenu: [10, 20, 30, 40, 50],
             responsive: true,
             buttons: [
-              { extend: 'print', className: 'btn btn-default' },
-              { extend: 'pdfHtml5', className: 'btn btn-default' },
-              { extend: 'excelHtml5', className: 'btn btn-default' }
+                { extend: 'print', className: 'btn btn-default' },
+                { extend: 'pdfHtml5', className: 'btn btn-default' },
+                { extend: 'excelHtml5', className: 'btn btn-default' }
             ]
-          });
+        });
 
-         ///// FUNCIONES  ///////
+        ///// FUNCIONES  ///////
 
         function ModalEditREND(xid, xcod, xdescripcion) {
             $("#IdREND").val(xid);
@@ -175,42 +196,36 @@
             $('#EditREND').modal('show');
         }
 
+        function ModalNewREND() {
+            var form = $("#formNewREND");
+            form[0].reset();
+            form.get(0).reset();
+            form.removeClass('was-validated');
+            $('#newREND').modal('show');
+        }
 
         $(document).ready(function () {
 
-
+            $('#newREND').on('shown.bs.modal', function () {
+                $('#cod_result_end').focus();
+            });
 
             $('#btnGrabarREND').click(function (event) {
 
                 var form = $("#formNewREND");
+                form.addClass('was-validated');
 
                 if (form[0].checkValidity() === false) {
-                    event.preventDefault()
-                    event.stopPropagation()
-                    form.addClass('was-validated');
-                }
-                else {
-
-                    if ($('#cod_result_end').val() == "") {
-                        alert("You must enter the result code");
-                        $('#cod_result_end').focus();
-                        return;
-                    }
-
-                    if ($('#descripcion_result_end').val() == "") {
-                        alert('You must enter the result description');
-                        $('#descripcion_result_end').focus();
-                        return;
-                    }
-
-
+                    event.preventDefault();
+                    event.stopPropagation();
+                    return;
                 }
 
                 let rend = {
                     "cod_result_end": $('#cod_result_end').val().toUpperCase(),
                     "descripcion_result_end": $('#descripcion_result_end').val().toUpperCase()
                 };
-               var data = JSON.stringify(rend);
+                var data = JSON.stringify(rend);
 
                 $.ajax({
                     type: "POST",
@@ -219,22 +234,24 @@
                     dataType: 'json',
                     async: true,
                     data: data,
+                    beforeSend: function () {
+                        $('#loaderN').show();
+                    },
                     success: function (result) {
-                        console.log(result)
-                    }
-                })
-                    .done(function (result) {
                         if (result.exito) {
-                            alert(result.mensaje);
                             $('#newREND').modal('hide');
-                            location.reload();
+                            swal("Good job!", result.mensaje, "success").then(function () {
+                                location.reload();
+                            });
                         }
                         else {
-                            alert('Problems add a result, we ask that you try again!');
+                            swal({
+                                icon: "error",
+                                text: "Problems add a result, we ask that you try again!",
+                            });
                         }
-
-                    })
-                    .fail(function (jqXHR, textStatus, errorThrow) {
+                    }
+                }) .fail(function (jqXHR, textStatus, errorThrow) {
                         var err = "Error: " + textStatus + " " + errorThrow;
                         console.log(err);
                     })
@@ -245,35 +262,22 @@
             $('#btnEditREND').click(function (event) {
 
                 var form = $("#formEditREND");
+                form.addClass('was-validated');
 
                 if (form[0].checkValidity() === false) {
-                    event.preventDefault()
-                    event.stopPropagation()
-                    form.addClass('was-validated');
-                }
-                else {
-
-                    if ($('#E_cod_result_end').val() == "") {
-                        alert("You must enter the result code");
-                        $('#E_cod_result_end').focus();
-                        return;
-                    }
-
-                    if ($('#E_descripcion_result_end').val() == "") {
-                        alert('You must enter the result description');
-                        $('#E_descripcion_result_end').focus();
-                        return;
-                    }
+                    event.preventDefault();
+                    event.stopPropagation();
+                    return;
                 }
 
-               let rend = {
-                   "id": $('#IdREND').val(),
+                let rend = {
+                    "id": $('#IdREND').val(),
                     "cod_result_end": $('#E_cod_result_end').val().toUpperCase(),
                     "descripcion_result_end": $('#E_descripcion_result_end').val().toUpperCase()
                 };
 
 
-               var data = JSON.stringify(rend);
+                var data = JSON.stringify(rend);
 
                 $.ajax({
                     type: "POST",
@@ -282,22 +286,24 @@
                     dataType: 'json',
                     async: true,
                     data: data,
+                    beforeSend: function () {
+                        $('#loaderE').show();
+                    },
                     success: function (result) {
-                        console.log(result)
-                    }
-                })
-                    .done(function (result) {
                         if (result.exito) {
-                            alert(result.mensaje);
                             $('#EditREND').modal('hide');
-                            location.reload();
+                            swal("Good job!", result.mensaje, "success").then(function () {
+                                location.reload();
+                            });
                         }
                         else {
-                            alert('Problems creating a edit result, we ask that you try again!');
+                            swal({
+                                icon: "error",
+                                text: "Problems edit a result, we ask that you try again!",
+                            });
                         }
-
-                    })
-                    .fail(function (jqXHR, textStatus, errorThrow) {
+                    }
+                }) .fail(function (jqXHR, textStatus, errorThrow) {
                         var err = "Error: " + textStatus + " " + errorThrow;
                         console.log(err);
                     })

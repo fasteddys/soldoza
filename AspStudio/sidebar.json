@@ -44,6 +44,11 @@
         },
         {
           "controller": "Management",
+          "action": "Sides",
+          "text": "Sides"
+        },
+        {
+          "controller": "Management",
           "action": "Zones",
           "text": "Zones"
         },
@@ -111,6 +116,21 @@
           "controller": "Management",
           "action": "Consumible",
           "text": "Supply"
+        },
+        {
+          "controller": "Management",
+          "action": "InstalTipo",
+          "text": "Installation Type"
+        },
+        {
+          "controller": "Management",
+          "action": "Instal",
+          "text": "Installations"
+        },
+        {
+          "controller": "Management",
+          "action": "ListPos",
+          "text": "Position in Plan"
         }
       ]
     },

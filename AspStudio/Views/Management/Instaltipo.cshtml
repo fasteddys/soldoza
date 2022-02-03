@@ -1,8 +1,7 @@
 ﻿@using Domain.Entities;
-@model IEnumerable<SOLDOZA_MST_TIPO_JUNTA>
+@model IEnumerable<SOLDOZA_MST_GRL_INSTALACION_TIPO>
 @{
-    ViewData["Title"] = "Tipo Junta";
-    //ViewData["Title"] = "Non-Destructive Test Results";
+    ViewData["Title"] = "Installation Type";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -31,18 +30,18 @@
 
 <ul class="breadcrumb">
     <li class="breadcrumb-item text-warning"><a href="#" class="text-warning">MANAGEMENT</a></li>
-    <li class="breadcrumb-item text-gray-900 active">Joint Type</li>
+    <li class="breadcrumb-item text-gray-900 active">Installation Type</li>
 </ul>
 
 <h1 class="page-header">
-    List Joint Type <small>page header description goes here...</small>
+    List Installation Type <small>page header description goes here...</small>
 </h1>
 
-<button type="button" class="btn bg-warning me-2 " onclick="ModalNewTipJun();">New Joint Type</button>
+<button type="button" class="btn bg-warning me-2 " onclick="ModalNewInstaTipo();">New Installation Type</button>
 
 <div class="card">
     <div class="card-body">
-        <table id="datatableTipJun" class="table text-nowrap">
+        <table id="datatableInstaTipo" class="table text-nowrap">
             <thead>
                 <tr>
                     <th>Code</th>
@@ -56,10 +55,10 @@
                     foreach (var item in Model)
                     {
                         <tr>
-                            <td>@item.cod_tipo_junta</td>
-                            <td>@item.descripcion_tipo_junta</td>
+                            <td>@item.cod_tipo_instalacion</td>
+                            <td>@item.descripcion_tipo_instalacion</td>
                             <td>
-                                <a class="btn btn-outline-warning btn-sm" href="#" role="button" onclick="ModalEditTipJun(@item.id,'@item.cod_tipo_junta','@item.descripcion_tipo_junta');">Edit</a>
+                                <a class="btn btn-outline-warning btn-sm" href="#" role="button" onclick="ModalEditInstaTipo(@item.id,'@item.cod_tipo_instalacion','@item.descripcion_tipo_instalacion');">Edit</a>
                             </td>
                         </tr>
                     }
@@ -72,32 +71,32 @@
 
 
 <!-- modal New Project -->
-<div class="modal fade" id="newTipJun">
+<div class="modal fade" id="newInstaTipo">
     <div class="modal-dialog modal-lg">
-        <form method="post" id="formNewTipJun" novalidate>
+        <form method="post" id="formNewInstaTipo" novalidate>
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">New Joint Type</h5>
+                    <h5 class="modal-title">New Installation Type</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
 
                     <div class="form-group">
-                        <label for="cod_tipo_junta">Joint Type Code</label>
-                        <input type="text" class="form-control" id="cod_tipo_junta" placeholder="Enter the joint type code" autocomplete="off" style="text-transform:uppercase;" required />
+                        <label for="cod_tipo_instalacion">Installation Type Code</label>
+                        <input type="text" class="form-control" id="cod_tipo_instalacion" placeholder="Enter the installation type code" autocomplete="off" style="text-transform:uppercase;" required />
                         <div class="invalid-feedback">Please fill out this field.</div>
                     </div>
 
                     <div class="form-group">
-                        <label for="descripcion_tipo_junta">Descripcion Joint Type</label>
-                        <input type="text" class="form-control" id="descripcion_tipo_junta" placeholder="Enter the joint type description" autocomplete="off" style="text-transform:uppercase;" required />
+                        <label for="descripcion_tipo_instalacion">Description Installation Type</label>
+                        <input type="text" class="form-control" id="descripcion_tipo_instalacion" placeholder="Enter the installation type description" autocomplete="off" style="text-transform:uppercase;" required />
                         <div class="invalid-feedback">Please fill out this field.</div>
                     </div>
 
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn bg-dark text-white" id="btnGrabarTipJun">
+                    <button type="button" class="btn bg-dark text-white" id="btnGrabarInstaTipo">
                         <span id="loaderN" class="spinner-border spinner-border-sm" role="status" aria-hidden="true" style="display:none;"></span> Save
                     </button>
                 </div>
@@ -107,35 +106,35 @@
 </div>
 
 <!-- modal Edit Contact -->
-<div class="modal fade" id="EditTipJun">
+<div class="modal fade" id="editInstaTipo">
     <div class="modal-dialog modal-lg">
-        <form method="post" id="formEditTipJun" novalidate>
+        <form method="post" id="formEditInstaTipo" novalidate>
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Edit Joint Type</h5>
+                    <h5 class="modal-title">Edit Installation Type</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
                     <div class="form-group">
-                        <input type="hidden" id="IdTipJun" />
+                        <input type="hidden" id="IdInstaTipo" />
                     </div>
 
                     <div class="form-group">
-                        <label for="E_cod_tipo_junta">Joint Type Code</label>
-                        <input type="text" class="form-control" id="E_cod_tipo_junta" placeholder="Enter the joint type code" autocomplete="off" style="text-transform:uppercase;" required />
+                        <label for="E_cod_tipo_instalacion">Installation Type Code</label>
+                        <input type="text" class="form-control" id="E_cod_tipo_instalacion" placeholder="Enter the installation type code" autocomplete="off" style="text-transform:uppercase;" required />
                         <div class="invalid-feedback">Please fill out this field.</div>
                     </div>
 
                     <div class="form-group">
-                        <label for="E_descripcion_tipo_junta">Descripcion Joint Type</label>
-                        <input type="text" class="form-control" id="E_descripcion_tipo_junta" placeholder="Enter the joint type description" autocomplete="off" style="text-transform:uppercase;" required />
+                        <label for="E_descripcion_tipo_instalacion">Description Installation Type</label>
+                        <input type="text" class="form-control" id="E_descripcion_tipo_instalacion" placeholder="Enter the installation type description" autocomplete="off" style="text-transform:uppercase;" required />
                         <div class="invalid-feedback">Please fill out this field.</div>
                     </div>
 
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn bg-dark text-white" id="btnEditTipJun">
+                    <button type="button" class="btn bg-dark text-white" id="btnEditInstaTipo">
                         <span id="loaderE" class="spinner-border spinner-border-sm" role="status" aria-hidden="true" style="display:none;"></span> Save
                     </button>
                 </div>
@@ -153,9 +152,6 @@
     <script src="~/lib/datatables.net/js/jquery.dataTables.min.js"></script>
     <script src="~/lib/datatables.net-bs4/js/dataTables.bootstrap4.min.js"></script>
     <script src="~/lib/datatables.net-buttons/js/dataTables.buttons.min.js"></script>
-
-    @*<script src="https://cdn.datatables.net/buttons/2.1.0/js/dataTables.buttons.min.js"></script>*@
-
     <script src="~/lib/datatables.net-buttons/js/buttons.colVis.min.js"></script>
     <script src="~/lib/datatables.net-buttons/js/buttons.flash.min.js"></script>
     <script src="~/lib/datatables.net-buttons/js/buttons.html5.min.js"></script>
@@ -176,7 +172,7 @@
 
         ///// DATATABLE /////////////
 
-        $('#datatableTipJun').DataTable({
+        $('#datatableInstaTipo').DataTable({
             dom: "<'row mb-3'<'col-sm-4'l><'col-sm-12 text-end'<'d-flex justify-content-end'fB>>>t<'d-flex align-items-center'<'me-auto'i><'mb-0'p>>",
             lengthMenu: [10, 20, 30, 40, 50],
             responsive: true,
@@ -189,30 +185,30 @@
 
         ///// FUNCIONES  ///////
 
-        function ModalEditTipJun(xid, xcod, xdescripcion) {
-            $("#IdTipJun").val(xid);
-            $("#E_cod_tipo_junta").val(xcod);
-            $("#E_descripcion_tipo_junta").val(xdescripcion);
-            $('#EditTipJun').modal('show');
+        function ModalEditInstaTipo(xid, xcod, xdescripcion) {
+            $("#IdInstaTipo").val(xid);
+            $("#E_cod_tipo_instalacion").val(xcod);
+            $("#E_descripcion_tipo_instalacion").val(xdescripcion);
+            $('#editInstaTipo').modal('show');
         }
 
-        function ModalNewTipJun() {
-            var form = $("#formNewTipJun");
+        function ModalNewInstaTipo() {
+            var form = $("#formNewInstaTipo");
             form[0].reset();
             form.get(0).reset();
             form.removeClass('was-validated');
-            $('#newTipJun').modal('show');
+            $('#newInstaTipo').modal('show');
         }
 
         $(document).ready(function () {
 
-            $('#newTipJun').on('shown.bs.modal', function () {
-                $('#cod_tipo_junta').focus();
+            $('#newInstaTipo').on('shown.bs.modal', function () {
+                $('#cod_tipo_instalacion').focus();
             });
 
-            $('#btnGrabarTipJun').click(function (event) {
+            $('#btnGrabarInstaTipo').click(function (event) {
 
-                var form = $("#formNewTipJun");
+                var form = $("#formNewInstaTipo");
                 form.addClass('was-validated');
 
                 if (form[0].checkValidity() === false) {
@@ -221,15 +217,15 @@
                     return;
                 }
 
-                let TipJun = {
-                    "cod_tipo_junta": $('#cod_tipo_junta').val().toUpperCase(),
-                    "descripcion_tipo_junta": $('#descripcion_tipo_junta').val().toUpperCase()
+                let InstaTipo = {
+                    "cod_tipo_instalacion": $('#cod_tipo_instalacion').val().toUpperCase(),
+                    "descripcion_tipo_instalacion": $('#descripcion_tipo_instalacion').val().toUpperCase()
                 };
-                var data = JSON.stringify(TipJun);
+                var data = JSON.stringify(InstaTipo);
 
                 $.ajax({
                     type: "POST",
-                    url: '/Management/AddTipJun',
+                    url: '/Management/AddInstaTipo',
                     contentType: 'application/json;charset=utf-8',
                     dataType: 'json',
                     async: true,
@@ -239,7 +235,7 @@
                     },
                     success: function (result) {
                         if (result.exito) {
-                            $('#newTipJun').modal('hide');
+                            $('#newInstaTipo').modal('hide');
                             swal("Good job!", result.mensaje, "success").then(function () {
                                 location.reload();
                             });
@@ -247,7 +243,7 @@
                         else {
                             swal({
                                 icon: "error",
-                                text: "Problems add a joint type, we ask that you try again!",
+                                text: "Problems add a installation type, we ask that you try again!",
                             });
                         }
                     }
@@ -259,9 +255,9 @@
             });
 
 
-            $('#btnEditTipJun').click(function (event) {
+            $('#btnEditInstaTipo').click(function (event) {
 
-                var form = $("#formEditTipJun");
+                var form = $("#formEditInstaTipo");
                 form.addClass('was-validated');
 
                 if (form[0].checkValidity() === false) {
@@ -270,18 +266,18 @@
                     return;
                 }
 
-                let TipJun = {
-                    "id": $('#IdTipJun').val(),
-                    "cod_tipo_junta": $('#E_cod_tipo_junta').val().toUpperCase(),
-                    "descripcion_tipo_junta": $('#E_descripcion_tipo_junta').val().toUpperCase()
+                let InstaTipo = {
+                    "id": $('#IdInstaTipo').val(),
+                    "cod_tipo_instalacion": $('#E_cod_tipo_instalacion').val().toUpperCase(),
+                    "descripcion_tipo_instalacion": $('#E_descripcion_tipo_instalacion').val().toUpperCase()
                 };
 
 
-                var data = JSON.stringify(TipJun);
+                var data = JSON.stringify(InstaTipo);
 
                 $.ajax({
                     type: "POST",
-                    url: '/Management/EditTipJun',
+                    url: '/Management/EditInstaTipo',
                     contentType: 'application/json;charset=utf-8',
                     dataType: 'json',
                     async: true,
@@ -291,7 +287,7 @@
                     },
                     success: function (result) {
                         if (result.exito) {
-                            $('#EditTipJun').modal('hide');
+                            $('#editInstaTipo').modal('hide');
                             swal("Good job!", result.mensaje, "success").then(function () {
                                 location.reload();
                             });
@@ -299,7 +295,7 @@
                         else {
                             swal({
                                 icon: "error",
-                                text: "Problems edit a joint type, we ask that you try again!",
+                                text: "Problems edit a installation type, we ask that you try again!",
                             });
                         }
                     }

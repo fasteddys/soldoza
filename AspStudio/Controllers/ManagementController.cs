@@ -42,6 +42,10 @@ namespace AspStudio.Controllers
         private readonly ISOLDOZA_ADM_MST_CONSU_FABRICANTE _consufab;
         private readonly ISOLDOZA_ADM_MST_CONSU_CLASF_AWS _consuclasfaws;
         private readonly ISOLDOZA_MST_CONSUMIBLES _consumible;
+        private readonly ISOLDOZA_MST_GRL_INSTALACION_TIPO _instatipo;
+        private readonly ISOLDOZA_MST_GRL_INSTALACION _insta;
+        private readonly ISOLDOZA_ADM_PRY_ING_LIST_POS _pos;
+        private readonly ISOLDOZA_MST_PLANOS _nplano;
 
         public ManagementController(ILogger<ManagementController> logger, ApplicationDbContext context,
                                     ISOLDOZA_MST_GRL_CLIENTES clientes, ISOLDOZA_MST_PAIS paises, ISOLDOZA_MST_TIPO_DOCUMENTO tipodocumentos,
@@ -50,7 +54,8 @@ namespace AspStudio.Controllers
                                     ISOLDOZA_ADM_MST_LADOS lados, ISOLDOZA_MST_RESULT_END rends, ISOLDOZA_MST_POS_SOLDEO posol, ISOLDOZA_MST_LUGAR_SOLDEO lugsol,
                                     ISOLDOZA_MST_END ennode, ISOLDOZA_MST_DIS_SOLDADURA dissol, ISOLDOZA_MST_PROC_SOLDADURA procsol, ISOLDOZA_MST_TIPO_JUNTA tipjun,
                                     ISOLDOZA_MST_SUBZONAS subzona, ISOLDOZA_ADM_MST_CONSU_MARCA consumar, ISOLDOZA_ADM_MST_CONSU_FABRICANTE consufab,
-                                    ISOLDOZA_ADM_MST_CONSU_CLASF_AWS consuclasfaws, ISOLDOZA_MST_CONSUMIBLES consumible)
+                                    ISOLDOZA_ADM_MST_CONSU_CLASF_AWS consuclasfaws, ISOLDOZA_MST_CONSUMIBLES consumible, ISOLDOZA_MST_GRL_INSTALACION_TIPO instatipo,
+                                    ISOLDOZA_MST_GRL_INSTALACION insta, ISOLDOZA_ADM_PRY_ING_LIST_POS pos, ISOLDOZA_MST_PLANOS nplano)
         {
             _logger = logger;
             _context = context;
@@ -76,6 +81,10 @@ namespace AspStudio.Controllers
             _consufab = consufab;
             _consuclasfaws = consuclasfaws;
             _consumible = consumible;
+            _instatipo = instatipo;
+            _insta = insta;
+            _pos = pos;
+            _nplano = nplano;
         }
 
         public IActionResult Index()
@@ -186,10 +195,54 @@ namespace AspStudio.Controllers
             var consuclasfaws = _consuclasfaws.GetAll();
             return View(consuclasfaws);
         }
-        public IActionResult Consumible()
+        public async Task<IActionResult> Consumible()
         {
-            var consumible = _consumible.GetAll();
+            var consumible = await _consumible.GetAll();
+            var marcas = _consumar.GetAll();
+            var fabricantes = _consufab.GetAll();
+            var proc_sold = _procsol.GetAll();
+            var clas_aws = _consuclasfaws.GetAll();
+
+            ViewBag.marcaslist = marcas;
+            ViewBag.fabricanteslist = fabricantes;
+            ViewBag.proc_soldaduralist = proc_sold;
+            ViewBag.clasfawslist = clas_aws;
             return View(consumible);
+        }
+        public IActionResult Instaltipo()
+        {
+            var instatipo = _instatipo.GetAll();
+            return View(instatipo);
+        }
+        public async Task<IActionResult> Instal()
+        {
+            var instalacion = await _insta.GetAll();
+            var proyecto = await _proyectos.GetAll();
+            var instalacion_tipo = _instatipo.GetAll();
+
+            ViewBag.proyecto = proyecto;
+            ViewBag.instalacion_tipo = instalacion_tipo;
+            return View(instalacion);
+        }
+        public async Task<IActionResult> Plans()
+        {
+            var proyectos = await _proyectos.GetAll();
+            var nplano = await _nplano.GetAll();
+
+            ViewBag.proyectlist = proyectos;
+            return View(nplano);
+        }
+        public async Task<IActionResult> ListPos()
+        {
+            var pos = await _pos.GetAll();
+            var instalacion = await _insta.GetAll();
+            var plano = await _nplano.GetAll();
+            var material = await _materiales.GetAll();
+
+            ViewBag.instalacionlist = instalacion;
+            ViewBag.planolist = plano;
+            ViewBag.materiallist = material;
+            return View(pos);
         }
 
 
@@ -575,16 +628,16 @@ namespace AspStudio.Controllers
         }
 
         [HttpPost]
-        public IActionResult AddSide([FromBody] SOLDOZA_ADM_MST_LADOS side)
+        public IActionResult AddSide([FromBody] SOLDOZA_ADM_MST_LADOS sides)
         {
-            if (side == null)
+            if (sides == null)
             {
                 return View("Sides");
             }
 
 
 
-            bool result = _lados.Insert(side);
+            bool result = _lados.Insert(sides);
             if (result)
             {
                 return Json(new { exito = true, mensaje = "Successfully added side" });
@@ -596,16 +649,16 @@ namespace AspStudio.Controllers
         }
 
         [HttpPost]
-        public IActionResult EditSide([FromBody] SOLDOZA_ADM_MST_LADOS side)
+        public IActionResult EditSide([FromBody] SOLDOZA_ADM_MST_LADOS sides)
         {
-            if (side == null)
+            if (sides == null)
             {
                 return View("Sides");
             }
 
 
 
-            bool result = _lados.Update(side);
+            bool result = _lados.Update(sides);
             if (result)
             {
                 return Json(new { exito = true, mensaje = "Successfully edit side" });
@@ -1097,6 +1150,124 @@ namespace AspStudio.Controllers
             if (result)
             {
                 return Json(new { exito = true, mensaje = "Successfully edit consumible" });
+            }
+            else
+            {
+                return Json(new { exito = false, mensaje = "Error" });
+            }
+        }
+
+        [HttpPost]
+        public IActionResult AddInstaTipo([FromBody] SOLDOZA_MST_GRL_INSTALACION_TIPO instaltipo)
+        {
+            if (instaltipo == null)
+            {
+                return View("InstalTipo");
+            }
+
+
+
+            bool result = _instatipo.Insert(instaltipo);
+            if (result)
+            {
+                return Json(new { exito = true, mensaje = "Successfully added installation type" });
+            }
+            else
+            {
+                return Json(new { exito = false, mensaje = "Error" });
+            }
+        }
+
+        [HttpPost]
+        public IActionResult EditInstaTipo([FromBody] SOLDOZA_MST_GRL_INSTALACION_TIPO instaltipo)
+        {
+            if (instaltipo == null)
+            {
+                return View("InstalTipo");
+            }
+
+
+
+            bool result = _instatipo.Update(instaltipo);
+            if (result)
+            {
+                return Json(new { exito = true, mensaje = "Successfully edit installation type" });
+            }
+            else
+            {
+                return Json(new { exito = false, mensaje = "Error" });
+            }
+        }
+
+        [HttpPost]
+        public IActionResult AddINSTALACION([FromBody] SOLDOZA_MST_GRL_INSTALACION instalacion)
+        {
+            if (instalacion == null)
+            {
+                return View("INSTALACION");
+            }
+
+            bool result = _insta.Insert(instalacion);
+            if (result)
+            {
+                return Json(new { exito = true, mensaje = "Successfully added installation" });
+            }
+            else
+            {
+                return Json(new { exito = false, mensaje = "Error" });
+            }
+        }
+
+        [HttpPost]
+        public IActionResult EditINSTALACION([FromBody] SOLDOZA_MST_GRL_INSTALACION instalacion)
+        {
+            if (instalacion == null)
+            {
+                return View("INSTALACION");
+            }
+
+            bool result = _insta.Update(instalacion);
+            if (result)
+            {
+                return Json(new { exito = true, mensaje = "Successfully edit installation" });
+            }
+            else
+            {
+                return Json(new { exito = false, mensaje = "Error" });
+            }
+        }
+
+        [HttpPost]
+        public IActionResult AddLISTPOS([FromBody] SOLDOZA_ADM_PRY_ING_LIST_POS pos)
+        {
+            if (pos == null)
+            {
+                return View("LISTPOS");
+            }
+
+            bool result = _pos.Insert(pos);
+            if (result)
+            {
+                return Json(new { exito = true, mensaje = "Successfully added position on the plan" });
+            }
+            else
+            {
+                return Json(new { exito = false, mensaje = "Error" });
+            }
+        }
+
+        [HttpPost]
+        public IActionResult EditLISTPOS([FromBody] SOLDOZA_ADM_PRY_ING_LIST_POS pos)
+        {
+            if (pos == null)
+            {
+                return View("LISTPOS");
+            }
+
+            bool result = _pos.Update(pos);
+            if (result)
+            {
+                return Json(new { exito = true, mensaje = "Successfully edit position on the plan" });
             }
             else
             {

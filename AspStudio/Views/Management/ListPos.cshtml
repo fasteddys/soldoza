@@ -1,0 +1,595 @@
+﻿@using Domain.Entities;
+@model IEnumerable<SOLDOZA_ADM_PRY_ING_LIST_POS>
+@{
+    ViewData["Title"] = "Posición en plano";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+@section Styles {
+    <link href="~/lib/datatables.net-bs4/css/dataTables.bootstrap4.min.css" rel="stylesheet" />
+    <link href="~/lib/datatables.net-buttons-bs4/css/buttons.bootstrap4.min.css" rel="stylesheet" />
+    <link href="~/lib/datatables.net-responsive-bs4/css/responsive.bootstrap4.min.css" rel="stylesheet" />
+    <link href="~/lib/bootstrap-table/dist/bootstrap-table.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/tom-select@2.0.0/dist/css/tom-select.css" rel="stylesheet">
+    <style>
+        /* remove validation icons */
+        .form-control.is-invalid, .was-validated .form-control:invalid {
+            background-image: none !important;
+            border-color: #ced4da;
+            padding-right: 0.75em;
+        }
+
+        .form-control.is-valid, .was-validated .form-control:valid {
+            background-image: none !important;
+            border-color: #ced4da;
+            padding-right: 0.75em;
+        }
+    </style>
+}
+
+<ul class="breadcrumb">
+    <li class="breadcrumb-item text-warning"><a href="#" class="text-warning">MANAGEMENT</a></li>
+    <li class="breadcrumb-item text-gray-900 active">Position on the plan</li>
+</ul>
+
+<h1 class="page-header">
+    List Positions <small>page header description goes here...</small>
+</h1>
+
+<button type="button" class="btn bg-warning me-2 " onclick="ModalNewLISTPOS();">New Position</button>
+
+<div class="card">
+    <div class="card-body">
+        <table id="datatableLISTPOS" class="table text-nowrap">
+            <thead>
+                <tr>
+                   @* <th>Installation</th>
+                    <th>Plan</th>
+                    <th>Material</th>
+                    <th>Code</th>
+                    <th>Qantity</th>
+                    <th>Denomination</th>
+                    <th>Length 1</th>
+                    <th>Wide 1</th>
+                    <th>Length 2</th>
+                    <th>Wide 2</th>
+                    <th>Thickness</th>
+                    <th>Weight</th>
+                    <th>Observations</th>*@
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.Count() > 0)
+                {
+                    foreach (var item in Model)
+                    {
+                <tr>
+                   @* <td>@item.instalacion.cod_instalacion</td>
+                    <td>@item.plano.cod_num_plano</td>
+                    <td>@item.material.cod_material</td>
+                    <td>@item.cod_pos</td>
+                    <td>@item.cantidad</td>
+                    <td>@item.denominacion</td>
+                    <td>@item.longitud_1</td>
+                    <td>@item.ancho_1</td>
+                    <td>@item.longitud_2</td>
+                    <td>@item.ancho_2</td>
+                    <td>@item.espesor</td>
+                    <td>@item.peso</td>
+                    <td>@item.observaciones</td>*@
+                  @*  <td>
+                        <a class="btn btn-outline-warning btn-sm" href="#" role="button" onclick="ModalEditLISTPOS(@item.id,@item.instalacion_id,@item.plano_id,@item.material_id,'@item.cod_pos',@item.cantidad,'@item.denominacion',@item.longitud_1,@item.ancho_1,@item.longitud_2,@item.ancho_2,@item.espesor,@item.peso,'@item.observaciones');">Edit</a>
+                    </td>*@
+                </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+<!-- modal New Project -->
+<div class="modal fade" id="newLISTPOS">
+    <div class="modal-dialog modal-lg">
+        <form method="post" id="formNewLISTPOS" novalidate>
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">New Supply</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+
+                    <div class="form-group">
+                        <label for="instalacion_id">Installation Code</label>
+
+                        <select id="instalacion_id" placeholder="Select a installation..." autocomplete="off" style="text-transform:uppercase;" required>
+                            <option value="">Select a installation...</option>
+                            @foreach (var cust in ViewBag.instalacionlist)
+                            {
+                                <option value="@cust.id">@cust.cod_instalacion  @cust.descripcion_instalacion</option>
+                            }
+                        </select>
+                        <div class="invalid-feedback">Please fill out this field.</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="plano_id">Plan Code</label>
+
+                        <select id="plano_id" placeholder="Select a plan..." autocomplete="off" style="text-transform:uppercase;" required>
+                            <option value="">Select a plan...</option>
+                            @foreach (var cust in ViewBag.planolist)
+                            {
+                                <option value="@cust.id">@cust.cod_num_plano  @cust.descripcion_plano</option>
+                            }
+                        </select>
+                        <div class="invalid-feedback">Please fill out this field.</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="material_id">Material Code</label>
+
+                        <select id="material_id" placeholder="Select a material..." autocomplete="off" style="text-transform:uppercase;" required>
+                            <option value="">Select a material...</option>
+                            @foreach (var cust in ViewBag.materiallist)
+                            {
+                                <option value="@cust.id">@cust.cod_material  @cust.descripcion_material</option>
+                            }
+                        </select>
+                        <div class="invalid-feedback">Please fill out this field.</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="cod_pos">Position Code</label>
+                        <input type="text" class="form-control" id="cod_pos" autocomplete="off" style="text-transform:uppercase;" required />
+                        <div class="invalid-feedback">Please fill out this field.</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="cantidad">Qantity of Pieces</label>
+                        <input type="text" class="form-control" id="cantidad" autocomplete="off" style="text-transform:uppercase;" required />
+                        <div class="invalid-feedback">Please fill out this field.</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="denominacion">Denomination</label>
+                        <input type="text" class="form-control" id="denominacion" autocomplete="off" style="text-transform:uppercase;" required />
+                        <div class="invalid-feedback">Please fill out this field.</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="longitud_1">Length 1</label>
+                        <input type="text" class="form-control" id="longitud_1" autocomplete="off" style="text-transform:uppercase;" required />
+                        <div class="invalid-feedback">Please fill out this field.</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="ancho_1">Wide 1</label>
+                        <input type="text" class="form-control" id="ancho_1" autocomplete="off" style="text-transform:uppercase;" required />
+                        <div class="invalid-feedback">Please fill out this field.</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="longitud_2">Length 2</label>
+                        <input type="text" class="form-control" id="longitud_2" autocomplete="off" style="text-transform:uppercase;" required />
+                        <div class="invalid-feedback">Please fill out this field.</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="ancho_2">Wide 2</label>
+                        <input type="text" class="form-control" id="ancho_2" autocomplete="off" style="text-transform:uppercase;" required />
+                        <div class="invalid-feedback">Please fill out this field.</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="espesor">Thickness</label>
+                        <input type="text" class="form-control" id="espesor" autocomplete="off" style="text-transform:uppercase;" required />
+                        <div class="invalid-feedback">Please fill out this field.</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="peso">Weight</label>
+                        <input type="text" class="form-control" id="peso" autocomplete="off" style="text-transform:uppercase;" required />
+                        <div class="invalid-feedback">Please fill out this field.</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="observaciones">Observations</label>
+                        <input type="text" class="form-control" id="observaciones" autocomplete="off" style="text-transform:uppercase;" required />
+                        <div class="invalid-feedback">Please fill out this field.</div>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn bg-dark text-white" id="btnGrabarLISTPOS">
+                        <span id="loaderN" class="spinner-border spinner-border-sm" role="status" aria-hidden="true" style="display:none;"></span> Save
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- modal Edit Contact -->
+<div class="modal fade" id="editLISTPOS">
+    <div class="modal-dialog modal-lg">
+        <form method="post" id="formEditLISTPOS" novalidate>
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit supply</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <input type="hidden" id="IdLISTPOS" />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="E_instalacion_id">Installation Code</label>
+
+                        <select id="E_instalacion_id" placeholder="Select a installation..." autocomplete="off" style="text-transform:uppercase;" required>
+                            <option value="">Select a installation...</option>
+                            @foreach (var cust in ViewBag.instalacionlist)
+                            {
+                                <option value="@cust.id">@cust.cod_instalacion  @cust.descripcion_instalacion</option>
+                            }
+                        </select>
+                        <div class="invalid-feedback">Please fill out this field.</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="E_plano_id">Plan Code</label>
+
+                        <select id="E_plano_id" placeholder="Select a plan..." autocomplete="off" style="text-transform:uppercase;" required>
+                            <option value="">Select a plan...</option>
+                            @foreach (var cust in ViewBag.planolist)
+                            {
+                                <option value="@cust.id">@cust.cod_num_plano  @cust.descripcion_plano</option>
+                            }
+                        </select>
+                        <div class="invalid-feedback">Please fill out this field.</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="E_material_id">Material Code</label>
+
+                        <select id="E_material_id" placeholder="Select a material..." autocomplete="off" style="text-transform:uppercase;" required>
+                            <option value="">Select a material...</option>
+                            @foreach (var cust in ViewBag.materiallist)
+                            {
+                                <option value="@cust.id">@cust.cod_material  @cust.descripcion_material</option>
+                            }
+                        </select>
+                        <div class="invalid-feedback">Please fill out this field.</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="E_cod_pos">Position Code</label>
+                        <input type="text" class="form-control" id="E_cod_pos" autocomplete="off" style="text-transform:uppercase;" required />
+                        <div class="invalid-feedback">Please fill out this field.</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="E_cantidad">Qantity of Pieces</label>
+                        <input type="text" class="form-control" id="E_cantidad" autocomplete="off" style="text-transform:uppercase;" required />
+                        <div class="invalid-feedback">Please fill out this field.</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="E_denominacion">Denomination</label>
+                        <input type="text" class="form-control" id="E_denominacion" autocomplete="off" style="text-transform:uppercase;" required />
+                        <div class="invalid-feedback">Please fill out this field.</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="E_longitud_1">Length 1</label>
+                        <input type="text" class="form-control" id="E_longitud_1" autocomplete="off" style="text-transform:uppercase;" required />
+                        <div class="invalid-feedback">Please fill out this field.</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="E_ancho_1">Wide 1</label>
+                        <input type="text" class="form-control" id="E_ancho_1" autocomplete="off" style="text-transform:uppercase;" required />
+                        <div class="invalid-feedback">Please fill out this field.</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="E_longitud_2">Length 2</label>
+                        <input type="text" class="form-control" id="E_longitud_2" autocomplete="off" style="text-transform:uppercase;" required />
+                        <div class="invalid-feedback">Please fill out this field.</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="E_ancho_2">Wide 2</label>
+                        <input type="text" class="form-control" id="E_ancho_2" autocomplete="off" style="text-transform:uppercase;" required />
+                        <div class="invalid-feedback">Please fill out this field.</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="E_espesor">Thickness</label>
+                        <input type="text" class="form-control" id="E_espesor" autocomplete="off" style="text-transform:uppercase;" required />
+                        <div class="invalid-feedback">Please fill out this field.</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="E_peso">Weight</label>
+                        <input type="text" class="form-control" id="E_peso" autocomplete="off" style="text-transform:uppercase;" required />
+                        <div class="invalid-feedback">Please fill out this field.</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="E_observaciones">Observations</label>
+                        <input type="text" class="form-control" id="E_observaciones" autocomplete="off" style="text-transform:uppercase;" required />
+                        <div class="invalid-feedback">Please fill out this field.</div>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn bg-dark text-white" id="btnEditLISTPOS">
+                        <span id="loaderE" class="spinner-border spinner-border-sm" role="status" aria-hidden="true" style="display:none;"></span> Save
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+@section Scripts{
+
+    <script src="~/lib/highlight.js/highlight.min.js"></script>
+    <script src="~/js/demo/highlightjs.demo.js"></script>
+    <script src="~/lib/datatables.net/js/jquery.dataTables.min.js"></script>
+    <script src="~/lib/datatables.net-bs4/js/dataTables.bootstrap4.min.js"></script>
+    <script src="~/lib/datatables.net-buttons/js/dataTables.buttons.min.js"></script>
+    <script src="~/lib/datatables.net-buttons/js/buttons.colVis.min.js"></script>
+    <script src="~/lib/datatables.net-buttons/js/buttons.flash.min.js"></script>
+    <script src="~/lib/datatables.net-buttons/js/buttons.html5.min.js"></script>
+    <script src="~/lib/datatables.net-buttons/js/buttons.print.min.js"></script>
+    <script src="~/lib/datatables.net-buttons/js/jszip.min.js"></script>
+    <script src="~/lib/datatables.net-buttons/js/pdfmake.min.js"></script>
+    <script src="~/lib/datatables.net-buttons/js/vfs_fonts.js"></script>
+    <script src="~/lib/datatables.net-buttons-bs4/js/buttons.bootstrap4.min.js"></script>
+
+    <script src="~/lib/datatables.net-responsive/js/dataTables.responsive.min.js"></script>
+    <script src="~/lib/datatables.net-responsive-bs4/js/responsive.bootstrap4.min.js"></script>
+    <script src="~/lib/bootstrap-table/dist/bootstrap-table.min.js"></script>
+    <script src="~/js/demo/table-plugins.demo.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/tom-select@2.0.0/dist/js/tom-select.complete.min.js"></script>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
+    <script>
+
+        ///// DATATABLE /////////////
+
+        $('#datatableLISTPOS').DataTable({
+            dom: "<'row mb-3'<'col-sm-4'l><'col-sm-12 text-end'<'d-flex justify-content-end'fB>>>t<'d-flex align-items-center'<'me-auto'i><'mb-0'p>>",
+            lengthMenu: [10, 20, 30, 40, 50],
+            responsive: true,
+            buttons: [
+                { extend: 'print', className: 'btn btn-default' },
+                { extend: 'pdfHtml5', className: 'btn btn-default' },
+                { extend: 'excelHtml5', className: 'btn btn-default' }
+            ]
+        });
+
+        ///// FUNCIONES  ///////
+
+        function ModalEditLISTPOS(xid, xcod, xcantidad, xinstalacion, xplano, xmaterial, xdenominacion, xlongitud_1, xancho_1, xlongitud_2, xancho_2, xespesor, xpeso, xobservaciones) {
+            alert(xobservaciones);
+            $("#IdLISTPOS").val(xid);
+            controlEinstalacion.setValue(xinstalacion);
+            controlEplano.setValue(xplano);
+            controlEmaterial.setValue(xmaterial);
+            $("#E_cod_pos").val(xcod);
+            $("#E_cantidad").val(xcantidad);
+            $("#E_denominacion").val(xdenominacion);
+            $("#E_longitud_1").val(xlongitud_1);
+            $("#E_ancho_1").val(xancho_1);
+            $("#E_longitud_2").val(xlongitud_2);
+            $("#E_ancho_2").val(xancho_2);
+            $("#E_espesor").val(xespesor);
+            $("#E_peso").val(xpeso);
+            $("#E_observaciones").val(xobservaciones);
+            $('#editLISTPOS').modal('show');
+        }
+
+        function ModalNewLISTPOS() {
+            var form = $("#formNewLISTPOS");
+            form[0].reset();
+            form.get(0).reset();
+            form.removeClass('was-validated');
+            $('#newLISTPOS').modal('show');
+        }
+
+        $(document).ready(function () {
+
+            $('#newLISTPOS').on('shown.bs.modal', function () {
+                $('#cod_pos').focus();
+            });
+
+            controlNinstalacion = new TomSelect("#instalacion_id", {
+                create: false,
+                sortField: {
+                    field: "text",
+                    direction: "asc"
+                },
+                onChange: function () {
+                    this.wrapper.classList.toggle('is-invalid', !this.isValid);
+                }
+            });
+
+            controlEinstalacion = new TomSelect("#E_instalacion_id", {
+                create: false,
+                sortField: {
+                    field: "text",
+                    direction: "asc"
+                },
+                onChange: function () {
+                    this.wrapper.classList.toggle('is-invalid', !this.isValid);
+                }
+            });
+
+            controlNplano = new TomSelect("#plano_id", {
+                create: false,
+                sortField: {
+                    field: "text",
+                    direction: "asc"
+                },
+                onChange: function () {
+                    this.wrapper.classList.toggle('is-invalid', !this.isValid);
+                }
+            });
+
+            controlEplano = new TomSelect("#E_plano_id", {
+                create: false,
+                sortField: {
+                    field: "text",
+                    direction: "asc"
+                },
+                onChange: function () {
+                    this.wrapper.classList.toggle('is-invalid', !this.isValid);
+                }
+            });
+
+            controlNmaterial = new TomSelect("#material_id", {
+                create: false,
+                sortField: {
+                    field: "text",
+                    direction: "asc"
+                },
+                onChange: function () {
+                    this.wrapper.classList.toggle('is-invalid', !this.isValid);
+                }
+            });
+
+            controlEmaterial = new TomSelect("#E_material_id", {
+                create: false,
+                sortField: {
+                    field: "text",
+                    direction: "asc"
+                },
+                onChange: function () {
+                    this.wrapper.classList.toggle('is-invalid', !this.isValid);
+                }
+            });
+
+            $('#btnGrabarLISTPOS').click(function (event) {
+
+                var form = $("#formNewLISTPOS");
+                form.addClass('was-validated');
+
+                controlNinstalacion.wrapper.classList.toggle('is-invalid', !controlNinstalacion.isValid);
+                controlNplano.wrapper.classList.toggle('is-invalid', !controlNplano.isValid);
+                controlNmaterial.wrapper.classList.toggle('is-invalid', !controlNmaterial.isValid);
+
+                if (form[0].checkValidity() === false) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    return;
+                }
+
+                let LISTPOS = {
+                    "instalacion_id": $('#instalacion_id').val(),
+                    "plano_id": $('#plano_id').val(),
+                    "material_id": $('#material_id').val(),
+                    "cod_pos": $('#cod_pos').val(),
+                    "cantidad": $('#cantidad').val(),
+                    "denominacion": $('#denominacion').val(),
+                    "longitud_1": $('#longitud_1').val(),
+                    "ancho_1": $('#ancho_1').val(),
+                    "longitud_2": $('#longitud_2').val(),
+                    "ancho_2": $('#ancho_2').val(),
+                    "espesor": $('#espesor').val(),
+                    "peso": $('#peso').val(),
+                    "observaciones": $('#observaciones').val()
+                };
+
+                var data = JSON.stringify(LISTPOS);
+
+                $.ajax({
+                    type: "POST",
+                    url: '/Management/AddLISTPOS',
+                    contentType: 'application/json;charset=utf-8',
+                    dataType: 'json',
+                    async: true,
+                    data: data,
+                    beforeSend: function () {
+                        $('#loaderN').show();
+                    },
+                    success: function (result) {
+                        if (result.exito) {
+                            $('#newLISTPOS').modal('hide');
+                            swal("Good job!", result.mensaje, "success").then(function () {
+                                location.reload();
+                            });
+                        }
+                        else {
+                            swal({
+                                icon: "error",
+                                text: "Problems add a position, we ask that you try again!",
+                            });
+                        }
+                    }
+                }) .fail(function (jqXHR, textStatus, errorThrow) {
+                        var err = "Error: " + textStatus + " " + errorThrow;
+                        console.log(err);
+                    })
+
+            });
+
+
+            $('#btnEditLISTPOS').click(function (event) {
+
+                var form = $("#formEditLISTPOS");
+                form.addClass('was-validated');
+
+                controlEinstalacion.wrapper.classList.toggle('is-invalid', !controlEinstalacion.isValid);
+                controlEplano.wrapper.classList.toggle('is-invalid', !controlEplano.isValid);
+                controlEmaterial.wrapper.classList.toggle('is-invalid', !controlEmaterial.isValid);
+
+                if (form[0].checkValidity() === false) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    return;
+                }
+
+                let LISTPOS = {
+                    "id": $('#IdLISTPOS').val(),
+                    "instalacion_id": $('#E_instalacion_id').val(),
+                    "plano_id": $('#E_plano_id').val(),
+                    "material_id": $('#E_material_id').val(),
+                    "cod_pos": $('#E_cod_pos').val(),
+                    "cantidad": $('#E_cantidad').val(),
+                    "denominacion": $('#E_denominacion').val(),
+                    "longitud_1": $('#E_longitud_1').val(),
+                    "ancho_1": $('#E_ancho_1').val(),
+                    "longitud_2": $('#E_longitud_2').val(),
+                    "ancho_2": $('#E_ancho_2').val(),
+                    "espesor": $('#E_espesor').val(),
+                    "peso": $('#E_peso').val(),
+                    "observaciones": $('#E_observaciones').val()
+                };
+
+                var data = JSON.stringify(LISTPOS);
+
+                $.ajax({
+                    type: "POST",
+                    url: '/Management/EditLISTPOS',
+                    contentType: 'application/json;charset=utf-8',
+                    dataType: 'json',
+                    async: true,
+                    data: data,
+                    beforeSend: function () {
+                        $('#loaderE').show();
+                    },
+                    success: function (result) {
+                        if (result.exito) {
+                            $('#editLISTPOS').modal('hide');
+                            swal("Good job!", result.mensaje, "success").then(function () {
+                                location.reload();
+                            });
+                        }
+                        else {
+                            swal({
+                                icon: "error",
+                                text: "Problems edit a position, we ask that you try again!",
+                            });
+                        }
+                    }
+                }) .fail(function (jqXHR, textStatus, errorThrow) {
+                        var err = "Error: " + textStatus + " " + errorThrow;
+                        console.log(err);
+                    })
+
+
+            });
+
+
+
+        });
+
+
+
+    </script>
+}

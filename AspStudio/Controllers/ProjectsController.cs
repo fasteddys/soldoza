@@ -17,15 +17,19 @@ namespace AspStudio.Controllers
         private readonly ISOLDOZA_MST_GRL_PROYECTOS _proyectos;
         private readonly ISOLDOZA_MST_PLANOS _nplano;
         private readonly ISOLDOZA_MST_GRL_CLIENTES _clientes;
+        private readonly ISOLDOZA_MST_GRL_INSTALACION _insta;
+        private readonly ISOLDOZA_MST_GRL_INSTALACION_TIPO _instatipo;
         public ProjectsController(ILogger<ProjectsController> logger, ApplicationDbContext context,
                                     ISOLDOZA_MST_GRL_PROYECTOS proyectos, ISOLDOZA_MST_PLANOS nplano,
-                                    ISOLDOZA_MST_GRL_CLIENTES clientes)
+                                    ISOLDOZA_MST_GRL_CLIENTES clientes, ISOLDOZA_MST_GRL_INSTALACION_TIPO instatipo, ISOLDOZA_MST_GRL_INSTALACION insta)
         {
             _logger = logger;
             _context = context;
             _proyectos = proyectos;
             _nplano = nplano;
             _clientes = clientes;
+            _instatipo = instatipo;
+            _insta = insta;
         }
         public async Task<IActionResult> Index()
         {
@@ -42,6 +46,22 @@ namespace AspStudio.Controllers
 
             ViewBag.proyectlist = proyectos;
             return View(nplano);
+        }
+        public async Task<IActionResult> Instal(int id)
+        {
+            var instalacion = await _insta.GetAll();
+            var proyecto = await _proyectos.GetAll();
+            var instalacion_tipo = _instatipo.GetAll();
+
+            SOLDOZA_MST_GRL_PROYECTOS proj = new SOLDOZA_MST_GRL_PROYECTOS();
+            proj = proyecto.Where(p => p.id == id).FirstOrDefault();
+
+            List<SOLDOZA_MST_GRL_INSTALACION> instalaciones = new List<SOLDOZA_MST_GRL_INSTALACION>();
+            instalaciones = instalacion.Where(i => i.proyecto_id == id).ToList();
+
+            ViewBag.proyecto = proj;
+            ViewBag.instalacion_tipo = instalacion_tipo;
+            return View(instalaciones);
         }
 
         [HttpPost]
@@ -123,18 +143,27 @@ namespace AspStudio.Controllers
                     }
                 res += "</td>";
                 res += "<td>";
+                if (proj.instalaciones.Count > 0)
+                {
+                    res += "<table class='table table-sm no-border'>";
+                    foreach (var plan in proj.instalaciones)
+                    {
+                        res += "<tr>";
+                        res += "<td>" + plan.cod_instalacion + "</td>";
+                        res += "</tr>";
+                    }
+                    res += "</table>";
+                }
+                res += "</td>";
+                res += "<td>";
+                res += "<a class='btn btn-outline-warning btn-sm' href='@Url.Action('Instal','Projects', new{id=@proj.id})' role='button'>Installations</a>";
                 res += "<a class='btn btn-outline-warning btn-sm' href='#' role='button'>Plans</a>";
                 res += "<a class='btn btn-outline-warning btn-sm' href='#' role='button'>Revisions</a>";
                 res += "<a class='btn btn-outline-warning btn-sm' href='#' role='button'>Pos</a>";
                 res += "</td>";
                 res += "</tr>";
             }
-
             return res;
         }
-
-
-
-
     }
 }

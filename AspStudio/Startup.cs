@@ -64,6 +64,9 @@ namespace AspStudio
             services.AddTransient<ISOLDOZA_ADM_MST_CONSU_FABRICANTE, R_SOLDOZA_ADM_MST_CONSU_FABRICANTE>();
             services.AddTransient<ISOLDOZA_ADM_MST_CONSU_CLASF_AWS, R_SOLDOZA_ADM_MST_CONSU_CLASF_AWS>();
             services.AddTransient<ISOLDOZA_MST_CONSUMIBLES, R_SOLDOZA_MST_CONSUMIBLES>();
+            services.AddTransient<ISOLDOZA_MST_GRL_INSTALACION_TIPO, R_SOLDOZA_MST_GRL_INSTALACION_TIPO>();
+            services.AddTransient<ISOLDOZA_MST_GRL_INSTALACION, R_SOLDOZA_MST_GRL_INSTALACION>();
+            services.AddTransient<ISOLDOZA_ADM_PRY_ING_LIST_POS, R_SOLDOZA_ADM_PRY_ING_LIST_POS>();
 
             services.AddMemoryCache();
 

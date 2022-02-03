@@ -12,7 +12,20 @@
     <link href="~/lib/datatables.net-responsive-bs4/css/responsive.bootstrap4.min.css" rel="stylesheet" />
     <link href="~/lib/bootstrap-table/dist/bootstrap-table.min.css" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/tom-select@2.0.0/dist/css/tom-select.css" rel="stylesheet">
+    <style>
+        /* remove validation icons */
+        .form-control.is-invalid, .was-validated .form-control:invalid {
+            background-image: none !important;
+            border-color: #ced4da;
+            padding-right: 0.75em;
+        }
 
+        .form-control.is-valid, .was-validated .form-control:valid {
+            background-image: none !important;
+            border-color: #ced4da;
+            padding-right: 0.75em;
+        }
+    </style>
 }
 
 <ul class="breadcrumb">
@@ -24,7 +37,7 @@
     List Zones <small>page header description goes here...</small>
 </h1>
 
-<button type="button" class="btn bg-warning me-2 " data-bs-toggle="modal" data-bs-target="#newZona">New ZONE</button>
+<button type="button" class="btn bg-warning me-2 " onclick="ModalNewZona();">New Zone</button>
 
 <div class="card">
     <div class="card-body">
@@ -60,7 +73,7 @@
 <!-- modal New Project -->
 <div class="modal fade" id="newZona">
     <div class="modal-dialog modal-lg">
-        <form method="post" id="formNewZona">
+        <form method="post" id="formNewZona" novalidate>
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">New Zone</h5>
@@ -70,18 +83,22 @@
 
                     <div class="form-group">
                         <label for="cod_zona">Zone Code</label>
-                        <input type="text" class="form-control" id="cod_zona" placeholder="Enter the zone code" autocomplete="off" style="text-transform:uppercase;" />
+                        <input type="text" class="form-control" id="cod_zona" placeholder="Enter the zone code" autocomplete="off" style="text-transform:uppercase;" required />
+                        <div class="invalid-feedback">Please fill out this field.</div>
                     </div>
 
                     <div class="form-group">
                         <label for="descripcion_zona">Descripcion Zone</label>
-                        <input type="text" class="form-control" id="descripcion_zona" placeholder="Enter the zona description" autocomplete="off" style="text-transform:uppercase;" />
+                        <input type="text" class="form-control" id="descripcion_zona" placeholder="Enter the zona description" autocomplete="off" style="text-transform:uppercase;" required />
+                        <div class="invalid-feedback">Please fill out this field.</div>
                     </div>
 
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn bg-dark text-white" id="btnGrabarZona">Save</button>
+                    <button type="button" class="btn bg-dark text-white" id="btnGrabarZona">
+                        <span id="loaderN" class="spinner-border spinner-border-sm" role="status" aria-hidden="true" style="display:none;"></span> Save
+                    </button>
                 </div>
             </div>
         </form>
@@ -91,7 +108,7 @@
 <!-- modal Edit Contact -->
 <div class="modal fade" id="editZona">
     <div class="modal-dialog modal-lg">
-        <form method="post" id="formEditZona">
+        <form method="post" id="formEditZona" novalidate>
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">Edit Zone</h5>
@@ -104,18 +121,22 @@
 
                     <div class="form-group">
                         <label for="E_cod_zona">Zone Code</label>
-                        <input type="text" class="form-control" id="E_cod_zona" placeholder="Enter the zone code" autocomplete="off" style="text-transform:uppercase;" />
+                        <input type="text" class="form-control" id="E_cod_zona" placeholder="Enter the zone code" autocomplete="off" style="text-transform:uppercase;" required />
+                        <div class="invalid-feedback">Please fill out this field.</div>
                     </div>
 
                     <div class="form-group">
                         <label for="E_descripcion_zona">Descripcion Zone</label>
-                        <input type="text" class="form-control" id="E_descripcion_zona" placeholder="Enter the zone description" autocomplete="off" style="text-transform:uppercase;" />
+                        <input type="text" class="form-control" id="E_descripcion_zona" placeholder="Enter the zone description" autocomplete="off" style="text-transform:uppercase;" required />
+                        <div class="invalid-feedback">Please fill out this field.</div>
                     </div>
 
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn bg-dark text-white" id="btnEditZona">Save</button>
+                    <button type="button" class="btn bg-dark text-white" id="btnEditZona">
+                        <span id="loaderE" class="spinner-border spinner-border-sm" role="status" aria-hidden="true" style="display:none;"></span> Save
+                    </button>
                 </div>
             </div>
         </form>
@@ -148,68 +169,62 @@
     <script src="~/lib/bootstrap-table/dist/bootstrap-table.min.js"></script>
     <script src="~/js/demo/table-plugins.demo.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/tom-select@2.0.0/dist/js/tom-select.complete.min.js"></script>
-
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 
     <script>
 
         ///// DATATABLE /////////////
 
-          $('#datatableZonas').DataTable({
+        $('#datatableZonas').DataTable({
             dom: "<'row mb-3'<'col-sm-4'l><'col-sm-12 text-end'<'d-flex justify-content-end'fB>>>t<'d-flex align-items-center'<'me-auto'i><'mb-0'p>>",
-            lengthMenu: [ 10, 20, 30, 40, 50 ],
+            lengthMenu: [10, 20, 30, 40, 50],
             responsive: true,
             buttons: [
-              { extend: 'print', className: 'btn btn-default' },
-              { extend: 'pdfHtml5', className: 'btn btn-default' },
-              { extend: 'excelHtml5', className: 'btn btn-default' }
+                { extend: 'print', className: 'btn btn-default' },
+                { extend: 'pdfHtml5', className: 'btn btn-default' },
+                { extend: 'excelHtml5', className: 'btn btn-default' }
             ]
-          });
+        });
 
-         ///// FUNCIONES  ///////
+        ///// FUNCIONES  ///////
 
-         function ModalEditZona(xid, xcod, xdescripcion) {
+        function ModalEditZona(xid, xcod, xdescripcion) {
             $("#IdZona").val(xid);
             $("#E_cod_zona").val(xcod);
             $("#E_descripcion_zona").val(xdescripcion);
             $('#editZona').modal('show');
         }
 
+        function ModalNewZona() {
+            var form = $("#formNewZona");
+            form[0].reset();
+            form.get(0).reset();
+            form.removeClass('was-validated');
+            $('#newZona').modal('show');
+        }
 
         $(document).ready(function () {
 
+            $('#newInstaTipo').on('shown.bs.modal', function () {
+                $('#cod_tipo_instalacion').focus();
+            });
 
-
-              $('#btnGrabarZona').click(function (event) {
+            $('#btnGrabarZona').click(function (event) {
 
                 var form = $("#formNewZona");
+                form.addClass('was-validated');
 
                 if (form[0].checkValidity() === false) {
-                    event.preventDefault()
-                    event.stopPropagation()
-                    form.addClass('was-validated');
-                }
-                else {
-
-                    if ($('#cod_zona').val() == "") {
-                        alert("You must enter the zone code");
-                        $('#cod_zona').focus();
-                        return;
-                    }
-
-                    if ($('#descripcion_zona').val() == "") {
-                        alert('You must enter the zone description');
-                        $('#descripcion_zona').focus();
-                        return;
-                    }
-
-
+                    event.preventDefault();
+                    event.stopPropagation();
+                    return;
                 }
 
                 let zone = {
                     "cod_zona": $('#cod_zona').val().toUpperCase(),
                     "descripcion_zona": $('#descripcion_zona').val().toUpperCase()
                 };
-               var data = JSON.stringify(zone);
+                var data = JSON.stringify(zone);
 
                 $.ajax({
                     type: "POST",
@@ -218,22 +233,24 @@
                     dataType: 'json',
                     async: true,
                     data: data,
+                    beforeSend: function () {
+                        $('#loaderN').show();
+                    },
                     success: function (result) {
-                        console.log(result)
-                    }
-                })
-                    .done(function (result) {
                         if (result.exito) {
-                            alert(result.mensaje);
                             $('#newZone').modal('hide');
-                            location.reload();
+                            swal("Good job!", result.mensaje, "success").then(function () {
+                                location.reload();
+                            });
                         }
                         else {
-                            alert('Problems add a zone, we ask that you try again!');
+                            swal({
+                                icon: "error",
+                                text: "Problems add a zone, we ask that you try again!",
+                            });
                         }
-
-                    })
-                    .fail(function (jqXHR, textStatus, errorThrow) {
+                    }
+                }) .fail(function (jqXHR, textStatus, errorThrow) {
                         var err = "Error: " + textStatus + " " + errorThrow;
                         console.log(err);
                     })
@@ -241,38 +258,25 @@
             });
 
 
-             $('#btnEditZona').click(function (event) {
+            $('#btnEditZona').click(function (event) {
 
                 var form = $("#formEditZona");
+                form.addClass('was-validated');
 
                 if (form[0].checkValidity() === false) {
-                    event.preventDefault()
-                    event.stopPropagation()
-                    form.addClass('was-validated');
-                }
-                else {
-
-                    if ($('#E_cod_zona').val() == "") {
-                        alert("You must enter the zone code");
-                        $('#E_cod_material').focus();
-                        return;
-                    }
-
-                    if ($('#E_descripcion_zone').val() == "") {
-                        alert('You must enter the zone description');
-                        $('#E_descripcion_zone').focus();
-                        return;
-                    }
+                    event.preventDefault();
+                    event.stopPropagation();
+                    return;
                 }
 
-               let zone = {
+                let zone = {
                     "id": $('#IdZona').val(),
                     "cod_zona": $('#E_cod_zona').val().toUpperCase(),
                     "descripcion_zona": $('#E_descripcion_zona').val().toUpperCase()
                 };
 
 
-               var data = JSON.stringify(zone);
+                var data = JSON.stringify(zone);
 
                 $.ajax({
                     type: "POST",
@@ -281,22 +285,24 @@
                     dataType: 'json',
                     async: true,
                     data: data,
+                    beforeSend: function () {
+                        $('#loaderE').show();
+                    },
                     success: function (result) {
-                        console.log(result)
-                    }
-                })
-                    .done(function (result) {
                         if (result.exito) {
-                            alert(result.mensaje);
                             $('#editZona').modal('hide');
-                            location.reload();
+                            swal("Good job!", result.mensaje, "success").then(function () {
+                                location.reload();
+                            });
                         }
                         else {
-                            alert('Problems creating a edit zone, we ask that you try again!');
+                            swal({
+                                icon: "error",
+                                text: "Problems edit a zone, we ask that you try again!",
+                            });
                         }
-
-                    })
-                    .fail(function (jqXHR, textStatus, errorThrow) {
+                    }
+                }) .fail(function (jqXHR, textStatus, errorThrow) {
                         var err = "Error: " + textStatus + " " + errorThrow;
                         console.log(err);
                     })

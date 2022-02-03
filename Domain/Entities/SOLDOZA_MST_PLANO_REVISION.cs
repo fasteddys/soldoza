@@ -6,15 +6,18 @@ using System.Text;
 
 namespace Domain.Entities
 {
-    [Table("soldoza_mst_materiales", Schema = "public")]
-    public class SOLDOZA_MST_MATERIALES
+    [Table("soldoza_mst_planos_revision", Schema = "public")]
+    public class SOLDOZA_MST_PLANO_REVISION
     {
         [Key]
         public int id { get; set; }
-        public string cod_material { get; set; }
-        public string descripcion_material { get; set; }
-        public string p_num { get; set; }
-        public string g_num { get; set; }
+        public int plano_id { get; set; }
+        public int nro_revision { get; set; }
+        public DateTime fecha_revision { get; set; }
+
+        [ForeignKey("plano_id")]
+        public SOLDOZA_MST_PLANOS plano { get; set; }
+
         public virtual ICollection<SOLDOZA_MST_DETALLE_POS_PLANOREVISION> detalle_pos_planorev { get; set; } = new HashSet<SOLDOZA_MST_DETALLE_POS_PLANOREVISION>();
     }
 }

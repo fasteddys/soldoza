@@ -13,7 +13,20 @@
     <link href="~/lib/datatables.net-responsive-bs4/css/responsive.bootstrap4.min.css" rel="stylesheet" />
     <link href="~/lib/bootstrap-table/dist/bootstrap-table.min.css" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/tom-select@2.0.0/dist/css/tom-select.css" rel="stylesheet">
+    <style>
+        /* remove validation icons */
+        .form-control.is-invalid, .was-validated .form-control:invalid {
+            background-image: none !important;
+            border-color: #ced4da;
+            padding-right: 0.75em;
+        }
 
+        .form-control.is-valid, .was-validated .form-control:valid {
+            background-image: none !important;
+            border-color: #ced4da;
+            padding-right: 0.75em;
+        }
+    </style>
 }
 
 <ul class="breadcrumb">
@@ -25,7 +38,7 @@
     List Welding Place <small>page header description goes here...</small>
 </h1>
 
-<button type="button" class="btn bg-warning me-2 " data-bs-toggle="modal" data-bs-target="#newLUGSOL">New Welding Place</button>
+<button type="button" class="btn bg-warning me-2 " onclick="ModalNewLUGSOL();">New Welding Place</button>
 
 <div class="card">
     <div class="card-body">
@@ -61,7 +74,7 @@
 <!-- modal New Project -->
 <div class="modal fade" id="newLUGSOL">
     <div class="modal-dialog modal-lg">
-        <form method="post" id="formNewLUGSOL">
+        <form method="post" id="formNewLUGSOL" novalidate>
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">New Welding Place</h5>
@@ -71,18 +84,22 @@
 
                     <div class="form-group">
                         <label for="cod_lugar_soldeo">Welding Place Code</label>
-                        <input type="text" class="form-control" id="cod_lugar_soldeo" placeholder="Enter the welding place code" autocomplete="off" style="text-transform:uppercase;" />
+                        <input type="text" class="form-control" id="cod_lugar_soldeo" placeholder="Enter the welding place code" autocomplete="off" style="text-transform:uppercase;" required />
+                        <div class="invalid-feedback">Please fill out this field.</div>
                     </div>
 
                     <div class="form-group">
                         <label for="descripcion_lugar_soldeo">Descripcion Welding Place</label>
-                        <input type="text" class="form-control" id="descripcion_lugar_soldeo" placeholder="Enter the welding place description" autocomplete="off" style="text-transform:uppercase;" />
+                        <input type="text" class="form-control" id="descripcion_lugar_soldeo" placeholder="Enter the welding place description" autocomplete="off" style="text-transform:uppercase;" required />
+                        <div class="invalid-feedback">Please fill out this field.</div>
                     </div>
 
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn bg-dark text-white" id="btnGrabarLUGSOL">Save</button>
+                    <button type="button" class="btn bg-dark text-white" id="btnGrabarLUGSOL">
+                        <span id="loaderN" class="spinner-border spinner-border-sm" role="status" aria-hidden="true" style="display:none;"></span> Save
+                    </button>
                 </div>
             </div>
         </form>
@@ -92,7 +109,7 @@
 <!-- modal Edit Contact -->
 <div class="modal fade" id="EditLUGSOL">
     <div class="modal-dialog modal-lg">
-        <form method="post" id="formEditLUGSOL">
+        <form method="post" id="formEditLUGSOL" novalidate>
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">Edit Welding Place</h5>
@@ -105,18 +122,22 @@
 
                     <div class="form-group">
                         <label for="E_cod_lugar_soldeo">Welding Place Code</label>
-                        <input type="text" class="form-control" id="E_cod_lugar_soldeo" placeholder="Enter the welding place code" autocomplete="off" style="text-transform:uppercase;" />
+                        <input type="text" class="form-control" id="E_cod_lugar_soldeo" placeholder="Enter the welding place code" autocomplete="off" style="text-transform:uppercase;" required />
+                        <div class="invalid-feedback">Please fill out this field.</div>
                     </div>
 
                     <div class="form-group">
                         <label for="E_descripcion_lugar_soldeo">Descripcion Welding Place</label>
-                        <input type="text" class="form-control" id="E_descripcion_lugar_soldeo" placeholder="Enter the welding place description" autocomplete="off" style="text-transform:uppercase;" />
+                        <input type="text" class="form-control" id="E_descripcion_lugar_soldeo" placeholder="Enter the welding place description" autocomplete="off" style="text-transform:uppercase;" required />
+                        <div class="invalid-feedback">Please fill out this field.</div>
                     </div>
 
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn bg-dark text-white" id="btnEditLUGSOL">Save</button>
+                    <button type="button" class="btn bg-dark text-white" id="btnEditLUGSOL">
+                        <span id="loaderE" class="spinner-border spinner-border-sm" role="status" aria-hidden="true" style="display:none;"></span> Save
+                    </button>
                 </div>
             </div>
         </form>
@@ -149,7 +170,7 @@
     <script src="~/lib/bootstrap-table/dist/bootstrap-table.min.js"></script>
     <script src="~/js/demo/table-plugins.demo.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/tom-select@2.0.0/dist/js/tom-select.complete.min.js"></script>
-
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 
     <script>
 
@@ -157,16 +178,16 @@
 
         $('#datatableLUGSOL').DataTable({
             dom: "<'row mb-3'<'col-sm-4'l><'col-sm-12 text-end'<'d-flex justify-content-end'fB>>>t<'d-flex align-items-center'<'me-auto'i><'mb-0'p>>",
-            lengthMenu: [ 10, 20, 30, 40, 50 ],
+            lengthMenu: [10, 20, 30, 40, 50],
             responsive: true,
             buttons: [
-              { extend: 'print', className: 'btn btn-default' },
-              { extend: 'pdfHtml5', className: 'btn btn-default' },
-              { extend: 'excelHtml5', className: 'btn btn-default' }
+                { extend: 'print', className: 'btn btn-default' },
+                { extend: 'pdfHtml5', className: 'btn btn-default' },
+                { extend: 'excelHtml5', className: 'btn btn-default' }
             ]
-          });
+        });
 
-         ///// FUNCIONES  ///////
+        ///// FUNCIONES  ///////
 
         function ModalEditLUGSOL(xid, xcod, xdescripcion) {
             $("#IdLUGSOL").val(xid);
@@ -175,35 +196,29 @@
             $('#EditLUGSOL').modal('show');
         }
 
+        function ModalNewLUGSOL() {
+            var form = $("#formNewLUGSOL");
+            form[0].reset();
+            form.get(0).reset();
+            form.removeClass('was-validated');
+            $('#newLUGSOL').modal('show');
+        }
 
         $(document).ready(function () {
 
-
+            $('#newLUGSOL').on('shown.bs.modal', function () {
+                $('#cod_lugar_soldeo').focus();
+            });
 
             $('#btnGrabarLUGSOL').click(function (event) {
 
                 var form = $("#formNewLUGSOL");
+                form.addClass('was-validated');
 
                 if (form[0].checkValidity() === false) {
-                    event.preventDefault()
-                    event.stopPropagation()
-                    form.addClass('was-validated');
-                }
-                else {
-
-                    if ($('#cod_lugar_soldeo').val() == "") {
-                        alert("You must enter the welding place code");
-                        $('#cod_lugar_soldeo').focus();
-                        return;
-                    }
-
-                    if ($('#descripcion_lugar_soldeo').val() == "") {
-                        alert('You must enter the welding place description');
-                        $('#descripcion_lugar_soldeo').focus();
-                        return;
-                    }
-
-
+                    event.preventDefault();
+                    event.stopPropagation();
+                    return;
                 }
 
                 let lugsol = {
@@ -219,22 +234,24 @@
                     dataType: 'json',
                     async: true,
                     data: data,
+                    beforeSend: function () {
+                        $('#loaderN').show();
+                    },
                     success: function (result) {
-                        console.log(result)
-                    }
-                })
-                    .done(function (result) {
                         if (result.exito) {
-                            alert(result.mensaje);
                             $('#newLUGSOL').modal('hide');
-                            location.reload();
+                            swal("Good job!", result.mensaje, "success").then(function () {
+                                location.reload();
+                            });
                         }
                         else {
-                            alert('Problems add a welding place, we ask that you try again!');
+                            swal({
+                                icon: "error",
+                                text: "Problems add a welding place, we ask that you try again!",
+                            });
                         }
-
-                    })
-                    .fail(function (jqXHR, textStatus, errorThrow) {
+                    }
+                }) .fail(function (jqXHR, textStatus, errorThrow) {
                         var err = "Error: " + textStatus + " " + errorThrow;
                         console.log(err);
                     })
@@ -245,29 +262,16 @@
             $('#btnEditLUGSOL').click(function (event) {
 
                 var form = $("#formEditLUGSOL");
+                form.addClass('was-validated');
 
                 if (form[0].checkValidity() === false) {
-                    event.preventDefault()
-                    event.stopPropagation()
-                    form.addClass('was-validated');
-                }
-                else {
-
-                    if ($('#E_cod_lugar_soldeo').val() == "") {
-                        alert("You must enter the welding place code");
-                        $('#E_cod_lugar_soldeo').focus();
-                        return;
-                    }
-
-                    if ($('#E_descripcion_lugar_soldeo').val() == "") {
-                        alert('You must enter the welding place description');
-                        $('#E_descripcion_lugar_soldeo').focus();
-                        return;
-                    }
+                    event.preventDefault();
+                    event.stopPropagation();
+                    return;
                 }
 
                 let lugsol = {
-                   "id": $('#IdLUGSOL').val(),
+                    "id": $('#IdLUGSOL').val(),
                     "cod_lugar_soldeo": $('#E_cod_lugar_soldeo').val().toUpperCase(),
                     "descripcion_lugar_soldeo": $('#E_descripcion_lugar_soldeo').val().toUpperCase()
                 };
@@ -282,22 +286,24 @@
                     dataType: 'json',
                     async: true,
                     data: data,
+                    beforeSend: function () {
+                        $('#loaderE').show();
+                    },
                     success: function (result) {
-                        console.log(result)
-                    }
-                })
-                    .done(function (result) {
                         if (result.exito) {
-                            alert(result.mensaje);
                             $('#EditLUGSOL').modal('hide');
-                            location.reload();
+                            swal("Good job!", result.mensaje, "success").then(function () {
+                                location.reload();
+                            });
                         }
                         else {
-                            alert('Problems creating a edit welding place, we ask that you try again!');
+                            swal({
+                                icon: "error",
+                                text: "Problems edit a welding place, we ask that you try again!",
+                            });
                         }
-
-                    })
-                    .fail(function (jqXHR, textStatus, errorThrow) {
+                    }
+                }) .fail(function (jqXHR, textStatus, errorThrow) {
                         var err = "Error: " + textStatus + " " + errorThrow;
                         console.log(err);
                     })

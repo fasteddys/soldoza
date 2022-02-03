@@ -1,7 +1,7 @@
 ﻿@using Domain.Entities;
-@model IEnumerable<SOLDOZA_MST_SUBZONAS>
+@model IEnumerable<SOLDOZA_MST_GRL_INSTALACION>
 @{
-    ViewData["Title"] = "SubZonas";
+    ViewData["Title"] = "Instalaciones";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -30,23 +30,24 @@
 
 <ul class="breadcrumb">
     <li class="breadcrumb-item text-warning"><a href="#" class="text-warning">MANAGEMENT</a></li>
-    <li class="breadcrumb-item text-gray-900 active">SUB ZONES</li>
+    <li class="breadcrumb-item text-gray-900 active">SUPPLY</li>
 </ul>
 
 <h1 class="page-header">
-    List Sub Zones <small>page header description goes here...</small>
+    List Installation <small>page header description goes here...</small>
 </h1>
 
-<button type="button" class="btn bg-warning me-2 " onclick="ModalNewSUBZONA();">New Sub Zone</button>
+<button type="button" class="btn bg-warning me-2 " onclick="ModalNewINSTALACION();">New Installation</button>
 
 <div class="card">
     <div class="card-body">
-        <table id="datatableSUBZONA" class="table text-nowrap">
+        <table id="datatableINSTALACION" class="table text-nowrap">
             <thead>
                 <tr>
                     <th>Code</th>
                     <th>Description</th>
-                    <th>Zone</th>
+                    <th>Installation Type</th>
+                    <th>Proyecto</th>
                     <th></th>
                 </tr>
             </thead>
@@ -56,11 +57,12 @@
                     foreach (var item in Model)
                     {
                         <tr>
-                            <td>@item.cod_subzona</td>
-                            <td>@item.descripcion_subzona</td>
-                            <td>@item.zona.cod_zona</td>
+                            <td>@item.cod_instalacion</td>
+                            <td>@item.descripcion_instalacion</td>
+                            <td>@item.insta_tipo.cod_tipo_instalacion</td>
+                            <td>@item.proyectos.cod_proyecto</td>
                             <td>
-                                <a class="btn btn-outline-warning btn-sm" href="#" role="button" onclick="ModalEditSUBZONA(@item.id,'@item.cod_subzona','@item.descripcion_subzona',@item.zona_id);">Edit</a>
+                                <a class="btn btn-outline-warning btn-sm" href="#" role="button" onclick="ModalEditINSTALACION(@item.id,'@item.cod_instalacion','@item.descripcion_instalacion',@item.tipo_instalacion_id,@item.proyecto_id);">Edit</a>
                             </td>
                         </tr>
                     }
@@ -72,45 +74,54 @@
 
 
 <!-- modal New Project -->
-<div class="modal fade" id="newSUBZONA">
+<div class="modal fade" id="newINSTALACION">
     <div class="modal-dialog modal-lg">
-        <form method="post" id="formNewSUBZONA" novalidate>
+        <form method="post" id="formNewINSTALACION" novalidate>
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">New Sub Zone</h5>
+                    <h5 class="modal-title">New Installation</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
 
                     <div class="form-group">
-                        <label for="cod_subzona">Sub Zone Code</label>
-                        <input type="text" class="form-control" id="cod_subzona" placeholder="Enter the sub zone code" autocomplete="off" style="text-transform:uppercase;" required />
+                        <label for="cod_instalacion">Installation Code</label>
+                        <input type="text" class="form-control" id="cod_instalacion" placeholder="Enter the installation code" autocomplete="off" style="text-transform:uppercase;" required />
                         <div class="invalid-feedback">Please fill out this field.</div>
                     </div>
-
                     <div class="form-group">
-                        <label for="descripcion_subzona">Sub Zone Description</label>
-                        <input type="text" class="form-control" id="descripcion_subzona" placeholder="Enter the sub zone description" autocomplete="off" style="text-transform:uppercase;" required />
+                        <label for="descripcion_instalacion">installation Description</label>
+                        <input type="text" class="form-control" id="descripcion_instalacion" placeholder="Enter the installation code" autocomplete="off" style="text-transform:uppercase;" required />
                         <div class="invalid-feedback">Please fill out this field.</div>
                     </div>
-
                     <div class="form-group">
-                        <label for="zona_id">Zone</label>
+                        <label for="tipo_instalacion_id">Installation Type</label>
 
-                        <select id="zona_id" placeholder="Select a zone..." autocomplete="off" style="text-transform:uppercase;" required>
-                            <option value="">Select a customer...</option>
-                            @foreach (var cust in ViewBag.zonaslist)
+                        <select id="tipo_instalacion_id" placeholder="Select a installation type..." autocomplete="off" style="text-transform:uppercase;" required>
+                            <option value="">Select a installation type...</option>
+                            @foreach (var cust in ViewBag.instalacion_tipo)
                             {
-                                <option value="@cust.id">@cust.cod_zona  @cust.descripcion_zona</option>
+                                <option value="@cust.id">@cust.cod_tipo_instalacion  @cust.descripcion_tipo_instalacion</option>
                             }
                         </select>
                         <div class="invalid-feedback">Please fill out this field.</div>
                     </div>
+                    <div class="form-group">
+                        <label for="proyecto_id">Project</label>
 
+                        <select id="proyecto_id" placeholder="Select a project..." autocomplete="off" style="text-transform:uppercase;" required>
+                            <option value="">Select a project...</option>
+                            @foreach (var cust in ViewBag.proyecto)
+                            {
+                                <option value="@cust.id">@cust.cod_proyecto  @cust.descripcion_proyecto</option>
+                            }
+                        </select>
+                        <div class="invalid-feedback">Please fill out this field.</div>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn bg-dark text-white" id="btnGrabarSUBZONA">
+                    <button type="button" class="btn bg-dark text-white" id="btnGrabarINSTALACION">
                         <span id="loaderN" class="spinner-border spinner-border-sm" role="status" aria-hidden="true" style="display:none;"></span> Save
                     </button>
                 </div>
@@ -120,47 +131,57 @@
 </div>
 
 <!-- modal Edit Contact -->
-<div class="modal fade" id="editSUBZONA">
+<div class="modal fade" id="editINSTALACION">
     <div class="modal-dialog modal-lg">
-        <form method="post" id="formEditSUBZONA" novalidate>
+        <form method="post" id="formEditINSTALACION" novalidate>
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Edit Sub Zone</h5>
+                    <h5 class="modal-title">Edit Installation</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
                     <div class="form-group">
-                        <input type="hidden" id="IdSUBZONA" />
+                        <input type="hidden" id="IdINSTALACION" />
                     </div>
+
                     <div class="form-group">
-                        <label for="E_cod_subzona">Sub Zone Code</label>
-                        <input type="text" class="form-control" id="E_cod_subzona" placeholder="Enter the sub zone code" autocomplete="off" style="text-transform:uppercase;" required />
+                        <label for="E_cod_instalacion">Installation Code</label>
+                        <input type="text" class="form-control" id="E_cod_instalacion" placeholder="Enter the installation code" autocomplete="off" style="text-transform:uppercase;" required />
                         <div class="invalid-feedback">Please fill out this field.</div>
                     </div>
-
                     <div class="form-group">
-                        <label for="E_descripcion_subzona">Sub Zone Description</label>
-                        <input type="text" class="form-control" id="E_descripcion_subzona" placeholder="Enter the sub zone description" autocomplete="off" style="text-transform:uppercase;" required />
+                        <label for="E_descripcion_instalacion">Installation Description</label>
+                        <input type="text" class="form-control" id="E_descripcion_instalacion" placeholder="Enter the installation description" autocomplete="off" style="text-transform:uppercase;" required />
                         <div class="invalid-feedback">Please fill out this field.</div>
                     </div>
-
                     <div class="form-group">
-                        <label for="E_zona_id">Zone</label>
+                        <label for="E_tipo_instalacion_id">Installation Type</label>
 
-                        <select id="E_zona_id" placeholder="Select a zone..." autocomplete="off" style="text-transform:uppercase;" required>
-                            <option value="">Select a customer...</option>
-                            @foreach (var cust in ViewBag.zonaslist)
+                        <select id="E_tipo_instalacion_id" placeholder="Select a installation type..." autocomplete="off" style="text-transform:uppercase;" required>
+                            <option value="">Select a installation type...</option>
+                            @foreach (var cust in ViewBag.instalacion_tipo)
                             {
-                                <option value="@cust.id">@cust.cod_zona  @cust.descripcion_zona</option>
+                                <option value="@cust.id">@cust.cod_tipo_instalacion  @cust.descripcion_tipo_instalacion</option>
                             }
                         </select>
                         <div class="invalid-feedback">Please fill out this field.</div>
                     </div>
+                    <div class="form-group">
+                        <label for="E_proyecto_id">Project</label>
 
+                        <select id="E_proyecto_id" placeholder="Select a project..." autocomplete="off" style="text-transform:uppercase;" required>
+                            <option value="">Select a project...</option>
+                            @foreach (var cust in ViewBag.proyecto)
+                            {
+                                <option value="@cust.id">@cust.cod_proyecto  @cust.descripcion_proyecto</option>
+                            }
+                        </select>
+                        <div class="invalid-feedback">Please fill out this field.</div>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn bg-dark text-white" id="btnEditSUBZONA">
+                    <button type="button" class="btn bg-dark text-white" id="btnEditINSTALACION">
                         <span id="loaderE" class="spinner-border spinner-border-sm" role="status" aria-hidden="true" style="display:none;"></span> Save
                     </button>
                 </div>
@@ -177,9 +198,6 @@
     <script src="~/lib/datatables.net/js/jquery.dataTables.min.js"></script>
     <script src="~/lib/datatables.net-bs4/js/dataTables.bootstrap4.min.js"></script>
     <script src="~/lib/datatables.net-buttons/js/dataTables.buttons.min.js"></script>
-
-    @*<script src="https://cdn.datatables.net/buttons/2.1.0/js/dataTables.buttons.min.js"></script>*@
-
     <script src="~/lib/datatables.net-buttons/js/buttons.colVis.min.js"></script>
     <script src="~/lib/datatables.net-buttons/js/buttons.flash.min.js"></script>
     <script src="~/lib/datatables.net-buttons/js/buttons.html5.min.js"></script>
@@ -195,12 +213,13 @@
     <script src="~/js/demo/table-plugins.demo.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/tom-select@2.0.0/dist/js/tom-select.complete.min.js"></script>
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 
     <script>
 
         ///// DATATABLE /////////////
 
-        $('#datatableSUBZONA').DataTable({
+        $('#datatableINSTALACION').DataTable({
             dom: "<'row mb-3'<'col-sm-4'l><'col-sm-12 text-end'<'d-flex justify-content-end'fB>>>t<'d-flex align-items-center'<'me-auto'i><'mb-0'p>>",
             lengthMenu: [10, 20, 30, 40, 50],
             responsive: true,
@@ -213,31 +232,32 @@
 
         ///// FUNCIONES  ///////
 
-        function ModalEditSUBZONA(xid, xcod, xdescripcion, xidzona) {
-            $("#IdSUBZONA").val(xid);
-            $("#E_cod_subzona").val(xcod);
-            $("#E_descripcion_subzona").val(xdescripcion);
-            controlE.setValue(xidzona);
-            //$("#IdZONA").val(xidzona);
-            $('#editSUBZONA').modal('show');
+        function ModalEditINSTALACION(xid, xcod, xdescripcion, xinsta_tipo, xproyecto) {
+            $("#IdINSTALACION").val(xid);
+            $("#E_cod_instalacion").val(xcod);
+            $("#E_descripcion_instalacion").val(xdescripcion);
+            controlEinsta_tipo.setValue(xinsta_tipo);
+            controlEproyecto.setValue(xproyecto);
+            $('#editINSTALACION').modal('show');
         }
 
-        function ModalNewSUBZONA() {
-            var form = $("#formNewSUBZONA");
+        function ModalNewINSTALACION() {
+            var form = $("#formNewINSTALACION");
             form[0].reset();
             form.get(0).reset();
             form.removeClass('was-validated');
-            controlN.wrapper.classList.toggle('is-invalid', controlN.isValid);
-            $('#newSUBZONA').modal('show');
+            controlNinsta_tipo.wrapper.classList.toggle('is-invalid', controlNinsta_tipo.isValid);
+            controlNproyecto.wrapper.classList.toggle('is-invalid', controlNproyecto.isValid);
+            $('#newINSTALACION').modal('show');
         }
 
         $(document).ready(function () {
 
-            $('#newSUBZONA').on('shown.bs.modal', function () {
-                $('#cod_subzona').focus();
+            $('#newINSTALACION').on('shown.bs.modal', function () {
+                $('#cod_instalacion').focus();
             });
 
-            controlN = new TomSelect("#zona_id", {
+            controlNinsta_tipo = new TomSelect("#tipo_instalacion_id", {
                 create: false,
                 sortField: {
                     field: "text",
@@ -248,7 +268,7 @@
                 }
             });
 
-            controlE = new TomSelect("#E_zona_id", {
+            controlEinsta_tipo = new TomSelect("#E_tipo_instalacion_id", {
                 create: false,
                 sortField: {
                     field: "text",
@@ -259,12 +279,36 @@
                 }
             });
 
-            $('#btnGrabarSUBZONA').click(function (event) {
+            controlNproyecto = new TomSelect("#proyecto_id", {
+                create: false,
+                sortField: {
+                    field: "text",
+                    direction: "asc"
+                },
+                onChange: function () {
+                    this.wrapper.classList.toggle('is-invalid', !this.isValid);
+                }
+            });
 
-                var form = $("#formNewSUBZONA");
+            controlEproyecto = new TomSelect("#E_proyecto_id", {
+                create: false,
+                sortField: {
+                    field: "text",
+                    direction: "asc"
+                },
+                onChange: function () {
+                    this.wrapper.classList.toggle('is-invalid', !this.isValid);
+                }
+            });
+
+            //});
+            $('#btnGrabarINSTALACION').click(function (event) {
+
+                var form = $("#formNewINSTALACION");
                 form.addClass('was-validated');
 
-                controlN.wrapper.classList.toggle('is-invalid', !controlN.isValid);
+                controlNinsta_tipo.wrapper.classList.toggle('is-invalid', !controlNinsta_tipo.isValid);
+                controlNproyecto.wrapper.classList.toggle('is-invalid', !controlNproyecto.isValid);
 
                 if (form[0].checkValidity() === false) {
                     event.preventDefault();
@@ -272,17 +316,18 @@
                     return;
                 }
 
-                let SUBZONA = {
-                    "zona_id": $('#zona_id').val(),
-                    "cod_subzona": $('#cod_subzona').val().toUpperCase(),
-                    "descripcion_subzona": $('#descripcion_subzona').val().toUpperCase()
+                let INSTALACION = {
+                    "proyecto_id": $('#proyecto_id').val(),
+                    "tipo_instalacion_id": $('#tipo_instalacion_id').val(),
+                    "cod_instalacion": $('#cod_instalacion').val(),
+                    "descripcion_instalacion": $('#descripcion_instalacion').val()
                 };
 
-                var data = JSON.stringify(SUBZONA);
+                var data = JSON.stringify(INSTALACION);
 
                 $.ajax({
                     type: "POST",
-                    url: '/Management/AddSUBZONA',
+                    url: '/Management/AddINSTALACION',
                     contentType: 'application/json;charset=utf-8',
                     dataType: 'json',
                     async: true,
@@ -292,7 +337,7 @@
                     },
                     success: function (result) {
                         if (result.exito) {
-                            $('#newSUBZONA').modal('hide');
+                            $('#newINSTALACION').modal('hide');
                             swal("Good job!", result.mensaje, "success").then(function () {
                                 location.reload();
                             });
@@ -300,7 +345,7 @@
                         else {
                             swal({
                                 icon: "error",
-                                text: "Problems add a sub zone, we ask that you try again!",
+                                text: "Problems add a installation, we ask that you try again!",
                             });
                         }
                     }
@@ -312,12 +357,13 @@
             });
 
 
-            $('#btnEditSUBZONA').click(function (event) {
+            $('#btnEditINSTALACION').click(function (event) {
 
-                var form = $("#formEditSUBZONA");
+                var form = $("#formEditINSTALACION");
                 form.addClass('was-validated');
 
-                controlE.wrapper.classList.toggle('is-invalid', !controlE.isValid);
+                controlEinsta_tipo.wrapper.classList.toggle('is-invalid', !controlEinsta_tipo.isValid);
+                controlEproyecto.wrapper.classList.toggle('is-invalid', !controlEproyecto.isValid);
 
                 if (form[0].checkValidity() === false) {
                     event.preventDefault();
@@ -325,18 +371,19 @@
                     return;
                 }
 
-                let SUBZONA = {
-                    "id": $('#IdSUBZONA').val(),
-                    "zona_id": $('#E_zona_id').val(),
-                    "cod_subzona": $('#E_cod_subzona').val().toUpperCase(),
-                    "descripcion_subzona": $('#E_descripcion_subzona').val().toUpperCase()
+                let INSTALACION = {
+                    "id": $('#IdINSTALACION').val(),
+                    "proyecto_id": $('#E_proyecto_id').val(),
+                    "tipo_instalacion_id": $('#E_tipo_instalacion_id').val(),
+                    "cod_instalacion": $('#E_cod_instalacion').val(),
+                    "descripcion_instalacion": $('#E_descripcion_instalacion').val()
                 };
 
-                var data = JSON.stringify(SUBZONA);
+                var data = JSON.stringify(INSTALACION);
 
                 $.ajax({
                     type: "POST",
-                    url: '/Management/EditSUBZONA',
+                    url: '/Management/EditINSTALACION',
                     contentType: 'application/json;charset=utf-8',
                     dataType: 'json',
                     async: true,
@@ -346,7 +393,7 @@
                     },
                     success: function (result) {
                         if (result.exito) {
-                            $('#editSUBZONA').modal('hide');
+                            $('#editINSTALACION').modal('hide');
                             swal("Good job!", result.mensaje, "success").then(function () {
                                 location.reload();
                             });
@@ -354,7 +401,7 @@
                         else {
                             swal({
                                 icon: "error",
-                                text: "Problems edit a sub zone, we ask that you try again!",
+                                text: "Problems edit a installation, we ask that you try again!",
                             });
                         }
                     }

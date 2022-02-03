@@ -88,7 +88,7 @@ namespace Infraestructure.Data.Repositories
 
         public Task<IEnumerable<SOLDOZA_MST_GRL_PROYECTOS>> GetAll()
         {
-            var projects = _context.proyectos.Include(p => p.clientes).Include(p => p.versiones).Include(p=>p.planos);
+            var projects = _context.proyectos.Include(p => p.clientes).Include(p => p.instalaciones).Include(p => p.versiones).Include(p=>p.planos);
             return Task.FromResult(projects.AsEnumerable<SOLDOZA_MST_GRL_PROYECTOS>());
         }
 

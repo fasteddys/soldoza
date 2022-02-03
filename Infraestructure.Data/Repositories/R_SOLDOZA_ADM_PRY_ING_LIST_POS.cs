@@ -10,35 +10,30 @@ using System.Threading.Tasks;
 
 namespace Infraestructure.Data.Repositories
 {
-    public class R_SOLDOZA_MST_PLANOS : ISOLDOZA_MST_PLANOS
+    public class R_SOLDOZA_ADM_PRY_ING_LIST_POS : ISOLDOZA_ADM_PRY_ING_LIST_POS
     {
         private readonly ApplicationDbContext _context;
 
-        public R_SOLDOZA_MST_PLANOS(ApplicationDbContext context)
+        public R_SOLDOZA_ADM_PRY_ING_LIST_POS(ApplicationDbContext context)
         {
             _context = context;
         }
-        public Task<IEnumerable<SOLDOZA_MST_PLANOS>> GetAll(int id)
+        public Task<IEnumerable<SOLDOZA_ADM_PRY_ING_LIST_POS>> GetAll()
         {
-            var plans = _context.planos.Where(p => p.instalacion_id == id).Include(p => p.instalacion);
-            return Task.FromResult(plans.AsEnumerable<SOLDOZA_MST_PLANOS>());
-        }
-        public Task<IEnumerable<SOLDOZA_MST_PLANOS>> GetAll()
-        {
-            var plans = _context.planos.Include(p => p.instalacion);
-            return Task.FromResult(plans.AsEnumerable<SOLDOZA_MST_PLANOS>());
+            var list_pos = _context.pos.Include(s => s.plano);
+            return Task.FromResult(list_pos.AsEnumerable<SOLDOZA_ADM_PRY_ING_LIST_POS>());
         }
 
-        public bool Insert(SOLDOZA_MST_PLANOS plano)
+        public bool Insert(SOLDOZA_ADM_PRY_ING_LIST_POS pos)
         {
             try
             {
-                if (plano == null)
+                if (pos == null)
                 {
                     return false;
                 }
 
-                _context.Add(plano);
+                _context.Add(pos);
                 _context.SaveChanges(true);
                 return true;
 
@@ -49,16 +44,16 @@ namespace Infraestructure.Data.Repositories
             }
         }
 
-        public bool Update(SOLDOZA_MST_PLANOS plano)
+        public bool Update(SOLDOZA_ADM_PRY_ING_LIST_POS pos)
         {
             try
             {
-                if (plano == null)
+                if (pos == null)
                 {
                     return false;
                 }
 
-                _context.Update(plano);
+                _context.Update(pos);
                 _context.SaveChanges(true);
                 return true;
             }
@@ -67,6 +62,5 @@ namespace Infraestructure.Data.Repositories
                 return false;
             }
         }
-
     }
 }

@@ -31,6 +31,9 @@ namespace Infraestructure.Data.Model
         public DbSet<SOLDOZA_ADM_MST_CONSU_FABRICANTE> cofab { get; set; }
         public DbSet<SOLDOZA_ADM_MST_CONSU_CLASF_AWS> coclasfaws { get; set; }
         public DbSet<SOLDOZA_MST_CONSUMIBLES> consu { get; set; }
+        public DbSet<SOLDOZA_MST_GRL_INSTALACION_TIPO> instatipo { get; set; }
+        public DbSet<SOLDOZA_MST_GRL_INSTALACION> insta { get; set; }
+        public DbSet<SOLDOZA_ADM_PRY_ING_LIST_POS> pos { get; set; }
 
 
         public DbSet<SOLDOZA_MST_MATERIALES> materiales { get; set; }
@@ -60,6 +63,7 @@ namespace Infraestructure.Data.Model
             modelBuilder.Entity<SOLDOZA_MST_PROC_SOLDADURA>().HasKey(t => new { t.id });
             modelBuilder.Entity<SOLDOZA_MST_TIPO_JUNTA>().HasKey(t => new { t.id });
             modelBuilder.Entity<SOLDOZA_MST_PLANOS>().HasKey(t => new { t.id });
+            modelBuilder.Entity<SOLDOZA_MST_PLANO_REVISION>().HasKey(t => new { t.id });
             modelBuilder.Entity<SOLDOZA_MST_SUBZONAS>().HasKey(t => new { t.id });
             modelBuilder.Entity<SOLDOZA_ADM_MST_CONSU_MARCA>().HasKey(t => new { t.id });
             modelBuilder.Entity<SOLDOZA_ADM_MST_CONSU_FABRICANTE>().HasKey(t => new { t.id });
@@ -67,7 +71,20 @@ namespace Infraestructure.Data.Model
             modelBuilder.Entity<SOLDOZA_MST_CONSUMIBLES>().HasKey(t => new { t.id });
             modelBuilder.Entity<SOLDOZA_PY_REVISIONES>().HasKey(t => new { t.id });
             modelBuilder.Entity<SOLDOZA_PY_REVISIONES_FECHAS>().HasKey(t => new { t.id });
+            modelBuilder.Entity<SOLDOZA_MST_GRL_INSTALACION_TIPO>().HasKey(t => new { t.id });
+            modelBuilder.Entity<SOLDOZA_MST_GRL_INSTALACION>().HasKey(t => new { t.id });
+            modelBuilder.Entity<SOLDOZA_ADM_PRY_ING_LIST_POS>().HasKey(t => new { t.id });
+            modelBuilder.Entity<SOLDOZA_MST_DETALLE_POS_PLANOREVISION>().HasKey(t => new { t.id });
 
+            modelBuilder.Entity<SOLDOZA_ADM_PRY_ING_LIST_POS>().HasMany(u => u.detalle_pos_planorev).WithOne(u => u.list_pos).HasForeignKey(u => u.list_pos_id);
+            modelBuilder.Entity<SOLDOZA_MST_MATERIALES>().HasMany(u => u.detalle_pos_planorev).WithOne(u => u.material).HasForeignKey(u => u.material_id);
+            modelBuilder.Entity<SOLDOZA_MST_PLANO_REVISION>().HasMany(u => u.detalle_pos_planorev).WithOne(u => u.plano_revision).HasForeignKey(u => u.plano_revision_id);
+
+            modelBuilder.Entity<SOLDOZA_MST_GRL_PROYECTOS>().HasMany(u => u.instalaciones).WithOne(u => u.proyectos).HasForeignKey(u => u.proyecto_id);
+
+            modelBuilder.Entity<SOLDOZA_MST_GRL_INSTALACION>().HasMany(u => u.plano).WithOne(u => u.instalacion).HasForeignKey(u => u.instalacion_id);
+            modelBuilder.Entity<SOLDOZA_MST_PLANOS>().HasMany(u => u.pos).WithOne(u => u.plano).HasForeignKey(u => u.plano_id);
+            //modelBuilder.Entity<SOLDOZA_MST_MATERIALES>().HasMany(u => u.pos).WithOne(u => u.material).HasForeignKey(u => u.material_id);
 
             modelBuilder.Entity<SOLDOZA_MST_TIPO_DOCUMENTO>().HasMany(u => u.clientes).WithOne(u => u.tipodocumento).HasForeignKey(u => u.tipo_documento_id);
             modelBuilder.Entity<SOLDOZA_MST_GRL_CLIENTES>().HasMany(u => u.proyectos).WithOne(u => u.clientes).HasForeignKey(u => u.cliente_id);
@@ -76,12 +93,15 @@ namespace Infraestructure.Data.Model
             modelBuilder.Entity<SOLDOZA_MST_GRL_CONTACTOS>().HasMany(u => u.contactos).WithOne(u => u.contacto).HasForeignKey(u => u.contacto_id);
             modelBuilder.Entity<SOLDOZA_MST_GRL_PROYECTOS>().HasMany(u => u.contactos).WithOne(u => u.proyecto).HasForeignKey(u => u.proyecto_id);
             modelBuilder.Entity<SOLDOZA_MST_TIPO_CONTACTO>().HasMany(u => u.contactos).WithOne(u => u.tipocontacto).HasForeignKey(u => u.tipo_contacto_id);
-            modelBuilder.Entity<SOLDOZA_MST_GRL_PROYECTOS>().HasMany(u => u.planos).WithOne(u => u.proyecto).HasForeignKey(u => u.proyecto_id);
+            //modelBuilder.Entity<SOLDOZA_MST_GRL_PROYECTOS>().HasMany(u => u.planos).WithOne(u => u.proyecto).HasForeignKey(u => u.proyecto_id);
 
-            modelBuilder.Entity<SOLDOZA_MST_PLANOS>().HasMany(u => u.revisiones).WithOne(u => u.plano).HasForeignKey(u => u.plano_id);
+            modelBuilder.Entity<SOLDOZA_MST_PLANOS>().HasMany(u => u.plano_revision).WithOne(u => u.plano).HasForeignKey(u => u.plano_id);
             modelBuilder.Entity<SOLDOZA_PY_REVISIONES>().HasMany(u => u.fechas).WithOne(u => u.revision).HasForeignKey(u => u.revision_id);
 
             modelBuilder.Entity<SOLDOZA_MST_ZONAS>().HasMany(u => u.subzona).WithOne(u => u.zona).HasForeignKey(u => u.zona_id);
+            modelBuilder.Entity<SOLDOZA_MST_GRL_INSTALACION_TIPO>().HasMany(u => u.insta).WithOne(u => u.insta_tipo).HasForeignKey(u => u.tipo_instalacion_id);
+            modelBuilder.Entity<SOLDOZA_MST_GRL_PROYECTOS>().HasMany(u => u.instalaciones).WithOne(u => u.proyectos).HasForeignKey(u => u.proyecto_id);
+
             modelBuilder.Entity<SOLDOZA_ADM_MST_CONSU_MARCA>().HasMany(u => u.consu).WithOne(u => u.marca).HasForeignKey(u => u.marca_id);
             modelBuilder.Entity<SOLDOZA_ADM_MST_CONSU_FABRICANTE>().HasMany(u => u.consu).WithOne(u => u.fabricante).HasForeignKey(u => u.fabricante_id);
             modelBuilder.Entity<SOLDOZA_ADM_MST_CONSU_CLASF_AWS>().HasMany(u => u.consu).WithOne(u => u.clasf_aws).HasForeignKey(u => u.clasf_aws_id);

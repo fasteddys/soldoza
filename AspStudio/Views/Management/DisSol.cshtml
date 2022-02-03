@@ -13,7 +13,20 @@
     <link href="~/lib/datatables.net-responsive-bs4/css/responsive.bootstrap4.min.css" rel="stylesheet" />
     <link href="~/lib/bootstrap-table/dist/bootstrap-table.min.css" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/tom-select@2.0.0/dist/css/tom-select.css" rel="stylesheet">
+    <style>
+        /* remove validation icons */
+        .form-control.is-invalid, .was-validated .form-control:invalid {
+            background-image: none !important;
+            border-color: #ced4da;
+            padding-right: 0.75em;
+        }
 
+        .form-control.is-valid, .was-validated .form-control:valid {
+            background-image: none !important;
+            border-color: #ced4da;
+            padding-right: 0.75em;
+        }
+    </style>
 }
 
 <ul class="breadcrumb">
@@ -25,7 +38,7 @@
     List Welding Design <small>page header description goes here...</small>
 </h1>
 
-<button type="button" class="btn bg-warning me-2 " data-bs-toggle="modal" data-bs-target="#newDisSol">New Welding Design</button>
+<button type="button" class="btn bg-warning me-2 " onclick="ModalNewDisSol();">New Welding Design</button>
 
 <div class="card">
     <div class="card-body">
@@ -61,7 +74,7 @@
 <!-- modal New Project -->
 <div class="modal fade" id="newDisSol">
     <div class="modal-dialog modal-lg">
-        <form method="post" id="formNewDisSol">
+        <form method="post" id="formNewDisSol" novalidate>
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">New Welding Design</h5>
@@ -71,18 +84,22 @@
 
                     <div class="form-group">
                         <label for="cod_dis_soldadura">Welding Design Code</label>
-                        <input type="text" class="form-control" id="cod_dis_soldadura" placeholder="Enter the welding design code" autocomplete="off" style="text-transform:uppercase;" />
+                        <input type="text" class="form-control" id="cod_dis_soldadura" placeholder="Enter the welding design code" autocomplete="off" style="text-transform:uppercase;" required />
+                        <div class="invalid-feedback">Please fill out this field.</div>
                     </div>
 
                     <div class="form-group">
                         <label for="descripcion_dis_soldadura">Descripcion Welding Design</label>
-                        <input type="text" class="form-control" id="descripcion_dis_soldadura" placeholder="Enter the Welding design description" autocomplete="off" style="text-transform:uppercase;" />
+                        <input type="text" class="form-control" id="descripcion_dis_soldadura" placeholder="Enter the Welding design description" autocomplete="off" style="text-transform:uppercase;" required />
+                        <div class="invalid-feedback">Please fill out this field.</div>
                     </div>
 
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn bg-dark text-white" id="btnGrabarDisSol">Save</button>
+                    <button type="button" class="btn bg-dark text-white" id="btnGrabarDisSol">
+                        <span id="loaderN" class="spinner-border spinner-border-sm" role="status" aria-hidden="true" style="display:none;"></span> Save
+                    </button>
                 </div>
             </div>
         </form>
@@ -92,7 +109,7 @@
 <!-- modal Edit Contact -->
 <div class="modal fade" id="EditDisSol">
     <div class="modal-dialog modal-lg">
-        <form method="post" id="formEditDisSol">
+        <form method="post" id="formEditDisSol" novalidate>
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">Edit Welding Design</h5>
@@ -105,18 +122,22 @@
 
                     <div class="form-group">
                         <label for="E_cod_dis_soldadura">Welding Design Code</label>
-                        <input type="text" class="form-control" id="E_cod_dis_soldadura" placeholder="Enter the welding design code" autocomplete="off" style="text-transform:uppercase;" />
+                        <input type="text" class="form-control" id="E_cod_dis_soldadura" placeholder="Enter the welding design code" autocomplete="off" style="text-transform:uppercase;" required />
+                        <div class="invalid-feedback">Please fill out this field.</div>
                     </div>
 
                     <div class="form-group">
                         <label for="E_descripcion_dis_soldadura">Descripcion Welding Design</label>
-                        <input type="text" class="form-control" id="E_descripcion_dis_soldadura" placeholder="Enter the welding design description" autocomplete="off" style="text-transform:uppercase;" />
+                        <input type="text" class="form-control" id="E_descripcion_dis_soldadura" placeholder="Enter the welding design description" autocomplete="off" style="text-transform:uppercase;" required />
+                        <div class="invalid-feedback">Please fill out this field.</div>
                     </div>
 
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn bg-dark text-white" id="btnEditDisSol">Save</button>
+                    <button type="button" class="btn bg-dark text-white" id="btnEditDisSol">
+                        <span id="loaderE" class="spinner-border spinner-border-sm" role="status" aria-hidden="true" style="display:none;"></span> Save
+                    </button>
                 </div>
             </div>
         </form>
@@ -149,7 +170,7 @@
     <script src="~/lib/bootstrap-table/dist/bootstrap-table.min.js"></script>
     <script src="~/js/demo/table-plugins.demo.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/tom-select@2.0.0/dist/js/tom-select.complete.min.js"></script>
-
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 
     <script>
 
@@ -157,16 +178,16 @@
 
         $('#datatableDisSol').DataTable({
             dom: "<'row mb-3'<'col-sm-4'l><'col-sm-12 text-end'<'d-flex justify-content-end'fB>>>t<'d-flex align-items-center'<'me-auto'i><'mb-0'p>>",
-            lengthMenu: [ 10, 20, 30, 40, 50 ],
+            lengthMenu: [10, 20, 30, 40, 50],
             responsive: true,
             buttons: [
-              { extend: 'print', className: 'btn btn-default' },
-              { extend: 'pdfHtml5', className: 'btn btn-default' },
-              { extend: 'excelHtml5', className: 'btn btn-default' }
+                { extend: 'print', className: 'btn btn-default' },
+                { extend: 'pdfHtml5', className: 'btn btn-default' },
+                { extend: 'excelHtml5', className: 'btn btn-default' }
             ]
-          });
+        });
 
-         ///// FUNCIONES  ///////
+        ///// FUNCIONES  ///////
 
         function ModalEditDisSol(xid, xcod, xdescripcion) {
             $("#IdDisSol").val(xid);
@@ -175,35 +196,29 @@
             $('#EditDisSol').modal('show');
         }
 
+        function ModalNewDisSol() {
+            var form = $("#formNewDisSol");
+            form[0].reset();
+            form.get(0).reset();
+            form.removeClass('was-validated');
+            $('#newDisSol').modal('show');
+        }
 
         $(document).ready(function () {
 
-
+            $('#newDisSol').on('shown.bs.modal', function () {
+                $('#cod_dis_soldadura').focus();
+            });
 
             $('#btnGrabarDisSol').click(function (event) {
 
                 var form = $("#formNewDisSol");
+                form.addClass('was-validated');
 
                 if (form[0].checkValidity() === false) {
-                    event.preventDefault()
-                    event.stopPropagation()
-                    form.addClass('was-validated');
-                }
-                else {
-
-                    if ($('#cod_dis_soldadura').val() == "") {
-                        alert("You must enter the welding design code");
-                        $('#cod_dis_soldadura').focus();
-                        return;
-                    }
-
-                    if ($('#descripcion_dis_soldadura').val() == "") {
-                        alert('You must enter the welding design description');
-                        $('#descripcion_dis_soldadura').focus();
-                        return;
-                    }
-
-
+                    event.preventDefault();
+                    event.stopPropagation();
+                    return;
                 }
 
                 let DisSol = {
@@ -219,22 +234,24 @@
                     dataType: 'json',
                     async: true,
                     data: data,
+                    beforeSend: function () {
+                        $('#loaderN').show();
+                    },
                     success: function (result) {
-                        console.log(result)
-                    }
-                })
-                    .done(function (result) {
                         if (result.exito) {
-                            alert(result.mensaje);
                             $('#newDisSol').modal('hide');
-                            location.reload();
+                            swal("Good job!", result.mensaje, "success").then(function () {
+                                location.reload();
+                            });
                         }
                         else {
-                            alert('Problems add a welding design, we ask that you try again!');
+                            swal({
+                                icon: "error",
+                                text: "Problems add a welding design, we ask that you try again!",
+                            });
                         }
-
-                    })
-                    .fail(function (jqXHR, textStatus, errorThrow) {
+                    }
+                }) .fail(function (jqXHR, textStatus, errorThrow) {
                         var err = "Error: " + textStatus + " " + errorThrow;
                         console.log(err);
                     })
@@ -245,29 +262,16 @@
             $('#btnEditDisSol').click(function (event) {
 
                 var form = $("#formEditDisSol");
+                form.addClass('was-validated');
 
                 if (form[0].checkValidity() === false) {
-                    event.preventDefault()
-                    event.stopPropagation()
-                    form.addClass('was-validated');
-                }
-                else {
-
-                    if ($('#E_cod_dis_soldadura').val() == "") {
-                        alert("You must enter the welding design code");
-                        $('#E_cod_dis_soldadura').focus();
-                        return;
-                    }
-
-                    if ($('#E_descripcion_dis_soldadura').val() == "") {
-                        alert('You must enter the welding design description');
-                        $('#E_descripcion_dis_soldadura').focus();
-                        return;
-                    }
+                    event.preventDefault();
+                    event.stopPropagation();
+                    return;
                 }
 
                 let DisSol = {
-                   "id": $('#IdDisSol').val(),
+                    "id": $('#IdDisSol').val(),
                     "cod_dis_soldadura": $('#E_cod_dis_soldadura').val().toUpperCase(),
                     "descripcion_dis_soldadura": $('#E_descripcion_dis_soldadura').val().toUpperCase()
                 };
@@ -282,22 +286,24 @@
                     dataType: 'json',
                     async: true,
                     data: data,
+                    beforeSend: function () {
+                        $('#loaderE').show();
+                    },
                     success: function (result) {
-                        console.log(result)
-                    }
-                })
-                    .done(function (result) {
                         if (result.exito) {
-                            alert(result.mensaje);
                             $('#EditDisSol').modal('hide');
-                            location.reload();
+                            swal("Good job!", result.mensaje, "success").then(function () {
+                                location.reload();
+                            });
                         }
                         else {
-                            alert('Problems creating a edit welding design, we ask that you try again!');
+                            swal({
+                                icon: "error",
+                                text: "Problems edit a welding design, we ask that you try again!",
+                            });
                         }
-
-                    })
-                    .fail(function (jqXHR, textStatus, errorThrow) {
+                    }
+                }) .fail(function (jqXHR, textStatus, errorThrow) {
                         var err = "Error: " + textStatus + " " + errorThrow;
                         console.log(err);
                     })

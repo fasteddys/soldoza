@@ -67,30 +67,42 @@
                                             <th>Code</th>
                                             <th>Description Project</th>
                                             <th>Plans</th>
+                                            <th>Installations</th>
                                             <th></th>
                                         </tr>
                                     </thead>
                                     <tbody id="data">
                                        @foreach(var item in Model){
-                                            <tr>
-                                                <td>@item.cod_proyecto</td>
-                                                <td>@item.descripcion_proyecto</td>
-                                                <td>
-                                                    <table class="table table-sm no-border">
-                                                            @foreach(var ver in item.planos)
-                                                            {
-                                                                <tr>
-                                                                    <td>@ver.cod_num_plano</td>
-                                                                </tr>
-                                                            }
-                                                    </table>
-                                                </td>
-                                                <td>
-                                                    <a class="btn btn-outline-warning btn-sm" href="#" role="button">Plans</a>
-                                                    <a class="btn btn-outline-warning btn-sm" href="#" role="button">Revisions</a>
-                                                    <a class="btn btn-outline-warning btn-sm" href="#" role="button">Pos</a>
-                                                </td>
-                                            </tr>
+                                        <tr>
+                                            <td>@item.cod_proyecto</td>
+                                            <td>@item.descripcion_proyecto</td>
+                                            <td>
+                                                <table class="table table-sm no-border">
+                                                    @foreach (var ver in item.planos)
+                                                    {
+                                                        <tr>
+                                                            <td>@ver.cod_num_plano</td>
+                                                        </tr>
+                                                    }
+                                                </table>
+                                            </td>
+                                            <td>
+                                                <table class="table table-sm no-border">
+                                                    @foreach (var ver in item.instalaciones)
+                                                    {
+                                                        <tr>
+                                                            <td>@ver.cod_instalacion</td>
+                                                        </tr>
+                                                    }
+                                                </table>
+                                            </td>
+                                            <td>
+                                                <a class="btn btn-outline-warning btn-sm" href="@Url.Action("Instal","Projects", new{id=@item.id})" role="button">Installations</a>
+                                                <a class="btn btn-outline-warning btn-sm" href="#" role="button">Plans</a>
+                                                <a class="btn btn-outline-warning btn-sm" href="#" role="button">Revisions</a>
+                                                <a class="btn btn-outline-warning btn-sm" href="#" role="button">Pos</a>
+                                            </td>
+                                        </tr>
                                         }
 
                                     </tbody>

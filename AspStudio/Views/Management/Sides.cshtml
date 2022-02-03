@@ -12,19 +12,32 @@
     <link href="~/lib/datatables.net-responsive-bs4/css/responsive.bootstrap4.min.css" rel="stylesheet" />
     <link href="~/lib/bootstrap-table/dist/bootstrap-table.min.css" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/tom-select@2.0.0/dist/css/tom-select.css" rel="stylesheet">
+    <style>
+        /* remove validation icons */
+        .form-control.is-invalid, .was-validated .form-control:invalid {
+            background-image: none !important;
+            border-color: #ced4da;
+            padding-right: 0.75em;
+        }
 
+        .form-control.is-valid, .was-validated .form-control:valid {
+            background-image: none !important;
+            border-color: #ced4da;
+            padding-right: 0.75em;
+        }
+    </style>
 }
 
 <ul class="breadcrumb">
     <li class="breadcrumb-item text-warning"><a href="#" class="text-warning">MANAGEMENT</a></li>
-    <li class="breadcrumb-item text-gray-900 active">SIDES</li>
+    <li class="breadcrumb-item text-gray-900 active">Sides</li>
 </ul>
 
 <h1 class="page-header">
     List Sides <small>page header description goes here...</small>
 </h1>
 
-<button type="button" class="btn bg-warning me-2 " data-bs-toggle="modal" data-bs-target="#newLADO">New SIDE</button>
+<button type="button" class="btn bg-warning me-2 " onclick="ModalNewLADO();">New Side</button>
 
 <div class="card">
     <div class="card-body">
@@ -45,7 +58,7 @@
                             <td>@item.cod_lado</td>
                             <td>@item.descripcion_lado</td>
                             <td>
-                                <a class="btn btn-outline-warning btn-sm" href="#" role="button" onclick="ModalEditSide(@item.id,'@item.cod_lado','@item.descripcion_lado');">Edit</a>
+                                <a class="btn btn-outline-warning btn-sm" href="#" role="button" onclick="ModalEditLADO(@item.id,'@item.cod_lado','@item.descripcion_lado');">Edit</a>
                             </td>
                         </tr>
                     }
@@ -60,7 +73,7 @@
 <!-- modal New Project -->
 <div class="modal fade" id="newLADO">
     <div class="modal-dialog modal-lg">
-        <form method="post" id="formNewLADO">
+        <form method="post" id="formNewLADO" novalidate>
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">New Side</h5>
@@ -70,18 +83,22 @@
 
                     <div class="form-group">
                         <label for="cod_lado">Side Code</label>
-                        <input type="text" class="form-control" id="cod_lado" placeholder="Enter the side code" autocomplete="off" style="text-transform:uppercase;" />
+                        <input type="text" class="form-control" id="cod_lado" placeholder="Enter the side code" autocomplete="off" style="text-transform:uppercase;" required />
+                        <div class="invalid-feedback">Please fill out this field.</div>
                     </div>
 
                     <div class="form-group">
                         <label for="descripcion_lado">Descripcion Side</label>
-                        <input type="text" class="form-control" id="descripcion_lado" placeholder="Enter the side description" autocomplete="off" style="text-transform:uppercase;" />
+                        <input type="text" class="form-control" id="descripcion_lado" placeholder="Enter the side description" autocomplete="off" style="text-transform:uppercase;" required />
+                        <div class="invalid-feedback">Please fill out this field.</div>
                     </div>
 
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn bg-dark text-white" id="btnGrabarLADO">Save</button>
+                    <button type="button" class="btn bg-dark text-white" id="btnGrabarLADO">
+                        <span id="loaderN" class="spinner-border spinner-border-sm" role="status" aria-hidden="true" style="display:none;"></span> Save
+                    </button>
                 </div>
             </div>
         </form>
@@ -89,9 +106,9 @@
 </div>
 
 <!-- modal Edit Contact -->
-<div class="modal fade" id="EditSide">
+<div class="modal fade" id="EditLADO">
     <div class="modal-dialog modal-lg">
-        <form method="post" id="formEditSide">
+        <form method="post" id="formEditLADO" novalidate>
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">Edit Side</h5>
@@ -104,18 +121,22 @@
 
                     <div class="form-group">
                         <label for="E_cod_lado">Side Code</label>
-                        <input type="text" class="form-control" id="E_cod_lado" placeholder="Enter the side code" autocomplete="off" style="text-transform:uppercase;" />
+                        <input type="text" class="form-control" id="E_cod_lado" placeholder="Enter the side code" autocomplete="off" style="text-transform:uppercase;" required />
+                        <div class="invalid-feedback">Please fill out this field.</div>
                     </div>
 
                     <div class="form-group">
                         <label for="E_descripcion_lado">Descripcion Side</label>
-                        <input type="text" class="form-control" id="E_descripcion_lado" placeholder="Enter the side description" autocomplete="off" style="text-transform:uppercase;" />
+                        <input type="text" class="form-control" id="E_descripcion_lado" placeholder="Enter the side description" autocomplete="off" style="text-transform:uppercase;" required />
+                        <div class="invalid-feedback">Please fill out this field.</div>
                     </div>
 
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn bg-dark text-white" id="btnEditSide">Save</button>
+                    <button type="button" class="btn bg-dark text-white" id="btnEditLADO">
+                        <span id="loaderE" class="spinner-border spinner-border-sm" role="status" aria-hidden="true" style="display:none;"></span> Save
+                    </button>
                 </div>
             </div>
         </form>
@@ -148,68 +169,62 @@
     <script src="~/lib/bootstrap-table/dist/bootstrap-table.min.js"></script>
     <script src="~/js/demo/table-plugins.demo.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/tom-select@2.0.0/dist/js/tom-select.complete.min.js"></script>
-
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 
     <script>
 
         ///// DATATABLE /////////////
 
-          $('#datatableLADOS').DataTable({
+        $('#datatableLADOS').DataTable({
             dom: "<'row mb-3'<'col-sm-4'l><'col-sm-12 text-end'<'d-flex justify-content-end'fB>>>t<'d-flex align-items-center'<'me-auto'i><'mb-0'p>>",
-            lengthMenu: [ 10, 20, 30, 40, 50 ],
+            lengthMenu: [10, 20, 30, 40, 50],
             responsive: true,
             buttons: [
-              { extend: 'print', className: 'btn btn-default' },
-              { extend: 'pdfHtml5', className: 'btn btn-default' },
-              { extend: 'excelHtml5', className: 'btn btn-default' }
+                { extend: 'print', className: 'btn btn-default' },
+                { extend: 'pdfHtml5', className: 'btn btn-default' },
+                { extend: 'excelHtml5', className: 'btn btn-default' }
             ]
-          });
+        });
 
-         ///// FUNCIONES  ///////
+        ///// FUNCIONES  ///////
 
-        function ModalEditSide(xid, xcod, xdescripcion) {
+        function ModalEditLADO(xid, xcod, xdescripcion) {
             $("#IdLADO").val(xid);
             $("#E_cod_lado").val(xcod);
             $("#E_descripcion_lado").val(xdescripcion);
-            $('#EditSide').modal('show');
+            $('#EditLADO').modal('show');
         }
 
+        function ModalNewLADO() {
+            var form = $("#formNewLADO");
+            form[0].reset();
+            form.get(0).reset();
+            form.removeClass('was-validated');
+            $('#newLADO').modal('show');
+        }
 
         $(document).ready(function () {
 
+            $('#newLADO').on('shown.bs.modal', function () {
+                $('#cod_lado').focus();
+            });
 
-
-              $('#btnGrabarLADO').click(function (event) {
+            $('#btnGrabarLADO').click(function (event) {
 
                 var form = $("#formNewLADO");
+                form.addClass('was-validated');
 
                 if (form[0].checkValidity() === false) {
-                    event.preventDefault()
-                    event.stopPropagation()
-                    form.addClass('was-validated');
-                }
-                else {
-
-                    if ($('#cod_lado').val() == "") {
-                        alert("You must enter the side code");
-                        $('#cod_lado').focus();
-                        return;
-                    }
-
-                    if ($('#descripcion_lado').val() == "") {
-                        alert('You must enter the side description');
-                        $('#descripcion_lado').focus();
-                        return;
-                    }
-
-
+                    event.preventDefault();
+                    event.stopPropagation();
+                    return;
                 }
 
                 let lado = {
                     "cod_lado": $('#cod_lado').val().toUpperCase(),
                     "descripcion_lado": $('#descripcion_lado').val().toUpperCase()
                 };
-               var data = JSON.stringify(lado);
+                var data = JSON.stringify(lado);
 
                 $.ajax({
                     type: "POST",
@@ -218,22 +233,24 @@
                     dataType: 'json',
                     async: true,
                     data: data,
+                    beforeSend: function () {
+                        $('#loaderN').show();
+                    },
                     success: function (result) {
-                        console.log(result)
-                    }
-                })
-                    .done(function (result) {
                         if (result.exito) {
-                            alert(result.mensaje);
                             $('#newLADO').modal('hide');
-                            location.reload();
+                            swal("Good job!", result.mensaje, "success").then(function () {
+                                location.reload();
+                            });
                         }
                         else {
-                            alert('Problems add a side, we ask that you try again!');
+                            swal({
+                                icon: "error",
+                                text: "Problems add a side, we ask that you try again!",
+                            });
                         }
-
-                    })
-                    .fail(function (jqXHR, textStatus, errorThrow) {
+                    }
+                }) .fail(function (jqXHR, textStatus, errorThrow) {
                         var err = "Error: " + textStatus + " " + errorThrow;
                         console.log(err);
                     })
@@ -241,38 +258,25 @@
             });
 
 
-            $('#btnEditSide').click(function (event) {
+            $('#btnEditLADO').click(function (event) {
 
-                var form = $("#formEditSide");
+                var form = $("#formEditLADO");
+                form.addClass('was-validated');
 
                 if (form[0].checkValidity() === false) {
-                    event.preventDefault()
-                    event.stopPropagation()
-                    form.addClass('was-validated');
-                }
-                else {
-
-                    if ($('#E_cod_lado').val() == "") {
-                        alert("You must enter the side code");
-                        $('#E_cod_lado').focus();
-                        return;
-                    }
-
-                    if ($('#E_descripcion_lado').val() == "") {
-                        alert('You must enter the side description');
-                        $('#E_descripcion_lado').focus();
-                        return;
-                    }
+                    event.preventDefault();
+                    event.stopPropagation();
+                    return;
                 }
 
-               let lado = {
+                let lado = {
                     "id": $('#IdLADO').val(),
                     "cod_lado": $('#E_cod_lado').val().toUpperCase(),
                     "descripcion_lado": $('#E_descripcion_lado').val().toUpperCase()
                 };
 
 
-               var data = JSON.stringify(lado);
+                var data = JSON.stringify(lado);
 
                 $.ajax({
                     type: "POST",
@@ -281,22 +285,24 @@
                     dataType: 'json',
                     async: true,
                     data: data,
+                    beforeSend: function () {
+                        $('#loaderE').show();
+                    },
                     success: function (result) {
-                        console.log(result)
-                    }
-                })
-                    .done(function (result) {
                         if (result.exito) {
-                            alert(result.mensaje);
-                            $('#EditSide').modal('hide');
-                            location.reload();
+                            $('#EditLADO').modal('hide');
+                            swal("Good job!", result.mensaje, "success").then(function () {
+                                location.reload();
+                            });
                         }
                         else {
-                            alert('Problems creating a edit side, we ask that you try again!');
+                            swal({
+                                icon: "error",
+                                text: "Problems edit a side, we ask that you try again!",
+                            });
                         }
-
-                    })
-                    .fail(function (jqXHR, textStatus, errorThrow) {
+                    }
+                }) .fail(function (jqXHR, textStatus, errorThrow) {
                         var err = "Error: " + textStatus + " " + errorThrow;
                         console.log(err);
                     })

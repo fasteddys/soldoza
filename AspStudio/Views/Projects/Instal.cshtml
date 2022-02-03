@@ -1,0 +1,108 @@
+﻿@using Domain.Entities;
+@model List<SOLDOZA_MST_GRL_INSTALACION>
+@{
+    ViewData["Title"] = "InstallationProjects";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section Styles{
+    <link href="~/lib/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css" rel="stylesheet" />
+}
+
+
+
+
+
+<ul class="breadcrumb">
+    <li class="breadcrumb-item text-warning"><a href="#" class="text-warning">PROJECTS</a></li>
+    <li class="breadcrumb-item text-gray-900 active">INSTALLATION PROJECTS</li>
+</ul>
+
+
+
+<!-- BEGIN col-4 -->
+<div class="col-xl-12 col-lg-12">
+    <!-- BEGIN card -->
+    <div class="card mb-3">
+        <!-- BEGIN card-header -->
+        <div class="card-header d-flex align-items-center">
+            <span class="flex-grow-1 font-weight-600">List installations</span>
+            <a href="#" class="text-muted text-decoration-none fs-12px" role="button" data-bs-toggle="modal" data-bs-target="#newProject"><i class="fa fa-fw fa-plus"></i> New project</a>
+        </div>
+        <!-- END card-header -->
+        <!-- BEGIN list-group -->
+        <div class="list-group list-group-flush">
+            <!-- BEGIN list-group-item -->
+            <div class="list-group-item d-flex px-3">
+                @*<div class="me-3">
+                        <i class="fa fa-tools text-muted fa-fw fa-lg"></i>
+                    </div>*@
+                <div class="flex-fill">
+                    <input type="hidden" id="proyecto_id" value=@ViewBag.proyecto.id />
+                    <div class="font-weight-600 text-dark">Code: @ViewBag.proyecto.cod_proyecto</div>
+                    <div class="font-weight-600 text-dark">Description: @ViewBag.proyecto.descripcion_proyecto</div>
+
+                    <table class="table table-sm">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Code</th>
+                                <th>Description</th>
+                                <th>Installation Type</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model != null)
+                            {
+                                foreach (var fila in Model)
+                                {
+                                    <tr>
+                                        <td>@fila.cod_instalacion </td>
+                                        <td>@fila.descripcion_instalacion </td>
+                                        <td>@fila.insta_tipo.cod_tipo_instalacion  </td>
+                                        <td>
+                                            <a class="btn btn-outline-warning btn-sm" href="#" role="button" data-bs-toggle="modal" data-bs-target="#newVersion" onclick="AsignaProyectoID(@fila.id)">Add version</a>
+                                            <a class="btn btn-outline-warning btn-sm" href="#" role="button" onclick="AddContactProyecto(@fila.id)">Add contact</a>
+                                            <a class="btn btn-outline-warning btn-sm" href="@Url.Action("ProjectContacts","Management", new{id=fila.id})" role="button">Contacts</a>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="6">No records to display</td>
+                                </tr>
+
+                            }
+                        </tbody>
+                    </table>
+
+                    <a href="@Url.Action("Customers","Management")" class="text-blue text-decoration-none">Return list customers</a>
+
+                </div>
+            </div>
+            <!-- END list-group-item -->
+
+
+        </div>
+        <!-- END list-group -->
+    </div>
+    <!-- END card -->
+</div>
+
+
+@section Scripts{
+
+    @*<script src="~/lib/highlight.js/highlight.min.js"></script>
+        <script src="~/js/demo/highlightjs.demo.js"></script>
+        <script src="~/js/demo/sidebar-scrollspy.demo.js"></script>*@
+    <script src="~/lib/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
+
+
+    <script>
+
+
+    </script>
+
+}

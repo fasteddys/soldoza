@@ -11,12 +11,13 @@ namespace Domain.Entities
     {
         [Key]
         public int id { get; set; }
-        public int proyecto_id { get; set; }
+        public int instalacion_id { get; set; }
         public string cod_num_plano { get; set; }
         public string descripcion_plano { get; set; }
 
-        [ForeignKey("proyecto_id")]
-        public SOLDOZA_MST_GRL_PROYECTOS proyecto { get; set; }
-        public virtual ICollection<SOLDOZA_PY_REVISIONES> revisiones { get; set; } = new HashSet<SOLDOZA_PY_REVISIONES>();
+        [ForeignKey("instalacion_id")]
+        public SOLDOZA_MST_GRL_INSTALACION instalacion { get; set; }
+        public virtual ICollection<SOLDOZA_MST_PLANO_REVISION> plano_revision { get; set; } = new HashSet<SOLDOZA_MST_PLANO_REVISION>();
+        public virtual ICollection<SOLDOZA_ADM_PRY_ING_LIST_POS> pos { get; set; } = new HashSet<SOLDOZA_ADM_PRY_ING_LIST_POS>();
     }
 }

@@ -13,7 +13,20 @@
     <link href="~/lib/datatables.net-responsive-bs4/css/responsive.bootstrap4.min.css" rel="stylesheet" />
     <link href="~/lib/bootstrap-table/dist/bootstrap-table.min.css" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/tom-select@2.0.0/dist/css/tom-select.css" rel="stylesheet">
+    <style>
+        /* remove validation icons */
+        .form-control.is-invalid, .was-validated .form-control:invalid {
+            background-image: none !important;
+            border-color: #ced4da;
+            padding-right: 0.75em;
+        }
 
+        .form-control.is-valid, .was-validated .form-control:valid {
+            background-image: none !important;
+            border-color: #ced4da;
+            padding-right: 0.75em;
+        }
+    </style>
 }
 
 <ul class="breadcrumb">
@@ -25,7 +38,7 @@
     List AWS Classification <small>page header description goes here...</small>
 </h1>
 
-<button type="button" class="btn bg-warning me-2 " data-bs-toggle="modal" data-bs-target="#newCONSUCLASFAWS">New AWS Classification</button>
+<button type="button" class="btn bg-warning me-2 " onclick="ModalNewCONSUCLASFAWS();">New AWS Classification</button>
 
 <div class="card">
     <div class="card-body">
@@ -61,7 +74,7 @@
 <!-- modal New Project -->
 <div class="modal fade" id="newCONSUCLASFAWS">
     <div class="modal-dialog modal-lg">
-        <form method="post" id="formNewCONSUCLASFAWS">
+        <form method="post" id="formNewCONSUCLASFAWS" novalidate>
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">New AWS Classification</h5>
@@ -71,18 +84,22 @@
 
                     <div class="form-group">
                         <label for="cod_clasf_aws">AWS Classification Code</label>
-                        <input type="text" class="form-control" id="cod_clasf_aws" placeholder="Enter the AWS classification code" autocomplete="off" style="text-transform:uppercase;" />
+                        <input type="text" class="form-control" id="cod_clasf_aws" placeholder="Enter the AWS classification code" autocomplete="off" style="text-transform:uppercase;" required />
+                        <div class="invalid-feedback">Please fill out this field.</div>
                     </div>
 
                     <div class="form-group">
                         <label for="descripcion_clasf_aws">Descripcion AWS Classification</label>
-                        <input type="text" class="form-control" id="descripcion_clasf_aws" placeholder="Enter the AWS classification description" autocomplete="off" style="text-transform:uppercase;" />
+                        <input type="text" class="form-control" id="descripcion_clasf_aws" placeholder="Enter the AWS classification description" autocomplete="off" style="text-transform:uppercase;" required />
+                        <div class="invalid-feedback">Please fill out this field.</div>
                     </div>
 
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn bg-dark text-white" id="btnGrabarCONSUCLASFAWS">Save</button>
+                    <button type="button" class="btn bg-dark text-white" id="btnGrabarCONSUCLASFAWS">
+                        <span id="loaderN" class="spinner-border spinner-border-sm" role="status" aria-hidden="true" style="display:none;"></span> Save
+                    </button>
                 </div>
             </div>
         </form>
@@ -92,7 +109,7 @@
 <!-- modal Edit Contact -->
 <div class="modal fade" id="EditCONSUCLASFAWS">
     <div class="modal-dialog modal-lg">
-        <form method="post" id="formEditCONSUCLASFAWS">
+        <form method="post" id="formEditCONSUCLASFAWS" novalidate>
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">Edit AWS Classification</h5>
@@ -105,18 +122,22 @@
 
                     <div class="form-group">
                         <label for="E_cod_clasf_aws">AWS Classification Code</label>
-                        <input type="text" class="form-control" id="E_cod_clasf_aws" placeholder="Enter the AWS classification code" autocomplete="off" style="text-transform:uppercase;" />
+                        <input type="text" class="form-control" id="E_cod_clasf_aws" placeholder="Enter the AWS classification code" autocomplete="off" style="text-transform:uppercase;" required />
+                        <div class="invalid-feedback">Please fill out this field.</div>
                     </div>
 
                     <div class="form-group">
                         <label for="E_descripcion_clasf_aws">Descripcion AWS Classification</label>
-                        <input type="text" class="form-control" id="E_descripcion_clasf_aws" placeholder="Enter the AWS classification description" autocomplete="off" style="text-transform:uppercase;" />
+                        <input type="text" class="form-control" id="E_descripcion_clasf_aws" placeholder="Enter the AWS classification description" autocomplete="off" style="text-transform:uppercase;" required />
+                        <div class="invalid-feedback">Please fill out this field.</div>
                     </div>
 
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn bg-dark text-white" id="btnEditCONSUCLASFAWS">Save</button>
+                    <button type="button" class="btn bg-dark text-white" id="btnEditCONSUCLASFAWS">
+                        <span id="loaderE" class="spinner-border spinner-border-sm" role="status" aria-hidden="true" style="display:none;"></span> Save
+                    </button>
                 </div>
             </div>
         </form>
@@ -149,7 +170,7 @@
     <script src="~/lib/bootstrap-table/dist/bootstrap-table.min.js"></script>
     <script src="~/js/demo/table-plugins.demo.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/tom-select@2.0.0/dist/js/tom-select.complete.min.js"></script>
-
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 
     <script>
 
@@ -157,16 +178,16 @@
 
         $('#datatableCONSUCLASFAWS').DataTable({
             dom: "<'row mb-3'<'col-sm-4'l><'col-sm-12 text-end'<'d-flex justify-content-end'fB>>>t<'d-flex align-items-center'<'me-auto'i><'mb-0'p>>",
-            lengthMenu: [ 10, 20, 30, 40, 50 ],
+            lengthMenu: [10, 20, 30, 40, 50],
             responsive: true,
             buttons: [
-              { extend: 'print', className: 'btn btn-default' },
-              { extend: 'pdfHtml5', className: 'btn btn-default' },
-              { extend: 'excelHtml5', className: 'btn btn-default' }
+                { extend: 'print', className: 'btn btn-default' },
+                { extend: 'pdfHtml5', className: 'btn btn-default' },
+                { extend: 'excelHtml5', className: 'btn btn-default' }
             ]
-          });
+        });
 
-         ///// FUNCIONES  ///////
+        ///// FUNCIONES  ///////
 
         function ModalEditCONSUCLASFAWS(xid, xcod, xdescripcion) {
             $("#IdCONSUCLASFAWS").val(xid);
@@ -175,35 +196,30 @@
             $('#EditCONSUCLASFAWS').modal('show');
         }
 
+        function ModalNewCONSUCLASFAWS() {
+            var form = $("#formNewCONSUCLASFAWS");
+            form[0].reset();
+            form.get(0).reset();
+            form.removeClass('was-validated');
+            $('#newCONSUCLASFAWS').modal('show');
+        }
+
 
         $(document).ready(function () {
 
-
+            $('#newCONSUCLASFAWS').on('shown.bs.modal', function () {
+                $('#cod_cod_clasf_aws').focus();
+            });
 
             $('#btnGrabarCONSUCLASFAWS').click(function (event) {
 
                 var form = $("#formNewCONSUCLASFAWS");
+                form.addClass('was-validated');
 
                 if (form[0].checkValidity() === false) {
-                    event.preventDefault()
-                    event.stopPropagation()
-                    form.addClass('was-validated');
-                }
-                else {
-
-                    if ($('#cod_clasf_aws').val() == "") {
-                        alert("You must enter the AWS classification code");
-                        $('#cod_clasf_aws').focus();
-                        return;
-                    }
-
-                    if ($('#descripcion_clasf_aws').val() == "") {
-                        alert('You must enter the AWS classification description');
-                        $('#descripcion_clasf_aws').focus();
-                        return;
-                    }
-
-
+                    event.preventDefault();
+                    event.stopPropagation();
+                    return;
                 }
 
                 let CONSUCLASFAWS = {
@@ -219,22 +235,24 @@
                     dataType: 'json',
                     async: true,
                     data: data,
+                    beforeSend: function () {
+                        $('#loaderN').show();
+                    },
                     success: function (result) {
-                        console.log(result)
-                    }
-                })
-                    .done(function (result) {
                         if (result.exito) {
-                            alert(result.mensaje);
                             $('#newCONSUCLASFAWS').modal('hide');
-                            location.reload();
+                            swal("Good job!", result.mensaje, "success").then(function () {
+                                location.reload();
+                            });
                         }
                         else {
-                            alert('Problems add a AWS classification, we ask that you try again!');
+                            swal({
+                                icon: "error",
+                                text: "Problems add a AWS classification, we ask that you try again!",
+                            });
                         }
-
-                    })
-                    .fail(function (jqXHR, textStatus, errorThrow) {
+                    }
+                }) .fail(function (jqXHR, textStatus, errorThrow) {
                         var err = "Error: " + textStatus + " " + errorThrow;
                         console.log(err);
                     })
@@ -245,29 +263,16 @@
             $('#btnEditCONSUCLASFAWS').click(function (event) {
 
                 var form = $("#formEditCONSUCLASFAWS");
+                form.addClass('was-validated');
 
                 if (form[0].checkValidity() === false) {
-                    event.preventDefault()
-                    event.stopPropagation()
-                    form.addClass('was-validated');
-                }
-                else {
-
-                    if ($('#E_cod_clasf_aws').val() == "") {
-                        alert("You must enter the AWS classification code");
-                        $('#E_cod_clasf_aws').focus();
-                        return;
-                    }
-
-                    if ($('#E_descripcion_clasf_aws').val() == "") {
-                        alert('You must enter the AWS classification description');
-                        $('#E_descripcion_clasf_aws').focus();
-                        return;
-                    }
+                    event.preventDefault();
+                    event.stopPropagation();
+                    return;
                 }
 
                 let CONSUCLASFAWS = {
-                   "id": $('#IdCONSUCLASFAWS').val(),
+                    "id": $('#IdCONSUCLASFAWS').val(),
                     "cod_clasf_aws": $('#E_cod_clasf_aws').val().toUpperCase(),
                     "descripcion_clasf_aws": $('#E_descripcion_clasf_aws').val().toUpperCase()
                 };
@@ -282,22 +287,24 @@
                     dataType: 'json',
                     async: true,
                     data: data,
+                    beforeSend: function () {
+                        $('#loaderE').show();
+                    },
                     success: function (result) {
-                        console.log(result)
-                    }
-                })
-                    .done(function (result) {
                         if (result.exito) {
-                            alert(result.mensaje);
                             $('#EditCONSUCLASFAWS').modal('hide');
-                            location.reload();
+                            swal("Good job!", result.mensaje, "success").then(function () {
+                                location.reload();
+                            });
                         }
                         else {
-                            alert('Problems creating a edit AWS classification, we ask that you try again!');
+                            swal({
+                                icon: "error",
+                                text: "Problems edit a AWS classification, we ask that you try again!",
+                            });
                         }
-
-                    })
-                    .fail(function (jqXHR, textStatus, errorThrow) {
+                    }
+                }) .fail(function (jqXHR, textStatus, errorThrow) {
                         var err = "Error: " + textStatus + " " + errorThrow;
                         console.log(err);
                     })

@@ -13,7 +13,20 @@
     <link href="~/lib/datatables.net-responsive-bs4/css/responsive.bootstrap4.min.css" rel="stylesheet" />
     <link href="~/lib/bootstrap-table/dist/bootstrap-table.min.css" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/tom-select@2.0.0/dist/css/tom-select.css" rel="stylesheet">
+    <style>
+        /* remove validation icons */
+        .form-control.is-invalid, .was-validated .form-control:invalid {
+            background-image: none !important;
+            border-color: #ced4da;
+            padding-right: 0.75em;
+        }
 
+        .form-control.is-valid, .was-validated .form-control:valid {
+            background-image: none !important;
+            border-color: #ced4da;
+            padding-right: 0.75em;
+        }
+    </style>
 }
 
 <ul class="breadcrumb">
@@ -25,7 +38,7 @@
     List Non-Destructive Testing <small>page header description goes here...</small>
 </h1>
 
-<button type="button" class="btn bg-warning me-2 " data-bs-toggle="modal" data-bs-target="#newEnNoDe">New Non-Destructive Testing</button>
+<button type="button" class="btn bg-warning me-2 " onclick="ModalNewEnNoDe();">New Non-Destructive Testing</button>
 
 <div class="card">
     <div class="card-body">
@@ -61,7 +74,7 @@
 <!-- modal New Project -->
 <div class="modal fade" id="newEnNoDe">
     <div class="modal-dialog modal-lg">
-        <form method="post" id="formNewEnNoDe">
+        <form method="post" id="formNewEnNoDe" novalidate>
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">New Non-Destructive Testing</h5>
@@ -71,18 +84,22 @@
 
                     <div class="form-group">
                         <label for="cod_end">Non-Destructive Testing Code</label>
-                        <input type="text" class="form-control" id="cod_end" placeholder="Enter the non-destructive testing code" autocomplete="off" style="text-transform:uppercase;" />
+                        <input type="text" class="form-control" id="cod_end" placeholder="Enter the non-destructive testing code" autocomplete="off" style="text-transform:uppercase;" required />
+                        <div class="invalid-feedback">Please fill out this field.</div>
                     </div>
 
                     <div class="form-group">
                         <label for="descripcion_end">Descripcion Non-Destructive Testing</label>
-                        <input type="text" class="form-control" id="descripcion_end" placeholder="Enter the non-destructive testing description" autocomplete="off" style="text-transform:uppercase;" />
+                        <input type="text" class="form-control" id="descripcion_end" placeholder="Enter the non-destructive testing description" autocomplete="off" style="text-transform:uppercase;" required />
+                        <div class="invalid-feedback">Please fill out this field.</div>
                     </div>
 
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn bg-dark text-white" id="btnGrabarEnNoDe">Save</button>
+                    <button type="button" class="btn bg-dark text-white" id="btnGrabarEnNoDe">
+                        <span id="loaderN" class="spinner-border spinner-border-sm" role="status" aria-hidden="true" style="display:none;"></span> Save
+                    </button>
                 </div>
             </div>
         </form>
@@ -92,7 +109,7 @@
 <!-- modal Edit Contact -->
 <div class="modal fade" id="EditEnNoDe">
     <div class="modal-dialog modal-lg">
-        <form method="post" id="formEditEnNoDe">
+        <form method="post" id="formEditEnNoDe" novalidate>
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">Edit Non-Destructive Testing</h5>
@@ -105,18 +122,22 @@
 
                     <div class="form-group">
                         <label for="E_cod_end">Non-Destructive Testing Code</label>
-                        <input type="text" class="form-control" id="E_cod_end" placeholder="Enter the non-destructive testing code" autocomplete="off" style="text-transform:uppercase;" />
+                        <input type="text" class="form-control" id="E_cod_end" placeholder="Enter the non-destructive testing code" autocomplete="off" style="text-transform:uppercase;" required />
+                        <div class="invalid-feedback">Please fill out this field.</div>
                     </div>
 
                     <div class="form-group">
                         <label for="E_descripcion_end">Descripcion Non-Destructive Testing</label>
-                        <input type="text" class="form-control" id="E_descripcion_end" placeholder="Enter the non-destructive testing description" autocomplete="off" style="text-transform:uppercase;" />
+                        <input type="text" class="form-control" id="E_descripcion_end" placeholder="Enter the non-destructive testing description" autocomplete="off" style="text-transform:uppercase;" required />
+                        <div class="invalid-feedback">Please fill out this field.</div>
                     </div>
 
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn bg-dark text-white" id="btnEditEnNoDe">Save</button>
+                    <button type="button" class="btn bg-dark text-white" id="btnEditEnNoDe">
+                        <span id="loaderE" class="spinner-border spinner-border-sm" role="status" aria-hidden="true" style="display:none;"></span> Save
+                    </button>
                 </div>
             </div>
         </form>
@@ -149,7 +170,7 @@
     <script src="~/lib/bootstrap-table/dist/bootstrap-table.min.js"></script>
     <script src="~/js/demo/table-plugins.demo.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/tom-select@2.0.0/dist/js/tom-select.complete.min.js"></script>
-
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 
     <script>
 
@@ -157,16 +178,16 @@
 
         $('#datatableEnNoDe').DataTable({
             dom: "<'row mb-3'<'col-sm-4'l><'col-sm-12 text-end'<'d-flex justify-content-end'fB>>>t<'d-flex align-items-center'<'me-auto'i><'mb-0'p>>",
-            lengthMenu: [ 10, 20, 30, 40, 50 ],
+            lengthMenu: [10, 20, 30, 40, 50],
             responsive: true,
             buttons: [
-              { extend: 'print', className: 'btn btn-default' },
-              { extend: 'pdfHtml5', className: 'btn btn-default' },
-              { extend: 'excelHtml5', className: 'btn btn-default' }
+                { extend: 'print', className: 'btn btn-default' },
+                { extend: 'pdfHtml5', className: 'btn btn-default' },
+                { extend: 'excelHtml5', className: 'btn btn-default' }
             ]
-          });
+        });
 
-         ///// FUNCIONES  ///////
+        ///// FUNCIONES  ///////
 
         function ModalEditEnNoDe(xid, xcod, xdescripcion) {
             $("#IdEnNoDe").val(xid);
@@ -175,35 +196,29 @@
             $('#EditEnNoDe').modal('show');
         }
 
+        function ModalNewEnNoDe() {
+            var form = $("#formNewEnNoDe");
+            form[0].reset();
+            form.get(0).reset();
+            form.removeClass('was-validated');
+            $('#newEnNoDe').modal('show');
+        }
 
         $(document).ready(function () {
 
-
+            $('#newEnNoDe').on('shown.bs.modal', function () {
+                $('#cod_end').focus();
+            });
 
             $('#btnGrabarEnNoDe').click(function (event) {
 
                 var form = $("#formNewEnNoDe");
+                form.addClass('was-validated');
 
                 if (form[0].checkValidity() === false) {
-                    event.preventDefault()
-                    event.stopPropagation()
-                    form.addClass('was-validated');
-                }
-                else {
-
-                    if ($('#cod_end').val() == "") {
-                        alert("You must enter the non-destructive testing code");
-                        $('#cod_end').focus();
-                        return;
-                    }
-
-                    if ($('#descripcion_end').val() == "") {
-                        alert('You must enter the non-destructive testing description');
-                        $('#descripcion_end').focus();
-                        return;
-                    }
-
-
+                    event.preventDefault();
+                    event.stopPropagation();
+                    return;
                 }
 
                 let EnNoDe = {
@@ -219,22 +234,24 @@
                     dataType: 'json',
                     async: true,
                     data: data,
+                    beforeSend: function () {
+                        $('#loaderN').show();
+                    },
                     success: function (result) {
-                        console.log(result)
-                    }
-                })
-                    .done(function (result) {
                         if (result.exito) {
-                            alert(result.mensaje);
                             $('#newEnNoDe').modal('hide');
-                            location.reload();
+                            swal("Good job!", result.mensaje, "success").then(function () {
+                                location.reload();
+                            });
                         }
                         else {
-                            alert('Problems add a non-destructive testing, we ask that you try again!');
+                            swal({
+                                icon: "error",
+                                text: "Problems add a non-destructive testing, we ask that you try again!",
+                            });
                         }
-
-                    })
-                    .fail(function (jqXHR, textStatus, errorThrow) {
+                    }
+                }) .fail(function (jqXHR, textStatus, errorThrow) {
                         var err = "Error: " + textStatus + " " + errorThrow;
                         console.log(err);
                     })
@@ -245,29 +262,16 @@
             $('#btnEditEnNoDe').click(function (event) {
 
                 var form = $("#formEditEnNoDe");
+                form.addClass('was-validated');
 
                 if (form[0].checkValidity() === false) {
-                    event.preventDefault()
-                    event.stopPropagation()
-                    form.addClass('was-validated');
-                }
-                else {
-
-                    if ($('#E_cod_end').val() == "") {
-                        alert("You must enter the non-destructive testing code");
-                        $('#E_cod_end').focus();
-                        return;
-                    }
-
-                    if ($('#E_descripcion_end').val() == "") {
-                        alert('You must enter the non-destructive testing description');
-                        $('#E_descripcion_end').focus();
-                        return;
-                    }
+                    event.preventDefault();
+                    event.stopPropagation();
+                    return;
                 }
 
                 let EnNoDe = {
-                   "id": $('#IdEnNoDe').val(),
+                    "id": $('#IdEnNoDe').val(),
                     "cod_end": $('#E_cod_end').val().toUpperCase(),
                     "descripcion_end": $('#E_descripcion_end').val().toUpperCase()
                 };
@@ -282,22 +286,24 @@
                     dataType: 'json',
                     async: true,
                     data: data,
+                    beforeSend: function () {
+                        $('#loaderE').show();
+                    },
                     success: function (result) {
-                        console.log(result)
-                    }
-                })
-                    .done(function (result) {
                         if (result.exito) {
-                            alert(result.mensaje);
                             $('#EditEnNoDe').modal('hide');
-                            location.reload();
+                            swal("Good job!", result.mensaje, "success").then(function () {
+                                location.reload();
+                            });
                         }
                         else {
-                            alert('Problems creating a edit non-destructive testing, we ask that you try again!');
+                            swal({
+                                icon: "error",
+                                text: "Problems edit a non-destructive testing, we ask that you try again!",
+                            });
                         }
-
-                    })
-                    .fail(function (jqXHR, textStatus, errorThrow) {
+                    }
+                }) .fail(function (jqXHR, textStatus, errorThrow) {
                         var err = "Error: " + textStatus + " " + errorThrow;
                         console.log(err);
                     })

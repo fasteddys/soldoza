@@ -15,13 +15,18 @@ namespace Domain.Entities
         public int fabricante_id { get; set; }
         public int proc_soldadura_id { get; set; }
         public int clasf_aws_id { get; set; }
+        [Column(TypeName ="numeric")]
         public decimal diametro { get; set; }
+        [Column(TypeName = "numeric")]
         public decimal ref_rendto { get; set; }
         public string f_num { get; set; }
         public string a_num { get; set; }
+        [Column(TypeName = "numeric")]
         public decimal densidad { get; set; }
         public string long_electrodo { get; set; }
+        [Column(TypeName = "numeric")]
         public decimal precio { get; set; }
+        [Column(TypeName = "numeric")]
         public decimal num_elect_kg { get; set; }
         public string cod_consumible { get; set; }
 

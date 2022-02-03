@@ -13,7 +13,20 @@
     <link href="~/lib/datatables.net-responsive-bs4/css/responsive.bootstrap4.min.css" rel="stylesheet" />
     <link href="~/lib/bootstrap-table/dist/bootstrap-table.min.css" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/tom-select@2.0.0/dist/css/tom-select.css" rel="stylesheet">
+    <style>
+        /* remove validation icons */
+        .form-control.is-invalid, .was-validated .form-control:invalid {
+            background-image: none !important;
+            border-color: #ced4da;
+            padding-right: 0.75em;
+        }
 
+        .form-control.is-valid, .was-validated .form-control:valid {
+            background-image: none !important;
+            border-color: #ced4da;
+            padding-right: 0.75em;
+        }
+    </style>
 }
 
 <ul class="breadcrumb">
@@ -25,7 +38,7 @@
     List Welding Position <small>page header description goes here...</small>
 </h1>
 
-<button type="button" class="btn bg-warning me-2 " data-bs-toggle="modal" data-bs-target="#newPOSSOL">New Welding Position</button>
+<button type="button" class="btn bg-warning me-2 " onclick="ModalNewPOSSOL();">New Welding Position</button>
 
 <div class="card">
     <div class="card-body">
@@ -61,7 +74,7 @@
 <!-- modal New Project -->
 <div class="modal fade" id="newPOSSOL">
     <div class="modal-dialog modal-lg">
-        <form method="post" id="formNewPOSSOL">
+        <form method="post" id="formNewPOSSOL" novalidate>
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">New Welding Position</h5>
@@ -71,18 +84,22 @@
 
                     <div class="form-group">
                         <label for="cod_pos_soldeo">Welding Position Code</label>
-                        <input type="text" class="form-control" id="cod_pos_soldeo" placeholder="Enter the welding position code" autocomplete="off" style="text-transform:uppercase;" />
+                        <input type="text" class="form-control" id="cod_pos_soldeo" placeholder="Enter the welding position code" autocomplete="off" style="text-transform:uppercase;" required />
+                        <div class="invalid-feedback">Please fill out this field.</div>
                     </div>
 
                     <div class="form-group">
                         <label for="descripcion_pos_soldeo">Descripcion Welding Position</label>
-                        <input type="text" class="form-control" id="descripcion_pos_soldeo" placeholder="Enter the welding position description" autocomplete="off" style="text-transform:uppercase;" />
+                        <input type="text" class="form-control" id="descripcion_pos_soldeo" placeholder="Enter the welding position description" autocomplete="off" style="text-transform:uppercase;" required />
+                        <div class="invalid-feedback">Please fill out this field.</div>
                     </div>
 
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn bg-dark text-white" id="btnGrabarPOSSOL">Save</button>
+                    <button type="button" class="btn bg-dark text-white" id="btnGrabarPOSSOL">
+                        <span id="loaderN" class="spinner-border spinner-border-sm" role="status" aria-hidden="true" style="display:none;"></span> Save
+                    </button>
                 </div>
             </div>
         </form>
@@ -92,7 +109,7 @@
 <!-- modal Edit Contact -->
 <div class="modal fade" id="EditPOSSOL">
     <div class="modal-dialog modal-lg">
-        <form method="post" id="formEditPOSSOL">
+        <form method="post" id="formEditPOSSOL" novalidate>
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">Edit Welding Position</h5>
@@ -105,18 +122,22 @@
 
                     <div class="form-group">
                         <label for="E_cod_pos_soldeo">Welding Position Code</label>
-                        <input type="text" class="form-control" id="E_cod_pos_soldeo" placeholder="Enter the welding position code" autocomplete="off" style="text-transform:uppercase;" />
+                        <input type="text" class="form-control" id="E_cod_pos_soldeo" placeholder="Enter the welding position code" autocomplete="off" style="text-transform:uppercase;" required />
+                        <div class="invalid-feedback">Please fill out this field.</div>
                     </div>
 
                     <div class="form-group">
                         <label for="E_descripcion_pos_soldeo">Descripcion Welding Position</label>
-                        <input type="text" class="form-control" id="E_descripcion_pos_soldeo" placeholder="Enter the welding position description" autocomplete="off" style="text-transform:uppercase;" />
+                        <input type="text" class="form-control" id="E_descripcion_pos_soldeo" placeholder="Enter the welding position description" autocomplete="off" style="text-transform:uppercase;" required />
+                        <div class="invalid-feedback">Please fill out this field.</div>
                     </div>
 
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn bg-dark text-white" id="btnEditPOSSOL">Save</button>
+                    <button type="button" class="btn bg-dark text-white" id="btnEditPOSSOL">
+                        <span id="loaderE" class="spinner-border spinner-border-sm" role="status" aria-hidden="true" style="display:none;"></span> Save
+                    </button>
                 </div>
             </div>
         </form>
@@ -149,7 +170,7 @@
     <script src="~/lib/bootstrap-table/dist/bootstrap-table.min.js"></script>
     <script src="~/js/demo/table-plugins.demo.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/tom-select@2.0.0/dist/js/tom-select.complete.min.js"></script>
-
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 
     <script>
 
@@ -157,16 +178,16 @@
 
         $('#datatablePOSSOL').DataTable({
             dom: "<'row mb-3'<'col-sm-4'l><'col-sm-12 text-end'<'d-flex justify-content-end'fB>>>t<'d-flex align-items-center'<'me-auto'i><'mb-0'p>>",
-            lengthMenu: [ 10, 20, 30, 40, 50 ],
+            lengthMenu: [10, 20, 30, 40, 50],
             responsive: true,
             buttons: [
-              { extend: 'print', className: 'btn btn-default' },
-              { extend: 'pdfHtml5', className: 'btn btn-default' },
-              { extend: 'excelHtml5', className: 'btn btn-default' }
+                { extend: 'print', className: 'btn btn-default' },
+                { extend: 'pdfHtml5', className: 'btn btn-default' },
+                { extend: 'excelHtml5', className: 'btn btn-default' }
             ]
-          });
+        });
 
-         ///// FUNCIONES  ///////
+        ///// FUNCIONES  ///////
 
         function ModalEditPOSSOL(xid, xcod, xdescripcion) {
             $("#IdPOSSOL").val(xid);
@@ -175,42 +196,36 @@
             $('#EditPOSSOL').modal('show');
         }
 
+        function ModalNewPOSSOL() {
+            var form = $("#formNewPOSSOL");
+            form[0].reset();
+            form.get(0).reset();
+            form.removeClass('was-validated');
+            $('#newPOSSOL').modal('show');
+        }
 
         $(document).ready(function () {
 
-
+            $('#newPOSSOL').on('shown.bs.modal', function () {
+                $('#cod_pos_soldeo').focus();
+            });
 
             $('#btnGrabarPOSSOL').click(function (event) {
 
                 var form = $("#formNewPOSSOL");
+                form.addClass('was-validated');
 
                 if (form[0].checkValidity() === false) {
-                    event.preventDefault()
-                    event.stopPropagation()
-                    form.addClass('was-validated');
-                }
-                else {
-
-                    if ($('#cod_pos_soldeo').val() == "") {
-                        alert("You must enter the welding position code");
-                        $('#cod_pos_soldeo').focus();
-                        return;
-                    }
-
-                    if ($('#descripcion_pos_soldeo').val() == "") {
-                        alert('You must enter the welding position description');
-                        $('#descripcion_pos_soldeo').focus();
-                        return;
-                    }
-
-
+                    event.preventDefault();
+                    event.stopPropagation();
+                    return;
                 }
 
                 let posol = {
                     "cod_pos_soldeo": $('#cod_pos_soldeo').val().toUpperCase(),
                     "descripcion_pos_soldeo": $('#descripcion_pos_soldeo').val().toUpperCase()
                 };
-               var data = JSON.stringify(posol);
+                var data = JSON.stringify(posol);
 
                 $.ajax({
                     type: "POST",
@@ -219,22 +234,24 @@
                     dataType: 'json',
                     async: true,
                     data: data,
+                    beforeSend: function () {
+                        $('#loaderN').show();
+                    },
                     success: function (result) {
-                        console.log(result)
-                    }
-                })
-                    .done(function (result) {
                         if (result.exito) {
-                            alert(result.mensaje);
                             $('#newPOSSOL').modal('hide');
-                            location.reload();
+                            swal("Good job!", result.mensaje, "success").then(function () {
+                                location.reload();
+                            });
                         }
                         else {
-                            alert('Problems add a welding position, we ask that you try again!');
+                            swal({
+                                icon: "error",
+                                text: "Problems add a welding position, we ask that you try again!",
+                            });
                         }
-
-                    })
-                    .fail(function (jqXHR, textStatus, errorThrow) {
+                    }
+                }) .fail(function (jqXHR, textStatus, errorThrow) {
                         var err = "Error: " + textStatus + " " + errorThrow;
                         console.log(err);
                     })
@@ -245,35 +262,22 @@
             $('#btnEditPOSSOL').click(function (event) {
 
                 var form = $("#formEditPOSSOL");
+                form.addClass('was-validated');
 
                 if (form[0].checkValidity() === false) {
-                    event.preventDefault()
-                    event.stopPropagation()
-                    form.addClass('was-validated');
-                }
-                else {
-
-                    if ($('#E_cod_pos_soldeo').val() == "") {
-                        alert("You must enter the welding position code");
-                        $('#E_cod_pos_soldeo').focus();
-                        return;
-                    }
-
-                    if ($('#E_descripcion_pos_soldeo').val() == "") {
-                        alert('You must enter the welding position description');
-                        $('#E_descripcion_pos_soldeo').focus();
-                        return;
-                    }
+                    event.preventDefault();
+                    event.stopPropagation();
+                    return;
                 }
 
-               let posol = {
-                   "id": $('#IdPOSSOL').val(),
+                let posol = {
+                    "id": $('#IdPOSSOL').val(),
                     "cod_pos_soldeo": $('#E_cod_pos_soldeo').val().toUpperCase(),
                     "descripcion_pos_soldeo": $('#E_descripcion_pos_soldeo').val().toUpperCase()
                 };
 
 
-               var data = JSON.stringify(posol);
+                var data = JSON.stringify(posol);
 
                 $.ajax({
                     type: "POST",
@@ -282,22 +286,24 @@
                     dataType: 'json',
                     async: true,
                     data: data,
+                    beforeSend: function () {
+                        $('#loaderE').show();
+                    },
                     success: function (result) {
-                        console.log(result)
-                    }
-                })
-                    .done(function (result) {
                         if (result.exito) {
-                            alert(result.mensaje);
                             $('#EditPOSSOL').modal('hide');
-                            location.reload();
+                            swal("Good job!", result.mensaje, "success").then(function () {
+                                location.reload();
+                            });
                         }
                         else {
-                            alert('Problems creating a edit welding position, we ask that you try again!');
+                            swal({
+                                icon: "error",
+                                text: "Problems edit a welding position, we ask that you try again!",
+                            });
                         }
-
-                    })
-                    .fail(function (jqXHR, textStatus, errorThrow) {
+                    }
+                }) .fail(function (jqXHR, textStatus, errorThrow) {
                         var err = "Error: " + textStatus + " " + errorThrow;
                         console.log(err);
                     })

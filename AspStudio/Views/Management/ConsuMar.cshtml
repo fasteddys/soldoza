@@ -13,7 +13,20 @@
     <link href="~/lib/datatables.net-responsive-bs4/css/responsive.bootstrap4.min.css" rel="stylesheet" />
     <link href="~/lib/bootstrap-table/dist/bootstrap-table.min.css" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/tom-select@2.0.0/dist/css/tom-select.css" rel="stylesheet">
+    <style>
+        /* remove validation icons */
+        .form-control.is-invalid, .was-validated .form-control:invalid {
+            background-image: none !important;
+            border-color: #ced4da;
+            padding-right: 0.75em;
+        }
 
+        .form-control.is-valid, .was-validated .form-control:valid {
+            background-image: none !important;
+            border-color: #ced4da;
+            padding-right: 0.75em;
+        }
+    </style>
 }
 
 <ul class="breadcrumb">
@@ -25,7 +38,7 @@
     List Brand <small>page header description goes here...</small>
 </h1>
 
-<button type="button" class="btn bg-warning me-2 " data-bs-toggle="modal" data-bs-target="#newCONSUMAR">New Brand</button>
+<button type="button" class="btn bg-warning me-2 " onclick="ModalNewCONSUMAR();">New Brand</button>
 
 <div class="card">
     <div class="card-body">
@@ -61,7 +74,7 @@
 <!-- modal New Project -->
 <div class="modal fade" id="newCONSUMAR">
     <div class="modal-dialog modal-lg">
-        <form method="post" id="formNewCONSUMAR">
+        <form method="post" id="formNewCONSUMAR" novalidate>
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">New Brand</h5>
@@ -71,18 +84,22 @@
 
                     <div class="form-group">
                         <label for="cod_marca">Brand Code</label>
-                        <input type="text" class="form-control" id="cod_marca" placeholder="Enter the brand code" autocomplete="off" style="text-transform:uppercase;" />
+                        <input type="text" class="form-control" id="cod_marca" placeholder="Enter the brand code" autocomplete="off" style="text-transform:uppercase;" required />
+                        <div class="invalid-feedback">Please fill out this field.</div>
                     </div>
 
                     <div class="form-group">
                         <label for="descripcion_marca">Descripcion Brand</label>
-                        <input type="text" class="form-control" id="descripcion_marca" placeholder="Enter the brand description" autocomplete="off" style="text-transform:uppercase;" />
+                        <input type="text" class="form-control" id="descripcion_marca" placeholder="Enter the brand description" autocomplete="off" style="text-transform:uppercase;" required />
+                        <div class="invalid-feedback">Please fill out this field.</div>
                     </div>
 
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn bg-dark text-white" id="btnGrabarCONSUMAR">Save</button>
+                    <button type="button" class="btn bg-dark text-white" id="btnGrabarCONSUMAR">
+                        <span id="loaderN" class="spinner-border spinner-border-sm" role="status" aria-hidden="true" style="display:none;"></span> Save
+                    </button>
                 </div>
             </div>
         </form>
@@ -92,7 +109,7 @@
 <!-- modal Edit Contact -->
 <div class="modal fade" id="EditCONSUMAR">
     <div class="modal-dialog modal-lg">
-        <form method="post" id="formEditCONSUMAR">
+        <form method="post" id="formEditCONSUMAR" novalidate>
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">Edit Brand</h5>
@@ -105,18 +122,22 @@
 
                     <div class="form-group">
                         <label for="E_cod_marca">Brand Code</label>
-                        <input type="text" class="form-control" id="E_cod_marca" placeholder="Enter the brand code" autocomplete="off" style="text-transform:uppercase;" />
+                        <input type="text" class="form-control" id="E_cod_marca" placeholder="Enter the brand code" autocomplete="off" style="text-transform:uppercase;" required />
+                        <div class="invalid-feedback">Please fill out this field.</div>
                     </div>
 
                     <div class="form-group">
                         <label for="E_descripcion_marca">Descripcion Brand</label>
-                        <input type="text" class="form-control" id="E_descripcion_marca" placeholder="Enter the brand description" autocomplete="off" style="text-transform:uppercase;" />
+                        <input type="text" class="form-control" id="E_descripcion_marca" placeholder="Enter the brand description" autocomplete="off" style="text-transform:uppercase;" required />
+                        <div class="invalid-feedback">Please fill out this field.</div>
                     </div>
 
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn bg-dark text-white" id="btnEditCONSUMAR">Save</button>
+                    <button type="button" class="btn bg-dark text-white" id="btnEditCONSUMAR">
+                        <span id="loaderE" class="spinner-border spinner-border-sm" role="status" aria-hidden="true" style="display:none;"></span> Save
+                    </button>
                 </div>
             </div>
         </form>
@@ -149,7 +170,7 @@
     <script src="~/lib/bootstrap-table/dist/bootstrap-table.min.js"></script>
     <script src="~/js/demo/table-plugins.demo.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/tom-select@2.0.0/dist/js/tom-select.complete.min.js"></script>
-
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 
     <script>
 
@@ -157,16 +178,16 @@
 
         $('#datatableCONSUMAR').DataTable({
             dom: "<'row mb-3'<'col-sm-4'l><'col-sm-12 text-end'<'d-flex justify-content-end'fB>>>t<'d-flex align-items-center'<'me-auto'i><'mb-0'p>>",
-            lengthMenu: [ 10, 20, 30, 40, 50 ],
+            lengthMenu: [10, 20, 30, 40, 50],
             responsive: true,
             buttons: [
-              { extend: 'print', className: 'btn btn-default' },
-              { extend: 'pdfHtml5', className: 'btn btn-default' },
-              { extend: 'excelHtml5', className: 'btn btn-default' }
+                { extend: 'print', className: 'btn btn-default' },
+                { extend: 'pdfHtml5', className: 'btn btn-default' },
+                { extend: 'excelHtml5', className: 'btn btn-default' }
             ]
-          });
+        });
 
-         ///// FUNCIONES  ///////
+        ///// FUNCIONES  ///////
 
         function ModalEditCONSUMAR(xid, xcod, xdescripcion) {
             $("#IdCONSUMAR").val(xid);
@@ -175,35 +196,29 @@
             $('#EditCONSUMAR').modal('show');
         }
 
+        function ModalNewCONSUMAR() {
+            var form = $("#formNewCONSUMAR");
+            form[0].reset();
+            form.get(0).reset();
+            form.removeClass('was-validated');
+            $('#newCONSUMAR').modal('show');
+        }
 
         $(document).ready(function () {
 
-
+            $('#newCONSUMAR').on('shown.bs.modal', function () {
+                $('#cod_marca').focus();
+            });
 
             $('#btnGrabarCONSUMAR').click(function (event) {
 
                 var form = $("#formNewCONSUMAR");
+                form.addClass('was-validated');
 
                 if (form[0].checkValidity() === false) {
-                    event.preventDefault()
-                    event.stopPropagation()
-                    form.addClass('was-validated');
-                }
-                else {
-
-                    if ($('#cod_marca').val() == "") {
-                        alert("You must enter the brand code");
-                        $('#cod_marca').focus();
-                        return;
-                    }
-
-                    if ($('#descripcion_marca').val() == "") {
-                        alert('You must enter the brand description');
-                        $('#descripcion_marca').focus();
-                        return;
-                    }
-
-
+                    event.preventDefault();
+                    event.stopPropagation();
+                    return;
                 }
 
                 let CONSUMAR = {
@@ -219,22 +234,24 @@
                     dataType: 'json',
                     async: true,
                     data: data,
+                    beforeSend: function () {
+                        $('#loaderN').show();
+                    },
                     success: function (result) {
-                        console.log(result)
-                    }
-                })
-                    .done(function (result) {
                         if (result.exito) {
-                            alert(result.mensaje);
                             $('#newCONSUMAR').modal('hide');
-                            location.reload();
+                            swal("Good job!", result.mensaje, "success").then(function () {
+                                location.reload();
+                            });
                         }
                         else {
-                            alert('Problems add a brand, we ask that you try again!');
+                            swal({
+                                icon: "error",
+                                text: "Problems add a brand, we ask that you try again!",
+                            });
                         }
-
-                    })
-                    .fail(function (jqXHR, textStatus, errorThrow) {
+                    }
+                }) .fail(function (jqXHR, textStatus, errorThrow) {
                         var err = "Error: " + textStatus + " " + errorThrow;
                         console.log(err);
                     })
@@ -245,29 +262,16 @@
             $('#btnEditCONSUMAR').click(function (event) {
 
                 var form = $("#formEditCONSUMAR");
+                form.addClass('was-validated');
 
                 if (form[0].checkValidity() === false) {
-                    event.preventDefault()
-                    event.stopPropagation()
-                    form.addClass('was-validated');
-                }
-                else {
-
-                    if ($('#E_cod_marca').val() == "") {
-                        alert("You must enter the brand code");
-                        $('#E_cod_marca').focus();
-                        return;
-                    }
-
-                    if ($('#E_descripcion_marca').val() == "") {
-                        alert('You must enter the brand description');
-                        $('#E_descripcion_marca').focus();
-                        return;
-                    }
+                    event.preventDefault();
+                    event.stopPropagation();
+                    return;
                 }
 
                 let CONSUMAR = {
-                   "id": $('#IdCONSUMAR').val(),
+                    "id": $('#IdCONSUMAR').val(),
                     "cod_marca": $('#E_cod_marca').val().toUpperCase(),
                     "descripcion_marca": $('#E_descripcion_marca').val().toUpperCase()
                 };
@@ -282,22 +286,24 @@
                     dataType: 'json',
                     async: true,
                     data: data,
+                    beforeSend: function () {
+                        $('#loaderE').show();
+                    },
                     success: function (result) {
-                        console.log(result)
-                    }
-                })
-                    .done(function (result) {
                         if (result.exito) {
-                            alert(result.mensaje);
                             $('#EditCONSUMAR').modal('hide');
-                            location.reload();
+                            swal("Good job!", result.mensaje, "success").then(function () {
+                                location.reload();
+                            });
                         }
                         else {
-                            alert('Problems creating a edit brand, we ask that you try again!');
+                            swal({
+                                icon: "error",
+                                text: "Problems edit a brand, we ask that you try again!",
+                            });
                         }
-
-                    })
-                    .fail(function (jqXHR, textStatus, errorThrow) {
+                    }
+                }) .fail(function (jqXHR, textStatus, errorThrow) {
                         var err = "Error: " + textStatus + " " + errorThrow;
                         console.log(err);
                     })
